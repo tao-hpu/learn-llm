@@ -11,7 +11,9 @@
     "test": "vitest run",
     "typecheck": "tsc -b && tsc -p tsconfig.test.json --noEmit",
     "compare": "node scripts/compare-text.mjs",
-    "compare:behavior": "node scripts/compare-behavior.mjs"
+    "compare:behavior": "node scripts/compare-behavior.mjs",
+    "compare:legacy": "node scripts/compare-text.mjs --ref=legacy",
+    "compare:behavior:legacy": "node scripts/compare-behavior.mjs --ref=legacy"
   },
   "dependencies": {
     "react": "^18.3.1",

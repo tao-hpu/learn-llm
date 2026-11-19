@@ -31,9 +31,12 @@ pnpm dev
 pnpm build        # check-source + check-terms + tsc + vite build + prerender
 pnpm typecheck
 pnpm test
-pnpm compare      # 先 build。对照旧 HTML 的可见文字（需要本机有 llm-from-scratch/web/）
-pnpm compare:behavior  # 同一套点击和滑块，对照当前面板的文字、SVG 和高亮（同上）
+pnpm compare      # 先 build。对照 origin/main 构建的可见文字，报告 docs/compare-text.md
+pnpm compare:behavior  # 同一套点击和滑块，对照面板文字、SVG 和高亮，报告 docs/behavior-diff.md
+pnpm compare:legacy / compare:behavior:legacy  # 对照迁移前的旧页（llm-from-scratch 8ce76a2:web）
 ```
+
+两个对照脚本默认 `--ref=main`：在临时目录检出并构建 origin/main（`--ref=<git ref>` 换别的提交），和当前工作区的 dist 比。改完内容先 `pnpm build`，再跑这两条，逐条确认报告里的差异都是有意改的。有差异时退出码非 0，`--allow-diff` 改为 0。`--ref=legacy` 只用来复查迁移，横幅、confetti 等白名单只在这个模式生效。
 
 `pnpm build` 会失败的条件，以及每条检查扫哪些文件，写在 `docs/source-checks.md`。`<Term k>` 在名词表里没有对应词条时同样失败。
 

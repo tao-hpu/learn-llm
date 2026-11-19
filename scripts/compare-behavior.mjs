@@ -1,15 +1,21 @@
-// 同一套操作打在旧 HTML（file://）和新站上，比当前面板的文字、SVG 几何和高亮。
-// 用法：先 pnpm build，再 pnpm compare:behavior。旧仓只读。
+// 同一套操作打在对照侧和当前 dist 上，比当前面板的文字、SVG 几何和高亮。
+// 用法：先 pnpm build，再 pnpm compare:behavior（对照 origin/main 的构建）。
+// --ref=<git ref> 对照别的提交；--ref=legacy 对照迁移前的单文件旧页（file://）。
+// --allow-diff 有差异也以 0 退出。参数见 scripts/compare-ref.mjs。
 // ONLY=03:step-6,gpt-machine:part-2 只跑点名的章或步，用来复查。
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { preview } from 'vite'
+import { parseArgs, prepareRef, requireDist } from './compare-ref.mjs'
 import { chromium } from 'playwright'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const catalog = JSON.parse(readFileSync(join(root, 'src/catalog.json'), 'utf8'))
-const oldRoot = join(process.env.HOME, 'Workspace/fim-ai/llm-from-scratch/web')
+const opts = parseArgs()
+const legacy = opts.legacy
+requireDist(root)
+const ref = prepareRef(root, opts)
 const ready = catalog.chapters.filter((c) => c.ready)
 const only = (process.env.ONLY || '').split(',').filter(Boolean)
 const previewServer = await preview({
@@ -17,6 +23,11 @@ const previewServer = await preview({
   preview: { port: 5193, strictPort: false },
 })
 const newOrigin = (previewServer.resolvedUrls?.local?.[0] ?? 'http://127.0.0.1:5193').replace(/\/$/, '')
+const refServer = legacy ? null : await preview({
+  root: ref.dir,
+  preview: { port: 5195, strictPort: false },
+})
+const refOrigin = refServer ? refServer.resolvedUrls.local[0].replace(/\/$/, '') : ''
 
 function wanted(ch, step) {
   if (!only.length) return true
@@ -172,10 +183,14 @@ const diffs = []
 const stats = new Map()
 function pushDiff(slug, label, kind, oldText, newText, scope) {
   if (oldText === newText) return
-  if (kind === 'SVG' && (svgClose(oldText, newText) || svgProgress(oldText, newText))) return
+  if (kind === 'SVG' && svgClose(oldText, newText)) return
   const delta = firstDelta(oldText, newText)
-  const first = delta.split('\n').slice(1).join('\n')
-  if (scope === 'banner' && allowLine(first)) return
+  if (legacy) {
+    // 白名单只在 legacy 模式：动画进度线、通关横幅与 confetti。
+    if (kind === 'SVG' && svgProgress(oldText, newText)) return
+    const first = delta.split('\n').slice(1).join('\n')
+    if (scope === 'banner' && allowLine(first)) return
+  }
   const body = `${delta}\n旧:\n${oldText.slice(0, 500)}\n新:\n${newText.slice(0, 500)}`
   diffs.push({ label, kind, body })
   const row = stats.get(slug)
@@ -251,7 +266,9 @@ try {
       const newPage = await ctx.newPage()
       await oldPage.clock.install()
       await newPage.clock.install()
-      const oldUrl = `${pathToFileURL(join(oldRoot, ch.file)).href}#${step.anchor}`
+      const oldUrl = legacy
+        ? `${pathToFileURL(join(ref.dir, ch.file)).href}#${step.anchor}`
+        : `${refOrigin}/ch/${ch.slug}#${step.anchor}`
       const newUrl = `${newOrigin}/ch/${ch.slug}#${step.anchor}`
       try {
         await oldPage.goto(oldUrl, { waitUntil: 'domcontentloaded' })
@@ -351,14 +368,23 @@ try {
 } finally {
   await browser.close()
   await previewServer.close()
+  if (refServer) await refServer.close()
+  ref.cleanup()
 }
 
 const lines = [
   '# 行为对照',
   '',
-  '旧页用 file://，新页用预览。同一套点击和滑块之后，比当前面板的文字、SVG 几何和高亮。',
+  `对照侧：${ref.label}。当前侧：本工作区的 dist。`,
+  '',
+  legacy
+    ? '旧页用 file://，新页用预览。同一套点击和滑块之后，比当前面板的文字、SVG 几何和高亮。'
+    : '两侧都用预览。同一套点击和滑块之后，比当前面板的文字、SVG 几何和高亮。',
   '动画用假时钟拨到停稳再比。每次点击前把 Math.random 拨回同一个种子。',
-  '通关横幅和 confetti 只看第一处不同的那一行。坐标差 1 像素以内、藏起来的图不算差异。',
+  legacy
+    ? '通关横幅和 confetti 只看第一处不同的那一行。坐标差 1 像素以内、藏起来的图不算差异。'
+    : '坐标差 1 像素以内、藏起来的图不算差异，此外没有白名单。',
+  ...(legacy ? [] : ['有差异不一定是错：改了内容也会出现在这里。下面逐条列出，由审阅人确认每一条是有意的改动。']),
   '',
   '## 各章检查点',
   '',
@@ -383,10 +409,11 @@ for (const ch of ready) {
 lines.push(`差异：${diffs.length}`, '')
 if (zero) lines.push('有章节检查点为 0。', '')
 if (diffs.length) {
-  for (const row of diffs.slice(0, 80)) {
+  for (const row of legacy ? diffs.slice(0, 80) : diffs) {
     lines.push(`## ${row.label} · ${row.kind}`, '', '```', row.body, '```', '')
   }
 }
 writeFileSync(join(root, 'docs/behavior-diff.md'), lines.join('\n') + '\n')
-console.log(`behavior diffs ${diffs.length}${zero ? '，有章节检查点为 0' : ''}`)
-if (diffs.length || zero) process.exitCode = 1
+console.log(`behavior diffs ${diffs.length} against ${ref.label}${zero ? '，有章节检查点为 0' : ''}`)
+for (const row of diffs) console.log(' DIFF', row.label, row.kind)
+if (zero || (diffs.length && !opts.allowDiff)) process.exitCode = 1

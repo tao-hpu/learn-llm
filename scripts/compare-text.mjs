@@ -1,16 +1,21 @@
-// 用 Playwright 对照旧 HTML 和新站：每章每一步的可见文字，以及交互、375px 横向滚动。
-// 用法：先 pnpm build，再 node scripts/compare-text.mjs
-// 旧站只读，不起 llm-from-scratch 里的任何写操作。
+// 用 Playwright 对照两侧每章每一步的可见文字，并在当前 dist 上点交互、查 375px 横向滚动。
+// 用法：先 pnpm build，再 pnpm compare（对照 origin/main 的构建，报告写 docs/compare-text.md）。
+// --ref=<git ref> 对照别的提交；--ref=legacy 对照迁移前的单文件旧页（报告写 docs/migration-diff.md）。
+// --allow-diff 有差异也以 0 退出。参数见 scripts/compare-ref.mjs。
 import { createServer } from 'node:http'
 import { readFileSync, writeFileSync, statSync } from 'node:fs'
 import { dirname, extname, join, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { preview } from 'vite'
+import { parseArgs, prepareRef, requireDist } from './compare-ref.mjs'
 import { chromium } from 'playwright'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const catalog = JSON.parse(readFileSync(join(root, 'src/catalog.json'), 'utf8'))
-const oldRoot = join(process.env.HOME, 'Workspace/fim-ai/llm-from-scratch/web')
+const opts = parseArgs()
+const legacy = opts.legacy
+requireDist(root)
+const ref = prepareRef(root, opts)
 const ready = catalog.chapters.filter((c) => c.ready)
 
 const MIME = {
@@ -55,15 +60,16 @@ function normLines(text) {
 }
 
 async function visibleText(page) {
-  return page.evaluate(() => {
+  return page.evaluate((strip) => {
     const root = document.querySelector('.wrap') || document.querySelector('main.main') || document.body
-    const nodes = [...root.querySelectorAll('.code-link, .colab, .filename, .home-link')]
+    // legacy 模式去掉新旧两边写法不同的链接文字；main 模式两侧同一套 DOM，不去。
+    const nodes = strip ? [...root.querySelectorAll('.code-link, .colab, .filename, .home-link')] : []
     const saved = nodes.map((el) => [el, el.textContent])
     for (const el of nodes) el.textContent = ''
     const text = root.innerText
     for (const [el, t] of saved) el.textContent = t
     return text
-  })
+  }, legacy)
 }
 
 function lineDiff(a, b) {
@@ -133,8 +139,16 @@ async function launch() {
   }
 }
 
-const oldServer = await staticServer(oldRoot)
-const oldOrigin = `http://127.0.0.1:${oldServer.address().port}`
+const oldServer = legacy ? await staticServer(ref.dir) : null
+const refPreview = legacy ? null : await preview({
+  root: ref.dir,
+  preview: { port: 5194, strictPort: false },
+})
+const oldOrigin = legacy
+  ? `http://127.0.0.1:${oldServer.address().port}`
+  : refPreview.resolvedUrls.local[0].replace(/\/$/, '')
+// legacy 用旧文件名，main 两侧同一套路由。
+const oldPath = (legacyFile, route) => (legacy ? `/${legacyFile}` : route)
 const previewServer = await preview({
   root,
   preview: { port: 5192, strictPort: false },
@@ -501,12 +515,14 @@ async function settleText(page) {
   await page.bringToFront()
   let prev = ''
   let quiet = 0
-  for (let i = 0; i < 32; i++) {
+  // 静止 1.5 秒才算停稳。缓出动画的最后一档可停留 1 秒以上（第 3 章 step 6 的 loss 播放 2.2 秒，
+  // 末档约 1.1 秒），窗口短了会在末档前截下文字；页面切到后台后 rAF 暂停，截下的就是错的终态。
+  for (let i = 0; i < 60; i++) {
     await page.waitForTimeout(100)
     const now = await visibleText(page)
     if (now === prev) quiet += 1
     else { prev = now; quiet = 0 }
-    if (i >= 4 && quiet >= 3) return
+    if (i >= 4 && quiet >= 15) return
   }
 }
 
@@ -530,10 +546,10 @@ async function compareOne(label, oldUrl, newUrl) {
 }
 
 try {
-  await compareOne('首页', `${oldOrigin}/index.html`, `${newOrigin}/`)
-  await compareOne('名词表', `${oldOrigin}/glossary.html`, `${newOrigin}/glossary`)
-  await compareOne('札记', `${oldOrigin}/notes.html`, `${newOrigin}/notes`)
-  await compareOne('关于', `${oldOrigin}/about.html`, `${newOrigin}/about`)
+  await compareOne('首页', `${oldOrigin}${oldPath('index.html', '/')}`, `${newOrigin}/`)
+  await compareOne('名词表', `${oldOrigin}${oldPath('glossary.html', '/glossary')}`, `${newOrigin}/glossary`)
+  await compareOne('札记', `${oldOrigin}${oldPath('notes.html', '/notes')}`, `${newOrigin}/notes`)
+  await compareOne('关于', `${oldOrigin}${oldPath('about.html', '/about')}`, `${newOrigin}/about`)
 
   for (const ch of ready) {
     for (const step of ch.steps) {
@@ -541,7 +557,7 @@ try {
       try {
         await compareOne(
           label,
-          `${oldOrigin}/${ch.file}#${step.anchor}`,
+          `${oldOrigin}${oldPath(ch.file, `/ch/${ch.slug}`)}#${step.anchor}`,
           `${newOrigin}/ch/${ch.slug}#${step.anchor}`,
         )
       } catch (err) {
@@ -808,9 +824,14 @@ try {
 
   await ctx.close()
 } finally {
-  const diffDoc = ['# 迁移文字对照', '', '空白折叠成一行一个空格后，按行比较可见文字。对照前去掉了「源码 / Colab」链接的文字。', '']
+  const diffDoc = legacy
+    ? ['# 迁移文字对照', '', `对照侧：${ref.label}。当前侧：本工作区的 dist。`, '', '空白折叠成一行一个空格后，按行比较可见文字。对照前去掉了「源码 / Colab」链接的文字。', '']
+    : ['# 文字对照', '', `对照侧：${ref.label}。当前侧：本工作区的 dist。`, '',
+      '空白折叠成一行一个空格后，按行比较每页每一步的可见文字。没有白名单。',
+      '有差异不一定是错：改了内容也会出现在这里。下面先列有差异的页，由审阅人确认每一条是有意的改动。', '']
   let bad = 0
-  for (const row of report) {
+  const ordered = legacy ? report : [...report.filter((r) => !r.same), ...report.filter((r) => r.same)]
+  for (const row of ordered) {
     diffDoc.push(`## ${row.label}`, '')
     diffDoc.push(row.same ? '差异行数：0' : `差异行数：${row.diffCount}`)
     if (!row.same) {
@@ -823,7 +844,12 @@ try {
     diffDoc.push('')
   }
   diffDoc.push(`合计 ${report.length} 处，其中 ${bad} 处有差异。`)
-  writeFileSync(join(root, 'docs/migration-diff.md'), diffDoc.join('\n') + '\n')
+  const failed = checks.filter((row) => row.status.startsWith('有问题'))
+  if (!legacy) {
+    diffDoc.push('', '## 当前 dist 的交互检查', '', `共 ${checks.length} 项，有问题 ${failed.length} 项。`)
+    for (const row of failed) diffDoc.push(`- ${row.page} · ${row.item}：${row.status}`)
+  }
+  writeFileSync(join(root, legacy ? 'docs/migration-diff.md' : 'docs/compare-text.md'), diffDoc.join('\n') + '\n')
 
   const byPage = new Map()
   for (const row of checks) {
@@ -836,13 +862,15 @@ try {
     for (const row of rows) checkDoc.push(`- ${row.item}：${row.status}`)
     checkDoc.push('')
   }
-  writeFileSync(join(root, 'docs/migration-checklist.md'), checkDoc.join('\n') + '\n')
+  if (legacy) writeFileSync(join(root, 'docs/migration-checklist.md'), checkDoc.join('\n') + '\n')
 
-  console.log(`diff ${report.length} pages, ${bad} with differences`)
+  console.log(`diff ${report.length} pages against ${ref.label}, ${bad} with differences`)
   for (const row of report) if (!row.same) console.log(' DIFF', row.label, row.diffCount)
   for (const row of checks) if (row.status.startsWith('有问题')) console.log(' CHECK', row.page, row.item, row.status)
   await browser.close()
   await previewServer.close()
-  await new Promise((resolve) => oldServer.close(resolve))
-  if (bad) process.exitCode = 2
+  if (refPreview) await refPreview.close()
+  if (oldServer) await new Promise((resolve) => oldServer.close(resolve))
+  ref.cleanup()
+  if (bad && !opts.allowDiff) process.exitCode = 1
 }
