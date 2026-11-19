@@ -475,7 +475,10 @@ const RUN_BTNS = ['经典 4×256 · 选 2', '细粒度 16×64 · 选 8', '共享
 
 function Step6() {
   const [layIdx, setLayIdx] = useState(3)
-  const [layPick, setLayPick] = useState(() => shufflePick(LAYOUTS[3].n, LAYOUTS[3].k))
+  // 预渲染要可复现：服务端取前 k 个，浏览器里照旧随机。
+  const [layPick, setLayPick] = useState(() => (typeof window === 'undefined'
+    ? Array.from({ length: LAYOUTS[3].k }, (_, i) => i)
+    : shufflePick(LAYOUTS[3].n, LAYOUTS[3].k)))
   const [toyB, setToyB] = useState(0)
   const [runIdx, setRunIdx] = useState(0)
   const [viewMode, setViewMode] = useState(0)

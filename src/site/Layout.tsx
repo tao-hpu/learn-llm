@@ -96,7 +96,8 @@ export function Layout() {
   }
 
   return (
-    <div className={`shell ${open ? 'nav-open' : 'nav-closed'}`}>
+    // 构建期预渲染时不知道屏宽：侧栏照样渲染（爬虫能读到目录），窄屏下由 .nav-ssr 先藏起来，避免前端接管时内容跳动。
+    <div className={`shell ${open ? 'nav-open' : 'nav-closed'}${typeof window === 'undefined' ? ' nav-ssr' : ''}`}>
       <header className="topbar">
         <div className="topbar-left">
           <button type="button" className="nav-toggle" onClick={() => setOpen((v) => !v)} aria-label="切换侧栏" aria-expanded={open}>

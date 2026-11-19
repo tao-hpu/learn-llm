@@ -82,7 +82,8 @@ a.side-link:hover { color: var(--accent); }
 .nav-scrim { display: none; }
 
 @media (max-width: 960px) {
-  .nav-open .body { flex-direction: column; }
+  .nav-ssr .sidebar { display: none; }
+  .nav-open:not(.nav-ssr) .body { flex-direction: column; }
   .nav-open .sidebar {
     position: static; width: 100%; height: auto; max-height: 38vh; z-index: 1;
     border-right: 0; border-bottom: 1px solid var(--border); box-shadow: none;
