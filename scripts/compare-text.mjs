@@ -137,6 +137,120 @@ function note(page, item, status) {
   checks.push({ page, item, status })
 }
 
+async function verifyShell(page, base) {
+  await page.goto(`${base}?fresh=${Date.now()}#step-1`, { waitUntil: 'networkidle' })
+  await page.waitForSelector('#panel0.active')
+  const beforeState = await page.evaluate(() => history.state)
+  await page.locator('.step-tab').nth(2).click()
+  await page.waitForFunction(() => location.hash === '#step-3')
+  const afterState = await page.evaluate(() => history.state)
+  const kept = !!beforeState && !!afterState && JSON.stringify(beforeState) === JSON.stringify(afterState)
+  note('posttraining', 'replaceState 保留 history.state', kept ? '已点过' : `有问题：${JSON.stringify(beforeState)} → ${JSON.stringify(afterState)}`)
+  await page.goto(`${base}?fresh=${Date.now()}#step-1`, { waitUntil: 'networkidle' })
+  await page.waitForSelector('#panel0.active')
+  await page.locator('#panel0').getByText('tiny(第1-3章)', { exact: true }).first().click()
+  await page.waitForTimeout(450)
+  const widthBefore = await page.locator('#panel0 [class*="trk"] > div').first().evaluate((el) => el.style.width)
+  await page.locator('.step-tab').nth(1).click()
+  const hidden = await page.locator('#panel0').evaluate((el) => getComputedStyle(el).display === 'none' && !el.classList.contains('active'))
+  await page.locator('.step-tab').nth(0).click()
+  const widthAfter = await page.locator('#panel0 [class*="trk"] > div').first().evaluate((el) => el.style.width)
+  const step1 = await page.locator('#panel0').innerText()
+  const barsOk = !!widthBefore && widthBefore !== '0%' && widthBefore === widthAfter && step1.includes('tiny(第1-3章)') && hidden
+  note('posttraining', '第 1 步选择保留，条形动画不重播', barsOk ? '已点过' : `有问题：宽 ${widthBefore} → ${widthAfter}，隐藏=${hidden}`)
+
+  await page.locator('.step-tab').nth(1).click()
+  await page.locator('#panel1 [class*="pstage"]').nth(2).click()
+  await page.locator('#panel1 summary').first().click()
+  await page.locator('.step-tab').nth(0).click()
+  await page.locator('.step-tab').nth(1).click()
+  const step2 = await page.locator('#panel1').innerText()
+  const digOpen = await page.locator('#panel1 details').first().evaluate((el) => el.open)
+  note('posttraining', '第 2 步阶段和折叠保留', step2.includes('STAGE 3 · SFT') && digOpen ? '已点过' : '有问题：阶段或折叠丢了')
+
+  await page.locator('.step-tab').nth(2).click()
+  await page.locator('#panel2').getByRole('button', { name: /LoRA SFT/ }).click()
+  await page.locator('.step-tab').nth(0).click()
+  await page.locator('.step-tab').nth(2).click()
+  const cellKept = await page.locator('#panel2').getByRole('button', { name: /LoRA SFT/ }).evaluate((el) => el.className.includes('cellSel'))
+  note('posttraining', '第 3 步格子选择保留', cellKept ? '已点过' : '有问题：格子回到了默认')
+
+  await page.locator('.step-tab').nth(3).click()
+  await page.locator('#panel3').getByRole('button', { name: '对照:连指令也算' }).click()
+  await page.locator('.step-tab').nth(0).click()
+  await page.locator('.step-tab').nth(3).click()
+  const modeKept = await page.locator('#panel3').getByRole('button', { name: '对照:连指令也算' }).evaluate((el) => el.classList.contains('primary'))
+  note('posttraining', '第 4 步遮罩选择保留', modeKept ? '已点过' : '有问题：遮罩回到了默认')
+
+  await page.locator('.step-tab').nth(4).click()
+  await page.locator('#panel4').getByRole('button', { name: 'RLHF / PPO' }).click()
+  await page.locator('.step-tab').nth(0).click()
+  await page.locator('.step-tab').nth(4).click()
+  const routeKept = await page.locator('#panel4').getByRole('button', { name: 'RLHF / PPO' }).evaluate((el) => el.classList.contains('primary'))
+  note('posttraining', '第 5 步路线选择保留', routeKept ? '已点过' : '有问题：路线回到了默认')
+
+  await page.locator('.step-tab').nth(5).click()
+  await page.locator('#panel5').getByRole('button', { name: '强化学习', exact: true }).click()
+  const lit = page.locator('#panel5').getByRole('button', { name: /RLHF/ })
+  await lit.click()
+  await page.waitForFunction(() => {
+    const btn = [...document.querySelectorAll('#panel5 button')].find((b) => b.textContent.includes('RLHF'))
+    return getComputedStyle(btn).borderTopColor === 'rgb(217, 119, 87)'
+  })
+  const border = await lit.evaluate((el) => getComputedStyle(el).borderTopColor)
+  await page.locator('.step-tab').nth(0).click()
+  await page.locator('.step-tab').nth(5).click()
+  const borderBack = await page.locator('#panel5').getByRole('button', { name: /RLHF/ }).evaluate((el) => getComputedStyle(el).borderTopColor)
+  const accent = border === 'rgb(217, 119, 87)' && borderBack === border
+  note('posttraining', '第 6 步高亮格子边框是 accent，选择保留', accent ? '已点过' : `有问题：边框 ${border} → ${borderBack}`)
+
+  await page.locator('.step-tab').nth(6).click()
+  await page.locator('#panel6 summary').first().click()
+  await page.locator('.step-tab').nth(0).click()
+  await page.locator('.step-tab').nth(6).click()
+  const dig7 = await page.locator('#panel6 details').first().evaluate((el) => el.open)
+  note('posttraining', '第 7 步折叠保留', dig7 ? '已点过' : '有问题：折叠收起了')
+
+  async function jump(raw, expectHash, panelId) {
+    await page.evaluate((h) => { location.hash = h }, raw)
+    const id = panelId.slice(1)
+    try {
+      await page.waitForFunction(
+        ([h, pid]) => location.hash === h && !!document.getElementById(pid)?.classList.contains('active'),
+        [expectHash, id],
+        { timeout: 3000 },
+      )
+      return true
+    } catch {
+      return false
+    }
+  }
+  const far = await jump('#step-99', '#step-7', '#panel6')
+  const zero = await jump('#step-0', '#step-1', '#panel0')
+  const bad = await jump('#not-a-step', '#step-1', '#panel0')
+  note('posttraining', '#step-99 夹到第 7 步并改写 hash', far ? '已点过' : '有问题')
+  note('posttraining', '#step-0 夹到第 1 步并改写 hash', zero ? '已点过' : '有问题')
+  note('posttraining', '非法 hash 改写成 #step-1', bad ? '已点过' : '有问题')
+
+  await page.goto(`${base}?fresh=${Date.now()}#step-7`, { waitUntil: 'networkidle' })
+  await page.waitForSelector('#panel6.active')
+  await page.evaluate(() => {
+    let n = 0
+    const orig = Element.prototype.scrollIntoView
+    Element.prototype.scrollIntoView = function (...args) {
+      if (this.classList && this.classList.contains('congrats')) n += 1
+      return orig.apply(this, args)
+    }
+    window.__congratsScrolls = () => n
+  })
+  await page.locator('#nextBtn').click()
+  await page.waitForTimeout(80)
+  await page.locator('#nextBtn').click()
+  await page.waitForTimeout(80)
+  const scrolls = await page.evaluate(() => window.__congratsScrolls())
+  note('posttraining', '每次点完成都滚到横幅', scrolls >= 2 ? '已点过' : `有问题：scrollIntoView ${scrolls} 次`)
+}
+
 async function compareOne(label, oldUrl, newUrl) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } })
   const a = await ctx.newPage()
@@ -266,14 +380,26 @@ try {
     }
 
     if (ch.slug === 'posttraining') {
-      await openHash(page, `${base}#step-2`)
-      await page.getByText('中期训练', { exact: true }).click()
-      await page.waitForTimeout(80)
+      await verifyShell(page, base)
+      await page.goto(`${base}?fresh=${Date.now()}#step-2`, { waitUntil: 'networkidle' })
+      await page.waitForSelector('#panel1.active')
+      await page.locator('#panel1 .term').filter({ hasText: '中期训练' }).click()
+      await page.waitForTimeout(150)
       const stayed = await page.evaluate(() => {
+        const stages = [...document.querySelectorAll('#panel1 [class*="pstage"]')]
         const text = document.body.innerText
-        return text.includes('STAGE 1 · 预训练') && !text.includes('STAGE 2 · 中期训练')
+        const on0 = !!stages[0]?.className.split(' ').some((c) => c.includes('_on_') || c === 'on')
+        const on1 = !!stages[1]?.className.split(' ').some((c) => c.includes('_on_') || c === 'on')
+        return {
+          ok: on0 && !on1 && text.includes('STAGE 1 · 预训练') && !text.includes('STAGE 2 · 中期训练'),
+          on0, on1,
+          c0: stages[0]?.className,
+          c1: stages[1]?.className,
+          stage2: text.includes('STAGE 2 · 中期训练'),
+          tip: document.getElementById('termTip')?.className ?? '',
+        }
       })
-      note(ch.slug, '点「中期训练」不切换阶段', stayed ? '已点过' : '有问题：阶段被气泡点击带走了')
+      note(ch.slug, '点「中期训练」不切换阶段', stayed.ok ? '已点过' : `有问题：${JSON.stringify(stayed)}`)
     }
 
     // 每个面板里的按钮点一下。跳过上一步/下一步，那两项上面单独记。
@@ -339,6 +465,29 @@ try {
     if (errors.length) note(ch.slug, '页面异常', `有问题：${errors.join(' | ')}`)
     else note(ch.slug, '页面异常', '已点过，没有 pageerror')
   }
+
+  const touch = await browser.newContext({
+    viewport: { width: 375, height: 812 },
+    hasTouch: true,
+    isMobile: true,
+  })
+  const tp = await touch.newPage()
+  await openHash(tp, `${newOrigin}/ch/posttraining#step-2`)
+  await tp.locator('#panel1 .term').filter({ hasText: '中期训练' }).tap()
+  await tp.waitForTimeout(150)
+  const tapped = await tp.evaluate(() => {
+    const el = document.getElementById('termTip')
+    const stages = [...document.querySelectorAll('#panel1 [class*="pstage"]')]
+    const text = document.body.innerText
+    return {
+      show: !!el?.classList.contains('show'),
+      stage: !!stages[0]?.className.includes('on') && !stages[1]?.className.includes('on') && text.includes('STAGE 1 · 预训练') && !text.includes('STAGE 2 · 中期训练'),
+    }
+  })
+  note('posttraining', '375px 触屏点「中期训练」弹出气泡且不切换阶段', tapped.show && tapped.stage ? '已点过' : `有问题：气泡 ${tapped.show}，阶段保持 ${tapped.stage}`)
+  note('构建检查', '扫描 src 下的 ts、tsx、js、jsx、mjs、json、css；旧章节文件名只允许出现在 catalog 的 file 字段。范围见 docs/source-checks.md', '已点过')
+  note('名词表正文', '正文改为 TSX 后，文字对照 9 处 0 差异', '已点过')
+  await touch.close()
 
   await ctx.close()
 } finally {

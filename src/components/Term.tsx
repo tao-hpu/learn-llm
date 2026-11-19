@@ -1,7 +1,7 @@
-import type { MouseEvent, ReactNode } from 'react'
-import { entryPlain, glossaryById } from '../glossary'
+import type { ReactNode } from 'react'
+import { glossaryById } from '../glossary'
 
-/** 名词气泡。定义优先用调用处传来的原文，否则用名词表。点击不向外冒泡。 */
+/** 名词。气泡文案优先用调用处传来的原文，否则用词条上的 def。 */
 export function Term({ k, name, def, children }: {
   k: string
   name?: string
@@ -10,18 +10,12 @@ export function Term({ k, name, def, children }: {
 }) {
   const entry = glossaryById[k]
   if (!entry) throw new Error(`名词表没有 #${k}`)
-  const plain = entryPlain(entry)
-  function stop(e: MouseEvent) {
-    e.stopPropagation()
-  }
   return (
     <span
       className="term"
       data-key={k}
-      data-term={name || plain.title}
-      data-def={def || plain.def}
-      onClick={stop}
-      onMouseDown={stop}
+      data-term={name || entry.titleText}
+      data-def={def || entry.def}
     >
       {children}
     </span>

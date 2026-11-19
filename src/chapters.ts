@@ -4,7 +4,6 @@
 // 两边用词不一样，所以分两个字段，不合成一句。
 
 import catalog from './catalog.json'
-import type { Run } from './runs'
 
 export interface StepLink {
   sn: string
@@ -26,7 +25,6 @@ export interface Chapter {
   cardId: string
   cardTitle: string
   sidebar: string
-  cardDesc: Run[]
   stepSummary: string
   goLabel: string
   colab: string | null

@@ -1,10 +1,17 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { findChapter } from '../chapters'
 import { Filename } from './Filename'
 import { HomeLink } from './HomeLink'
 import { SiteFooter } from './SiteFooter'
 
 const COLORS = ['#D97757', '#E8B04B', '#6FAE8F', '#5B8DEF', '#D98AC0', '#1A1A18']
+
+/** 当前面板是不是正在看的这一步。动画用它决定要不要播放。 */
+const StepLiveContext = createContext(false)
+
+export function useStepLive() {
+  return useContext(StepLiveContext)
+}
 
 export interface ShellStep {
   /** 页内 tab 上的短标题，与 catalog 的 steps[].nav 一致。 */
@@ -15,6 +22,7 @@ export interface ShellStep {
 /**
  * 章节外壳：分步导航、#step-N / #part-N、上一步 / 下一步、
  * 最后一步「完成 🎉」、通关横幅和 confetti。各章只交步骤。
+ * 每一步都留在树上，离开时只去掉 active。
  */
 export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
   slug: string
@@ -26,38 +34,52 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
 }) {
   const chapter = findChapter(slug)
   const count = steps.length
-  const [index, setIndex] = useState(() => initialIndex(chapter?.hashKind ?? 'step', count))
+  const kind = chapter?.hashKind ?? 'step'
+  const [index, setIndex] = useState(() => clampIndex(window.location.hash, kind, count))
   const [done, setDone] = useState(false)
   const [burst, setBurst] = useState(0)
+  const [enterId, setEnterId] = useState<number | null>(null)
   const bannerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const skipScroll = useRef(true)
+  const playedEnter = useRef(new Set<number>())
 
   useEffect(() => {
-    const kind = chapter?.hashKind ?? 'step'
-    const hash = `#${kind}-${index + 1}`
-    if (window.location.hash !== hash) window.history.replaceState(null, '', hash)
+    writeHash(kind, index)
     if (skipScroll.current) {
       skipScroll.current = false
       return
     }
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [index, chapter?.hashKind])
+  }, [index, kind])
 
   useEffect(() => {
-    const kind = chapter?.hashKind ?? 'step'
+    if (playedEnter.current.has(index)) {
+      setEnterId(null)
+      return
+    }
+    playedEnter.current.add(index)
+    setEnterId(index)
+    const timer = window.setTimeout(() => {
+      setEnterId((cur) => (cur === index ? null : cur))
+    }, 400)
+    return () => window.clearTimeout(timer)
+  }, [index])
+
+  useEffect(() => {
     function onHash() {
-      const next = initialIndex(kind, count)
+      const next = clampIndex(window.location.hash, kind, count)
+      writeHash(kind, next)
       setIndex(next)
     }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
-  }, [chapter?.hashKind, count])
+  }, [kind, count])
 
   useEffect(() => {
-    if (!done) return
+    if (!burst) return
     bannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  }, [done])
+  }, [burst])
 
   useEffect(() => {
     if (!burst) return
@@ -140,12 +162,20 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
           ))}
         </div>
         {hp}
-        <section className="panel active" id={`panel${index}`}>
-          {steps[index]?.panel}
-          {last && (
-            <div ref={bannerRef} className={done ? 'congrats show' : 'congrats'}>{congrats}</div>
-          )}
-        </section>
+        {steps.map((step, i) => (
+          <section
+            key={chapter.steps[i]?.anchor ?? i}
+            id={`panel${i}`}
+            className={['panel', i === index ? 'active' : '', i === enterId ? 'enter' : ''].filter(Boolean).join(' ')}
+          >
+            <StepLiveContext.Provider value={i === index}>
+              {step.panel}
+            </StepLiveContext.Provider>
+            {i === count - 1 && (
+              <div ref={bannerRef} className={done ? 'congrats show' : 'congrats'}>{congrats}</div>
+            )}
+          </section>
+        ))}
         <div className="nav">
           <button type="button" id="prevBtn" className={chapter.prevClass} disabled={index === 0} onClick={() => setIndex((i) => Math.max(0, i - 1))}>← 上一步</button>
           <button type="button" id="nextBtn" className="btn primary" onClick={() => { if (last) finish(); else setIndex((i) => Math.min(count - 1, i + 1)) }}>
@@ -159,9 +189,20 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
   )
 }
 
-function initialIndex(kind: string, count: number) {
-  const m = new RegExp(`^#${kind}-(\\d+)$`).exec(window.location.hash)
+function writeHash(kind: string, index: number) {
+  const hash = `#${kind}-${index + 1}`
+  if (window.location.hash !== hash) {
+    window.history.replaceState(window.history.state, '', hash)
+  }
+}
+
+/** 超出范围夹到最近的有效步。对不上 #kind-N 的 hash 归到第 1 步。 */
+function clampIndex(hash: string, kind: string, count: number) {
+  if (count <= 0) return 0
+  const m = new RegExp(`^#${kind}-(\\d+)$`).exec(hash)
   if (!m) return 0
   const n = Number(m[1]) - 1
-  return n >= 0 && n < count ? n : 0
+  if (n < 0) return 0
+  if (n >= count) return count - 1
+  return n
 }

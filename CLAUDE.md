@@ -15,9 +15,9 @@
 
 ## 结构
 
-- `src/catalog.json` 与 `src/chapters.ts`：章节清单。首页卡片、左侧目录、步骤标题、分享卡都从这里读。`steps[].card` 是首页文案，`steps[].nav` 是页内 tab，两句不一样就分两个字段。
-- `src/glossary.json` 与 `src/glossary.ts`：名词表。`id` 对应旧锚点。行内排版是节点，不是 HTML 字符串，由 `Rich` 渲染。
-- `src/components/ChapterShell.tsx`：分步导航、深链、上一步 / 下一步、最后一步「完成 🎉」、通关横幅和 confetti。各章只提供步骤数组。
+- `src/catalog.json` 与 `src/chapters.ts`：章节清单，只放纯文本。首页卡片、左侧目录、步骤标题、分享卡都从这里读。`steps[].card` 是首页文案，`steps[].nav` 是页内 tab，两句不一样就分两个字段。带排版的首页标题和卡片说明在 `src/pages/homeText.tsx`。
+- `src/glossary.json`：名词表的页面元信息、分组和 TOC。正文在 `src/glossary/<分组>.tsx`，用 JSX 写。气泡用的纯文本在词条的 `def` 字段。
+- `src/components/ChapterShell.tsx`：分步导航、深链、上一步 / 下一步、最后一步「完成 🎉」、通关横幅和 confetti。各章只提供步骤数组。每一步都保持挂载，离开时去掉 `active`。
 - `src/components/Term.tsx`、`TermTip.tsx`、`Dig.tsx`、`HpBar.tsx`：名词、折叠、超参条。
 - `src/pages/<Name>.tsx` 加同名 `.module.css`：一章一个页面。公共变量和外壳样式在 `src/site.css`。
 - `nginx.conf`：手工维护。旧文件名 301 到新路由；`/index.html` 301 到 `/`；其余未知路径回 SPA 外壳，由前端显示 404。
@@ -36,13 +36,7 @@ pnpm test
 pnpm compare      # 先 build。对照旧 HTML 的可见文字，并点交互
 ```
 
-`pnpm build` 会失败，如果：
-
-- 已迁章节没有 `src/pages/<Name>.tsx`，或页面没用 `ChapterShell` / `Term` / `Dig` / `HpBar`
-- `src/` 里出现 `dangerouslySetInnerHTML`、`innerHTML`、`outerHTML`、`insertAdjacentHTML`、`getElementById`、`querySelector`、`querySelectorAll`
-- JSON 或 TS 常量里存放 HTML 标签，或导入旧页面脚本
-- 源码里有指向 `NN_xxx_viz.html` 的链接
-- `<Term k>` 在名词表里没有对应词条
+`pnpm build` 会失败的条件，以及每条检查扫哪些文件，写在 `docs/source-checks.md`。`<Term k>` 在名词表里没有对应词条时同样失败。
 
 预渲染写入 title、description、canonical（`https://learn-llm.fim.ai/...`）、og、twitter，以及 `sitemap.xml` 和 `robots.txt`。图片用 `public/og.png`。
 

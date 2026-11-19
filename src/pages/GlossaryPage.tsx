@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { HomeLink } from '../components/HomeLink'
-import { Rich } from '../components/Rich'
+import { GlossarySubtitle } from '../glossary/intro'
 import { glossaryGroups, glossaryMeta, glossaryToc } from '../glossary'
 import { bindId } from '../scroll'
 import glossaryCss from './glossary.css?raw'
@@ -14,7 +14,7 @@ export function GlossaryPage() {
         <header>
           <span className="eyebrow">{glossaryMeta.eyebrow}</span>
           <h1>{glossaryMeta.h1}</h1>
-          <p className="subtitle"><Rich runs={glossaryMeta.subtitle} /></p>
+          <p className="subtitle"><GlossarySubtitle /></p>
         </header>
         <div className="toc">
           {glossaryToc.map((item) => (
@@ -26,8 +26,8 @@ export function GlossaryPage() {
             <div className="sec-h"><span className="sh-num">{group.num}</span>{group.title}</div>
             {group.entries.map((entry) => (
               <div className="gentry" id={entry.id} key={entry.id} ref={bindId(entry.id)}>
-                <h3><Rich runs={entry.title} /></h3>
-                <Rich runs={entry.body} />
+                <h3>{entry.title}</h3>
+                {entry.body}
               </div>
             ))}
           </section>

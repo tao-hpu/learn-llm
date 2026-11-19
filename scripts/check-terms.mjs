@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const glossary = JSON.parse(readFileSync(join(root, 'src/glossary.json'), 'utf8'))
-const ids = new Set(glossary.groups.flatMap((g) => g.entries.map((e) => e.id)))
+const ids = new Set(glossary.groups.flatMap((g) => g.ids))
 const toc = glossary.toc.map((t) => t.id)
 for (const id of toc) {
   if (!ids.has(id)) {

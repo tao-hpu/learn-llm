@@ -1,0 +1,609 @@
+// 名词表 · 后训练与对齐(Phase 2)
+import type { GlossaryEntry } from './types'
+import { En } from './marks'
+
+export const entries: GlossaryEntry[] = [
+  {
+    id: "post-training",
+    titleText: "后训练 / 预训练 / 基座模型 post-training · pre-training · base model",
+    def: "预训练:在海量无标注文本上做\"预测下一个 token\",产出只会续写的基座模型(base model) —— Phase 1 做的就是这步。 后训练:在 base 之上继续调,让它\"会听话\":包括 SFT 和 偏好对齐。 现代大模型的完整流水线是 预训练(必需)→ 中期训练(可选)→ SFT(常规)→ 偏好对齐(常规)→ RLVR(推理模型常规),安全训练贯穿其中;后一段都站在前一段权重的肩膀上。全链路地图见第 7 章第 2 步。",
+    title: [
+      "后训练 / 预训练 / 基座模型 ",
+      <En key={1}>{[
+        "post-training · pre-training · base model",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        <b key={0}>{[
+          "预训练",
+        ]}</b>,
+        ":在海量无标注文本上做\"预测下一个 token\",产出只会续写的",
+        <b key={2}>{[
+          "基座模型(base model)",
+        ]}</b>,
+        " —— Phase 1 做的就是这步。 ",
+        <b key={4}>{[
+          "后训练",
+        ]}</b>,
+        ":在 base 之上继续调,让它\"会听话\":包括 ",
+        <a key={6} href={"#sft"}>{[
+          "SFT",
+        ]}</a>,
+        " 和 ",
+        <a key={8} href={"#preference-alignment"}>{[
+          "偏好对齐",
+        ]}</a>,
+        "。 现代大模型的完整流水线是 ",
+        <b key={10}>{[
+          "预训练(必需)→ ",
+          <a key={1} href={"#mid-training"}>{[
+            "中期训练",
+          ]}</a>,
+          "(可选)→ SFT(常规)→ 偏好对齐(常规)→ ",
+          <a key={3} href={"#rlvr"}>{[
+            "RLVR",
+          ]}</a>,
+          "(推理模型常规)",
+        ]}</b>,
+        ",安全训练贯穿其中;后一段都站在前一段权重的肩膀上。全链路地图见第 7 章第 2 步。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "preference-alignment",
+    titleText: "偏好对齐 preference alignment",
+    def: "后训练的一段,目标是让回答更合人类口味、更有用更安全。数据是\"同一问题的两个回答 + 人类判断 A 比 B 好\"。 它是目标,不是某个具体算法:实现它有两条路 —— RLHF(走强化学习)和 DPO(不走强化学习)。 所以\"偏好对齐 = 强化学习\"是把目标和其中一种手段画了等号。",
+    title: [
+      "偏好对齐 ",
+      <En key={1}>{[
+        "preference alignment",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "后训练的一段,",
+        <b key={1}>{[
+          "目标",
+        ]}</b>,
+        "是让回答更合人类口味、更有用更安全。数据是\"同一问题的两个回答 + 人类判断 A 比 B 好\"。 它是",
+        <b key={3}>{[
+          "目标",
+        ]}</b>,
+        ",不是某个具体算法:实现它有两条路 —— ",
+        <a key={5} href={"#rlhf"}>{[
+          "RLHF",
+        ]}</a>,
+        "(走强化学习)和 ",
+        <a key={7} href={"#dpo"}>{[
+          "DPO",
+        ]}</a>,
+        "(不走强化学习)。 所以\"偏好对齐 = 强化学习\"是把目标和其中一种手段画了等号。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "full-finetune",
+    titleText: "全量微调 full fine-tuning",
+    def: "微调时更新模型的全部参数。它是一种\"手段\"(怎么改权重),不是一种\"任务\" —— 既能用来做 SFT,也能用来做 DPO。 所以\"全量微调 = SFT\"是把手段误当成任务。它和 LoRA 是二选一的两种手段,不是先后步骤。效果直接,但每个任务都要存一份完整模型,显存/硬盘开销大。",
+    title: [
+      "全量微调 ",
+      <En key={1}>{[
+        "full fine-tuning",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "微调时",
+        <b key={1}>{[
+          "更新模型的全部参数",
+        ]}</b>,
+        "。它是一种\"",
+        <b key={3}>{[
+          "手段",
+        ]}</b>,
+        "\"(怎么改权重),不是一种\"任务\" —— 既能用来做 ",
+        <a key={5} href={"#sft"}>{[
+          "SFT",
+        ]}</a>,
+        ",也能用来做 ",
+        <a key={7} href={"#dpo"}>{[
+          "DPO",
+        ]}</a>,
+        "。 所以",
+        <b key={9}>{[
+          "\"全量微调 = SFT\"是把手段误当成任务",
+        ]}</b>,
+        "。它和 ",
+        <a key={11} href={"#lora"}>{[
+          "LoRA",
+        ]}</a>,
+        " 是",
+        <b key={13}>{[
+          "二选一",
+        ]}</b>,
+        "的两种手段,不是先后步骤。效果直接,但每个任务都要存一份完整模型,显存/硬盘开销大。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "peft",
+    titleText: "PEFT parameter-efficient fine-tuning · 参数高效微调",
+    def: "一类\"只更新极少量参数\"的微调手段的统称,目的是省显存、省存储。LoRA 是其中最流行的一种(还有 QLoRA = LoRA+量化 等)。 与 全量微调 相对,二者是同一件事(微调)的两种改权重方式。",
+    title: [
+      "PEFT ",
+      <En key={1}>{[
+        "parameter-efficient fine-tuning · 参数高效微调",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "一类\"",
+        <b key={1}>{[
+          "只更新极少量参数",
+        ]}</b>,
+        "\"的微调手段的统称,目的是省显存、省存储。",
+        <a key={3} href={"#lora"}>{[
+          "LoRA",
+        ]}</a>,
+        " 是其中最流行的一种(还有 QLoRA = LoRA+量化 等)。 与 ",
+        <a key={5} href={"#full-finetune"}>{[
+          "全量微调",
+        ]}</a>,
+        " 相对,二者是同一件事(微调)的两种改权重方式。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "lora",
+    titleText: "LoRA Low-Rank Adaptation · 低秩适配",
+    def: "一种 PEFT 手段:冻结原模型,在某些 Linear 旁边挂两个低秩小矩阵 A、B,只训练它俩。 可训练参数常只占 ~1%,却能逼近全量微调的效果;一个底座还能挂多个适配器随时切换。它是\"怎么省钱地微调\"的手段, 可叠加在 SFT 或 DPO 上。本项目在第 9 章 / 07_lora.py 手搓了一遍。",
+    title: [
+      "LoRA ",
+      <En key={1}>{[
+        "Low-Rank Adaptation · 低秩适配",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "一种 ",
+        <a key={1} href={"#peft"}>{[
+          "PEFT",
+        ]}</a>,
+        " 手段:",
+        <b key={3}>{[
+          "冻结原模型",
+        ]}</b>,
+        ",在某些 ",
+        <a key={5} href={"#default"}>{[
+          "Linear",
+        ]}</a>,
+        " 旁边挂两个",
+        <b key={7}>{[
+          "低秩小矩阵 A、B",
+        ]}</b>,
+        ",只训练它俩。 可训练参数常只占 ~1%,却能逼近全量微调的效果;一个底座还能挂多个适配器随时切换。它是\"怎么省钱地微调\"的手段, 可叠加在 ",
+        <a key={9} href={"#sft"}>{[
+          "SFT",
+        ]}</a>,
+        " 或 ",
+        <a key={11} href={"#dpo"}>{[
+          "DPO",
+        ]}</a>,
+        " 上。本项目在",
+        <b key={13}>{[
+          "第 9 章 / ",
+          <code key={1}>{[
+            "07_lora.py",
+          ]}</code>,
+        ]}</b>,
+        " 手搓了一遍。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "loss-mask",
+    titleText: "loss mask 标签掩码",
+    def: "SFT 的关键一步:把整条\"指令+回答\"喂进去做前向,但只对回答段算 loss, 指令/模板段的标签设成 -100(PyTorch 的 ignore_index)被忽略。这样模型只学\"给定指令该怎么答\", 而不会去学\"生成用户的指令\"。SFT 和预训练用同一个 loss,差别主要就在这一处掩码。",
+    title: [
+      "loss mask ",
+      <En key={1}>{[
+        "标签掩码",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        <a key={0} href={"#sft"}>{[
+          "SFT",
+        ]}</a>,
+        " 的关键一步:把整条\"指令+回答\"喂进去做",
+        <a key={2} href={"#forward"}>{[
+          "前向",
+        ]}</a>,
+        ",但",
+        <b key={4}>{[
+          "只对回答段算 ",
+          <a key={1} href={"#cross-entropy"}>{[
+            "loss",
+          ]}</a>,
+        ]}</b>,
+        ", 指令/模板段的标签设成 ",
+        <code key={6}>{[
+          "-100",
+        ]}</code>,
+        "(PyTorch 的 ignore_index)被忽略。这样模型只学\"",
+        <b key={8}>{[
+          "给定指令该怎么答",
+        ]}</b>,
+        "\", 而不会去学\"生成用户的指令\"。SFT 和预训练用同一个 loss,差别主要就在这一处掩码。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "chat-template",
+    titleText: "对话模板 / EOS chat template · end-of-sequence",
+    def: "把\"指令\"和\"回答\"拼成一条序列时套的固定格式(用 <|user|> / <|assistant|> 等特殊标记标出角色边界), 让模型分清谁说的、该自己答哪段。结尾的 EOS(结束标记)尤其重要:base 模型的毛病是不会停, SFT 在每条回答末尾放 EOS 并算进 loss,就是教模型\"答完就停\"。",
+    title: [
+      "对话模板 / EOS ",
+      <En key={1}>{[
+        "chat template · end-of-sequence",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "把\"指令\"和\"回答\"拼成一条序列时套的",
+        <b key={1}>{[
+          "固定格式",
+        ]}</b>,
+        "(用 ",
+        <code key={3}>{[
+          "<|user|>",
+        ]}</code>,
+        " / ",
+        <code key={5}>{[
+          "<|assistant|>",
+        ]}</code>,
+        " 等特殊标记标出角色边界), 让模型分清谁说的、该自己答哪段。结尾的 ",
+        <b key={7}>{[
+          "EOS(结束标记)",
+        ]}</b>,
+        "尤其重要:base 模型的毛病是",
+        <b key={9}>{[
+          "不会停",
+        ]}</b>,
+        ", SFT 在每条回答末尾放 EOS 并算进 loss,就是教模型\"答完就停\"。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "dpo",
+    titleText: "DPO Direct Preference Optimization · 直接偏好优化",
+    def: "一种不走强化学习的 偏好对齐方法:把 RLHF 的目标推成闭式解, 直接在\"chosen 好 / rejected 差\"的偏好对上做一个类监督损失,拉高 chosen、压低 rejected。 不需要奖励模型、不需要在线采样、没有 RL 循环,单机就能跑。它不是 PPO 的变体, 而是和 RLHF 平行的另一条路;卖点是\"不用 RL 那套笨重机器也能拿到 RLHF 的效果\"。本项目偏好对齐只做 DPO(08_dpo.py);第 21 章把离线 DPO 放进和 SFT、GRPO 的同台对照。",
+    title: [
+      "DPO ",
+      <En key={1}>{[
+        "Direct Preference Optimization · 直接偏好优化",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "一种",
+        <b key={1}>{[
+          "不走强化学习",
+        ]}</b>,
+        "的 ",
+        <a key={3} href={"#preference-alignment"}>{[
+          "偏好对齐",
+        ]}</a>,
+        "方法:把 RLHF 的目标推成闭式解, 直接在\"chosen 好 / rejected 差\"的偏好对上做一个",
+        <b key={5}>{[
+          "类监督损失",
+        ]}</b>,
+        ",拉高 chosen、压低 rejected。 ",
+        <b key={7}>{[
+          "不需要奖励模型、不需要在线采样、没有 RL 循环",
+        ]}</b>,
+        ",单机就能跑。它",
+        <b key={9}>{[
+          "不是 ",
+          <a key={1} href={"#rlhf"}>{[
+            "PPO",
+          ]}</a>,
+          " 的变体",
+        ]}</b>,
+        ", 而是和 RLHF 平行的另一条路;卖点是\"不用 RL 那套笨重机器也能拿到 RLHF 的效果\"。本项目偏好对齐只做 DPO(",
+        <code key={11}>{[
+          "08_dpo.py",
+        ]}</code>,
+        ");第 21 章把离线 DPO 放进和 SFT、GRPO 的同台对照。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "rlhf",
+    titleText: "RLHF / PPO Reinforcement Learning from Human Feedback",
+    def: "用强化学习做 偏好对齐:先用偏好数据训一个奖励模型给回答打分, 再用 PPO(一种 RL 算法)让模型最大化奖励。要在线采样 rollout、要价值网络,工程量比 DPO 大数倍。 它和 DPO 是实现同一目标的两条路(RLHF 走 RL,DPO 不走)。本项目没有实现 RLHF / PPO;第 21 章实现了同属强化学习的 GRPO,奖励来自判分器而不是奖励模型。",
+    title: [
+      "RLHF / PPO ",
+      <En key={1}>{[
+        "Reinforcement Learning from Human Feedback",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "用",
+        <b key={1}>{[
+          "强化学习",
+        ]}</b>,
+        "做 ",
+        <a key={3} href={"#preference-alignment"}>{[
+          "偏好对齐",
+        ]}</a>,
+        ":先用偏好数据训一个",
+        <b key={5}>{[
+          "奖励模型",
+        ]}</b>,
+        "给回答打分, 再用 ",
+        <a key={7} href={"#ppo"}>{[
+          "PPO",
+        ]}</a>,
+        "(一种 RL 算法)让模型",
+        <b key={9}>{[
+          "最大化奖励",
+        ]}</b>,
+        "。要在线采样 rollout、要价值网络,工程量比 ",
+        <a key={11} href={"#dpo"}>{[
+          "DPO",
+        ]}</a>,
+        " 大数倍。 它和 DPO 是实现同一目标的两条路(",
+        <b key={13}>{[
+          "RLHF 走 RL,DPO 不走",
+        ]}</b>,
+        ")。本项目没有实现 RLHF / PPO;第 21 章实现了同属强化学习的 ",
+        <a key={15} href={"#grpo"}>{[
+          "GRPO",
+        ]}</a>,
+        ",奖励来自",
+        <a key={17} href={"#verifier"}>{[
+          "判分器",
+        ]}</a>,
+        "而不是奖励模型。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "mid-training",
+    titleText: "中期训练 mid-training",
+    def: "预训练之后、SFT 之前的一段可选训练:loss 仍是\"预测下一个 token\",但数据换成更精选的代码、数学、教材、长文档, 或专门把上下文窗口拉长。它解决的是\"底座在某些领域不够强、读不了长输入\",不是\"不会听话\"。本项目没有这一段。",
+    title: [
+      "中期训练 ",
+      <En key={1}>{[
+        "mid-training",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "预训练之后、",
+        <a key={1} href={"#sft"}>{[
+          "SFT",
+        ]}</a>,
+        " 之前的一段",
+        <b key={3}>{[
+          "可选",
+        ]}</b>,
+        "训练:loss 仍是\"预测下一个 token\",但数据换成更精选的代码、数学、教材、长文档, 或专门把上下文窗口拉长。它解决的是\"底座在某些领域不够强、读不了长输入\",不是\"不会听话\"。本项目没有这一段。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "instruction-tuning",
+    titleText: "指令微调 instruction tuning",
+    def: "用大量\"指令 → 回答\"数据做的 SFT。Google 的 FLAN 与 BigScience 的 T0(都在 2021 年)把几十个现成 NLP 数据集改写成自然语言指令来微调(FLAN 用了 62 个), 发现训过足够多种指令任务后,模型对没见过的任务也能照指令完成。今天说的 SFT,数据大多就是这种形式。",
+    title: [
+      "指令微调 ",
+      <En key={1}>{[
+        "instruction tuning",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "用大量\"指令 → 回答\"数据做的 ",
+        <a key={1} href={"#sft"}>{[
+          "SFT",
+        ]}</a>,
+        "。Google 的 FLAN 与 BigScience 的 T0(都在 2021 年)把几十个现成 NLP 数据集改写成自然语言指令来微调(FLAN 用了 62 个), 发现训过足够多种指令任务后,模型对",
+        <b key={3}>{[
+          "没见过的任务",
+        ]}</b>,
+        "也能照指令完成。今天说的 SFT,数据大多就是这种形式。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "reward-model",
+    titleText: "奖励模型 reward model",
+    def: "用\"A 比 B 好\"的偏好数据训出来的打分模型:输入一个回答,输出一个分数。RLHF 里由它代替人,给模型现场生成的每个回答打分。 DPO 不需要它;RLVR 用判分器代替它。",
+    title: [
+      "奖励模型 ",
+      <En key={1}>{[
+        "reward model",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "用\"A 比 B 好\"的偏好数据训出来的打分模型:输入一个回答,输出一个分数。",
+        <a key={1} href={"#rlhf"}>{[
+          "RLHF",
+        ]}</a>,
+        " 里由它代替人,给模型现场生成的每个回答打分。 ",
+        <a key={3} href={"#dpo"}>{[
+          "DPO",
+        ]}</a>,
+        " 不需要它;",
+        <a key={5} href={"#rlvr"}>{[
+          "RLVR",
+        ]}</a>,
+        " 用",
+        <a key={7} href={"#verifier"}>{[
+          "判分器",
+        ]}</a>,
+        "代替它。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "ppo",
+    titleText: "PPO Proximal Policy Optimization · 近端策略优化",
+    def: "Schulman 等人(2017)提出的通用强化学习算法,最早用在游戏和机器人控制上。每一步更新被裁剪住、不许一次改太多,所以训练稳定。 在 RLHF 里,显存要同时放四个模型:正在训的主模型、算 KL 惩罚用的参考模型、奖励模型、估计优势的价值模型(critic)。 GRPO 是它的简化版,去掉了价值模型。PPO 是\"怎么更新\"的算法,奖励可以来自奖励模型,也可以来自判分器。",
+    title: [
+      "PPO ",
+      <En key={1}>{[
+        "Proximal Policy Optimization · 近端策略优化",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "Schulman 等人(2017)提出的通用强化学习算法,最早用在游戏和机器人控制上。每一步更新被",
+        <b key={1}>{[
+          "裁剪",
+        ]}</b>,
+        "住、不许一次改太多,所以训练稳定。 在 ",
+        <a key={3} href={"#rlhf"}>{[
+          "RLHF",
+        ]}</a>,
+        " 里,显存要同时放四个模型:正在训的主模型、算 ",
+        <a key={5} href={"#kl-penalty"}>{[
+          "KL 惩罚",
+        ]}</a>,
+        "用的参考模型、",
+        <a key={7} href={"#reward-model"}>{[
+          "奖励模型",
+        ]}</a>,
+        "、估计优势的价值模型(critic)。 ",
+        <a key={9} href={"#grpo"}>{[
+          "GRPO",
+        ]}</a>,
+        " 是它的简化版,去掉了价值模型。PPO 是\"怎么更新\"的算法,奖励可以来自奖励模型,也可以来自判分器。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "kl-penalty",
+    titleText: "KL 惩罚 KL penalty",
+    def: "强化学习阶段额外扣的一项分:主模型对同一输入给出的分布离参考模型(通常是 SFT 后冻结的版本)越远,扣得越多。 它防止模型为了刷高奖励跑偏,例如钻奖励模型的空子、输出越来越怪的文本。 PPO、GRPO 都带这一项;DPO 的损失里也隐含了它。",
+    title: [
+      "KL 惩罚 ",
+      <En key={1}>{[
+        "KL penalty",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "强化学习阶段额外扣的一项分:主模型对同一输入给出的分布离",
+        <b key={1}>{[
+          "参考模型",
+        ]}</b>,
+        "(通常是 SFT 后冻结的版本)越远,扣得越多。 它防止模型为了刷高奖励跑偏,例如钻",
+        <a key={3} href={"#reward-model"}>{[
+          "奖励模型",
+        ]}</a>,
+        "的空子、输出越来越怪的文本。 ",
+        <a key={5} href={"#ppo"}>{[
+          "PPO",
+        ]}</a>,
+        "、",
+        <a key={7} href={"#grpo"}>{[
+          "GRPO",
+        ]}</a>,
+        " 都带这一项;",
+        <a key={9} href={"#dpo"}>{[
+          "DPO",
+        ]}</a>,
+        " 的损失里也隐含了它。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "rlaif",
+    titleText: "RLAIF / Constitutional AI Reinforcement Learning from AI Feedback",
+    def: "流程同 RLHF,只是\"哪个回答更好\"改由另一个模型来判,减少人工标注。 Anthropic 的 Constitutional AI(Bai 等,2022)是代表:先写一套原则(constitution),由模型按原则批评、修改、比较回答,得到的偏好数据再用于训练。",
+    title: [
+      "RLAIF / Constitutional AI ",
+      <En key={1}>{[
+        "Reinforcement Learning from AI Feedback",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "流程同 ",
+        <a key={1} href={"#rlhf"}>{[
+          "RLHF",
+        ]}</a>,
+        ",只是\"哪个回答更好\"改由另一个模型来判,减少人工标注。 Anthropic 的 Constitutional AI(Bai 等,2022)是代表:先写一套原则(constitution),由模型按原则批评、修改、比较回答,得到的偏好数据再用于训练。",
+      ]}</p>,
+    ],
+  },
+  {
+    id: "distillation",
+    titleText: "蒸馏 distillation · knowledge distillation",
+    def: "训练信号来自一个更强的教师模型。它说的是信号从哪来,不是某种训练方法,所以几种方法都能拿来做蒸馏:· 软标签蒸馏(Hinton 等,2015,这个词的出处):学生学教师在每个位置给所有词的概率分布,需要教师的 logits 且词表相同; · 数据蒸馏:教师写答案,学生做 SFT。DeepSeek-R1 同时发布的几个小模型只做了这一步; · 偏好蒸馏:教师当裁判给一批回答排好坏,学生用这些偏好数据做 DPO 或 RLAIF; · 在线策略蒸馏:学生自己生成,教师逐 token 给分,形式上接近强化学习。 教师和学生是同一个模型时叫自蒸馏。各方法的位置见第 7 章第 6 步的分类表。",
+    title: [
+      "蒸馏 ",
+      <En key={1}>{[
+        "distillation · knowledge distillation",
+      ]}</En>,
+    ],
+    body: [
+      <p key={0}>{[
+        "训练信号来自一个更强的",
+        <b key={1}>{[
+          "教师模型",
+        ]}</b>,
+        "。它说的是信号从哪来,不是某种训练方法,所以几种方法都能拿来做蒸馏:",
+      ]}</p>,
+      <p key={1}>{[
+        "· ",
+        <b key={1}>{[
+          "软标签蒸馏",
+        ]}</b>,
+        "(Hinton 等,2015,这个词的出处):学生学教师在每个位置给所有词的概率分布,需要教师的 logits 且词表相同;",
+        <br key={3} />,
+        " · ",
+        <b key={5}>{[
+          "数据蒸馏",
+        ]}</b>,
+        ":教师写答案,学生做 ",
+        <a key={7} href={"#sft"}>{[
+          "SFT",
+        ]}</a>,
+        "。DeepSeek-R1 同时发布的几个小模型只做了这一步;",
+        <br key={9} />,
+        " · ",
+        <b key={11}>{[
+          "偏好蒸馏",
+        ]}</b>,
+        ":教师当裁判给一批回答排好坏,学生用这些偏好数据做 ",
+        <a key={13} href={"#dpo"}>{[
+          "DPO",
+        ]}</a>,
+        " 或 ",
+        <a key={15} href={"#rlaif"}>{[
+          "RLAIF",
+        ]}</a>,
+        ";",
+        <br key={17} />,
+        " · ",
+        <b key={19}>{[
+          "在线策略蒸馏",
+        ]}</b>,
+        ":学生自己生成,教师逐 token 给分,形式上接近强化学习。",
+        <br key={21} />,
+        " 教师和学生是同一个模型时叫",
+        <b key={23}>{[
+          "自蒸馏",
+        ]}</b>,
+        "。各方法的位置见第 7 章第 6 步的分类表。",
+      ]}</p>,
+    ],
+  },
+]

@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom'
 type Tip = { name: string; def: string; key: string; left: number; top: number; show: boolean }
 
 /**
- * 全站一份气泡。鼠标移上 .term 就弹出；点术语时在捕获阶段截住，
- * 不让外层卡片的 click 跟着触发。
+ * 全站一份气泡。鼠标移上 .term 就弹出。
+ * 点在名词上时也弹出，并拦住冒泡，外层卡片不会跟着响应。
+ * 点在名词里的链接上时不拦截，站内 Link 和外部链接照常跳转。
  */
 export function TermTip() {
   const tipRef = useRef<HTMLDivElement>(null)
@@ -69,7 +70,13 @@ export function TermTip() {
     }
     function onClickCapture(e: MouseEvent) {
       const t = e.target
-      if (t instanceof Element && t.closest('.term')) e.stopPropagation()
+      if (!(t instanceof Element)) return
+      const term = t.closest('.term')
+      if (!(term instanceof HTMLElement)) return
+      const link = t.closest('a')
+      if (link && term.contains(link)) return
+      e.stopPropagation()
+      show(term)
     }
     function onClick(e: MouseEvent) {
       const t = e.target

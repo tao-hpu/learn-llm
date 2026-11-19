@@ -1,12 +1,15 @@
 // 构建期源码约束。违反任何一条，pnpm build 失败。
+// 每条检查扫哪些文件，写在 docs/source-checks.md。
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { extname, join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const src = join(root, 'src')
 const problems = []
 
+const scanExt = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.css'])
+const codeExt = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs'])
 const forbidden = [
   'dangerouslySetInnerHTML',
   'innerHTML',
@@ -17,6 +20,8 @@ const forbidden = [
   'querySelector',
 ]
 const htmlTag = /<(b|code|span|div|p|a|br|i|sub|sup|section|button|style|script|ul|li|h[1-6])\b/
+const vizName = /\d{2}_[a-z0-9_]+_viz\.html/g
+const layoutKeys = new Set(['b', 'code', 'p', 'div', 'term'])
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -27,25 +32,47 @@ function walk(dir, out = []) {
   return out
 }
 
+function walkLayout(node, file, path) {
+  if (Array.isArray(node)) {
+    node.forEach((item, i) => walkLayout(item, file, `${path}[${i}]`))
+    return
+  }
+  if (!node || typeof node !== 'object') return
+  for (const [key, value] of Object.entries(node)) {
+    if (layoutKeys.has(key) && value && typeof value === 'object') {
+      problems.push(`${file}: JSON 有嵌套排版键 ${key}（${path || '根'}）`)
+    }
+    walkLayout(value, file, path ? `${path}.${key}` : key)
+  }
+}
+
+const catalog = JSON.parse(readFileSync(join(src, 'catalog.json'), 'utf8'))
+const allowedFiles = new Set(catalog.chapters.map((ch) => ch.file))
+
 const files = walk(src)
 for (const file of files) {
-  if (file.endsWith('.boot.js') || file.endsWith('.json') && file.includes('/content/')) {
+  if (file.endsWith('.boot.js') || (file.endsWith('.json') && file.includes('/content/'))) {
     problems.push(`${file}: 旧页面产物不应再出现`)
   }
+  const ext = extname(file)
+  if (!scanExt.has(ext)) continue
   const text = readFileSync(file, 'utf8')
   if (/from\s+['"][^'"]*\.boot(\.js)?['"]/.test(text) || text.includes('expandTerms')) {
     problems.push(`${file}: 不得导入或运行旧页面脚本`)
   }
-  if (/href\s*=\s*['"][^'"]*\d{2}_[a-z0-9_]+_viz\.html/.test(text) || /to=\{?['"][^'"]*\d{2}_[a-z0-9_]+_viz\.html/.test(text)) {
-    problems.push(`${file}: 源码里还有指向旧章节 html 的链接`)
+  let visible = text
+  if (file.endsWith('/catalog.json')) {
+    visible = text.replace(/"file"\s*:\s*"([^"]+)"/g, (full, name) => (allowedFiles.has(name) ? '"file": ""' : full))
   }
-  if (!/\.(tsx?|css|json)$/.test(file)) continue
+  const vizHits = visible.match(vizName)
+  if (vizHits) problems.push(`${file}: 出现了旧章节文件名 ${vizHits[0]}`)
   for (const word of forbidden) {
     if (text.includes(word)) problems.push(`${file}: 出现了禁用的 ${word}`)
   }
-  if (file.endsWith('.json')) {
+  if (ext === '.json') {
     if (htmlTag.test(text)) problems.push(`${file}: JSON 里存放了 HTML 字符串`)
-  } else if (file.endsWith('.ts') || file.endsWith('.tsx')) {
+    walkLayout(JSON.parse(text), file, '')
+  } else if (codeExt.has(ext)) {
     const assigned = text.match(/(?:const|let|var)\s+\w+\s*=\s*(`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*")/g) ?? []
     for (const s of assigned) {
       if (htmlTag.test(s)) problems.push(`${file}: 字符串常量里有 HTML：${s.slice(0, 80)}`)
@@ -53,7 +80,6 @@ for (const file of files) {
   }
 }
 
-const catalog = JSON.parse(readFileSync(join(src, 'catalog.json'), 'utf8'))
 const app = readFileSync(join(src, 'App.tsx'), 'utf8')
 for (const ch of catalog.chapters) {
   if (!ch.ready) continue
@@ -84,4 +110,4 @@ if (problems.length) {
   for (const p of problems) console.error('  - ' + p)
   process.exit(1)
 }
-console.log('[check-source] 页面组件、禁用 API、HTML 字符串、旧文件名，都通过')
+console.log('[check-source] 页面组件、禁用 API、HTML 字符串、旧文件名、JSON 排版，都通过')

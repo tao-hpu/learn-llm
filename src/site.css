@@ -78,8 +78,10 @@ button.step-tab.active .label { color: var(--accent); }
 
 .panel {
   background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-  padding: 28px; animation: fade .4s ease; max-width: 100%; overflow-x: auto;
+  padding: 28px; display: none; max-width: 100%; overflow-x: auto;
 }
+.panel.active { display: block; }
+.panel.active.enter { animation: fade .4s ease; }
 @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .panel h2 { font-family: var(--serif); font-size: 22px; font-weight: 600; margin: 0 0 6px; }
 .panel .lead { color: var(--ink2); font-size: 14.5px; margin: 0 0 20px; }

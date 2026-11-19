@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { findChapter } from '../chapters'
-import { ChapterShell } from '../components/ChapterShell'
+import { ChapterShell, useStepLive } from '../components/ChapterShell'
 import { Dig } from '../components/Dig'
 import { HpBar, HpChip } from '../components/HpBar'
 import { Term } from '../components/Term'
@@ -25,16 +25,21 @@ function barWidths(key: 'p' | 'd') {
 function Axis({ kind, picked, onPick }: { kind: 'p' | 'd'; picked: number | null; onPick: (i: number) => void }) {
   const widths = useMemo(() => barWidths(kind), [kind])
   const [grown, setGrown] = useState(() => MODELS.map(() => false))
+  const live = useStepLive()
+  const played = useRef(false)
+  const timers = useRef<number[]>([])
   useEffect(() => {
-    const ids = MODELS.map((_, i) => window.setTimeout(() => {
+    if (!live || played.current) return
+    played.current = true
+    timers.current = MODELS.map((_, i) => window.setTimeout(() => {
       setGrown((prev) => {
         const next = prev.slice()
         next[i] = true
         return next
       })
     }, 60 + i * 90))
-    return () => { ids.forEach((id) => window.clearTimeout(id)) }
-  }, [])
+  }, [live])
+  useEffect(() => () => { timers.current.forEach((id) => window.clearTimeout(id)) }, [])
   return (
     <div className={styles.axbars}>
       {MODELS.map((m, i) => {

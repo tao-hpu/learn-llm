@@ -55,8 +55,8 @@
   cursor: pointer; transition: .2s; min-height: 74px; text-align: left; font: inherit; color: inherit;
 }
 .gcell:hover, .mcell:hover { border-color: #cfc9ba; }
-.cellSel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 .lit { background: #FBF1EA; border-color: #F0DDD0; }
+.gcell.cellSel, .mcell.cellSel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 .ct { font-size: 13.5px; font-weight: 700; }
 .cs { font-family: var(--mono); font-size: 11px; color: var(--ink2); margin-top: 3px; font-weight: 400; }
 .cscript {

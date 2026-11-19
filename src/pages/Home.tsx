@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { findChapter, home, phases } from '../chapters'
-import { Rich } from '../components/Rich'
-import type { Run } from '../runs'
+import { findChapter, phases } from '../chapters'
 import { bindId } from '../scroll'
+import { CardDesc, HomeSubtitle, HomeTitle } from './homeText'
 import homeCss from './home.css?raw'
 
 export function Home() {
@@ -70,8 +69,8 @@ export function Home() {
 
         <main className="main" id="top" ref={bindId('top')}>
           <header>
-            <h1><Rich runs={home.h1 as Run[]} /></h1>
-            <p className="subtitle"><Rich runs={home.subtitle as Run[]} /></p>
+            <h1><HomeTitle /></h1>
+            <p className="subtitle"><HomeSubtitle /></p>
             <div className="cta">
               <Link to="/ch/bigram#step-1">从第 1 章开始 →</Link>
               <Link to="/glossary">📖 名词表</Link>
@@ -103,7 +102,7 @@ export function Home() {
                     <article className="card" id={c.cardId} key={slug} ref={bindId(c.cardId)}>
                       <span className="ch-num">CHAPTER {c.num}</span>
                       <h3><Link to={`/ch/${slug}#${first}`}>{c.cardTitle}</Link></h3>
-                      <p className="desc"><Rich runs={c.cardDesc} /></p>
+                      <p className="desc"><CardDesc slug={c.slug} /></p>
                       <div className="card-foot">
                         <details>
                           <summary>{c.stepSummary}</summary>
