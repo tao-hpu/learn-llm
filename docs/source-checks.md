@@ -13,6 +13,7 @@
 | 禁用 DOM API | 同上 | 出现 `dangerouslySetInnerHTML`、`innerHTML`、`outerHTML`、`insertAdjacentHTML`、`getElementById`、`querySelector`、`querySelectorAll`。注释里写到这些词也算 |
 | HTML 字符串 | `.json` | 文本里出现 `b`、`code`、`span`、`div`、`p`、`a`、`br`、`i`、`sub`、`sup`、`section`、`button`、`style`、`script`、`ul`、`li`、`h1`–`h6` 这类标签 |
 | HTML 字符串 | `.ts` `.tsx` `.js` `.jsx` `.mjs` | `const` / `let` / `var` 赋给一段字符串，且这段字符串里有上面那些标签 |
+| 数组当 JSX 子节点 | `.tsx` | 出现 `>{[` 或 `<>{[`。手写的 JSX 直接嵌标签；真正 `.map()` 出来的列表不走这个写法 |
 | 嵌套排版 | `.json` | 对象里有键 `b`、`code`、`p`、`div`、`term`，并且值是数组或对象 |
 | 旧章节文件名 | `.ts` `.tsx` `.js` `.jsx` `.mjs` `.json` `.css` | 出现 `NN_xxx_viz.html`。唯一例外是 `src/catalog.json` 里 `"file"` 的值，而且这个值必须等于某一章的 `file` |
 | 已迁章节的页面 | `catalog.json` 里 `ready: true` 的章 | 没有 `src/pages/<Name>.tsx`，或文件里没有 `ChapterShell`、`<Term`、`<Dig`、`<HpBar`，或 `App.tsx` 没有挂上这个组件名 |

@@ -7,787 +7,175 @@ export const entries: GlossaryEntry[] = [
     id: "linear-attention",
     titleText: "线性注意力 linear attention",
     def: "去掉 softmax 之后,注意力输出可以写成 o_t = (Σ_i v_i k_iᵀ) q_t:不必保留每个历史 k_i、v_i,只维护每个头一块 head_size × head_size 的矩阵 S。 来一个 token 写一次 S ← S + v kᵀ,读的时候算 o = S q。推理状态的大小与上下文长度无关,模型等价于一个 RNN, Katharopoulos et al.(arXiv 2006.16236,ICML 2020)据此把复杂度从 O(N²) 降到 O(N)。代价是只加不减:key 之间不正交时读出会串扰,同一个 key 写两次新旧值会叠加。 本项目 第 13 章 / phase4-efficiency/11_linear_attn.py --preset linear:键值检索 N=32 答对 16.6%(全注意力 100%); 语言模型测试长度从 64 拉到 512,val loss 从 1.576 涨到 1.673。改进写法见 delta rule 与 Gated DeltaNet。",
-    title: [
-      "线性注意力 ",
-      <En key={1}>{[
-        "linear attention",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "去掉 softmax 之后,注意力输出可以写成 ",
-        <code key={1}>{[
-          "o_t = (Σ_i v_i k_iᵀ) q_t",
-        ]}</code>,
-        ":不必保留每个历史 k_i、v_i,只维护每个头一块 head_size × head_size 的矩阵 S。 来一个 token 写一次 ",
-        <code key={3}>{[
-          "S ← S + v kᵀ",
-        ]}</code>,
-        ",读的时候算 ",
-        <code key={5}>{[
-          "o = S q",
-        ]}</code>,
-        "。推理状态的大小与上下文长度无关,模型等价于一个 RNN, Katharopoulos et al.(arXiv 2006.16236,ICML 2020)据此把复杂度从 O(N²) 降到 O(N)。",
-      ]}</p>,
-      <p key={1}>{[
-        "代价是只加不减:key 之间不正交时读出会串扰,同一个 key 写两次新旧值会叠加。 本项目 ",
-        <b key={1}>{[
-          "第 13 章 / ",
-          <code key={1}>{[
-            "phase4-efficiency/11_linear_attn.py --preset linear",
-          ]}</code>,
-        ]}</b>,
-        ":键值检索 N=32 答对 16.6%(全注意力 100%); 语言模型测试长度从 64 拉到 512,val loss 从 1.576 涨到 1.673。改进写法见 ",
-        <a key={3} href={"#delta-rule"}>{[
-          "delta rule",
-        ]}</a>,
-        " 与 ",
-        <a key={5} href={"#gated-deltanet"}>{[
-          "Gated DeltaNet",
-        ]}</a>,
-        "。",
-      ]}</p>,
-    ],
+    title: <>线性注意力 <En>linear attention</En></>,
+    body: <><p>去掉 softmax 之后,注意力输出可以写成 <code>o_t = (Σ_i v_i k_iᵀ) q_t</code>:不必保留每个历史 k_i、v_i,只维护每个头一块 head_size × head_size 的矩阵 S。 来一个 token 写一次 <code>S ← S + v kᵀ</code>,读的时候算 <code>o = S q</code>。推理状态的大小与上下文长度无关,模型等价于一个 RNN, Katharopoulos et al.(arXiv 2006.16236,ICML 2020)据此把复杂度从 O(N²) 降到 O(N)。</p><p>代价是只加不减:key 之间不正交时读出会串扰,同一个 key 写两次新旧值会叠加。 本项目 <b>第 13 章 / <code>phase4-efficiency/11_linear_attn.py --preset linear</code></b>:键值检索 N=32 答对 16.6%(全注意力 100%); 语言模型测试长度从 64 拉到 512,val loss 从 1.576 涨到 1.673。改进写法见 <a href={"#delta-rule"}>delta rule</a> 与 <a href={"#gated-deltanet"}>Gated DeltaNet</a>。</p></>,
   },
   {
     id: "delta-rule",
     titleText: "delta rule 增量写入规则 · DeltaNet",
     def: "往记忆板写入时先读出 key 当前存的值,只补上与目标的差额:S ← S + β (v − S k) kᵀ,β ∈ (0,1) 是写入强度,由输入算出。 Yang et al.(arXiv 2406.06484)把它解释为对在线回归损失 ½‖S k − v‖² 做一步 SGD;k 做 L2 归一化且 β=1 时,旧值被整个换成新值。 Schlag et al.(arXiv 2102.11174)最早把它用在线性 Transformer 上,用来缓解纯加法写入的容量限制。第 13 章 --preset delta:训练长度 64 上 val loss 1.5651,测试长度 512 时 1.629。它能改写单个 key,但没有遗忘门,整块状态不会衰减。",
-    title: [
-      "delta rule ",
-      <En key={1}>{[
-        "增量写入规则 · DeltaNet",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "往记忆板写入时先读出 key 当前存的值,只补上与目标的差额:",
-        <code key={1}>{[
-          "S ← S + β (v − S k) kᵀ",
-        ]}</code>,
-        ",β ∈ (0,1) 是写入强度,由输入算出。 Yang et al.(arXiv 2406.06484)把它解释为对在线回归损失 ",
-        <code key={3}>{[
-          "½‖S k − v‖²",
-        ]}</code>,
-        " 做一步 SGD;k 做 L2 归一化且 β=1 时,旧值被整个换成新值。 Schlag et al.(arXiv 2102.11174)最早把它用在线性 Transformer 上,用来缓解纯加法写入的容量限制。",
-      ]}</p>,
-      <p key={1}>{[
-        "第 13 章 ",
-        <code key={1}>{[
-          "--preset delta",
-        ]}</code>,
-        ":训练长度 64 上 val loss 1.5651,测试长度 512 时 1.629。它能改写单个 key,但没有遗忘门,整块状态不会衰减。",
-      ]}</p>,
-    ],
+    title: <>delta rule <En>增量写入规则 · DeltaNet</En></>,
+    body: <><p>往记忆板写入时先读出 key 当前存的值,只补上与目标的差额:<code>S ← S + β (v − S k) kᵀ</code>,β ∈ (0,1) 是写入强度,由输入算出。 Yang et al.(arXiv 2406.06484)把它解释为对在线回归损失 <code>½‖S k − v‖²</code> 做一步 SGD;k 做 L2 归一化且 β=1 时,旧值被整个换成新值。 Schlag et al.(arXiv 2102.11174)最早把它用在线性 Transformer 上,用来缓解纯加法写入的容量限制。</p><p>第 13 章 <code>--preset delta</code>:训练长度 64 上 val loss 1.5651,测试长度 512 时 1.629。它能改写单个 key,但没有遗忘门,整块状态不会衰减。</p></>,
   },
   {
     id: "gated-deltanet",
     titleText: "Gated DeltaNet GDN · 门控 delta 网络",
     def: "在 delta rule 上加一个遗忘门 α:S_t = S_{t−1}(α_t(I − β_t k_t k_tᵀ)) + β_t v_t k_tᵀ,o_t = S_t q_t (Yang, Kautz, Hatamizadeh,arXiv 2412.06464 §3.1 式 (10),ICLR 2025)。α_t ∈ (0,1) 让整块记忆按比例衰减,β_t 负责精确改写单个 key。 论文 §2.1 对照:Mamba2 是 S_t = α_t S_{t−1} + v_t k_tᵀ,有遗忘门没有 delta rule。Qwen3-Next-80B-A3B 的 48 层里 36 层是 Gated DeltaNet。第 13 章 --preset gdn(4 层,每头 32×32 记忆板): val loss 1.5646,测试长度 512 时 1.532(全注意力 3.517);键值检索 N=32 答对 99.9%。第一层 α 开训时约 0.95,训完 4 个头的平均值为 0.58–0.66。",
-    title: [
-      "Gated DeltaNet ",
-      <En key={1}>{[
-        "GDN · 门控 delta 网络",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "在 ",
-        <a key={1} href={"#delta-rule"}>{[
-          "delta rule",
-        ]}</a>,
-        " 上加一个遗忘门 α:",
-        <code key={3}>{[
-          "S_t = S_{t−1}(α_t(I − β_t k_t k_tᵀ)) + β_t v_t k_tᵀ",
-        ]}</code>,
-        ",",
-        <code key={5}>{[
-          "o_t = S_t q_t",
-        ]}</code>,
-        " (Yang, Kautz, Hatamizadeh,arXiv 2412.06464 §3.1 式 (10),ICLR 2025)。α_t ∈ (0,1) 让整块记忆按比例衰减,β_t 负责精确改写单个 key。 论文 §2.1 对照:Mamba2 是 ",
-        <code key={7}>{[
-          "S_t = α_t S_{t−1} + v_t k_tᵀ",
-        ]}</code>,
-        ",有遗忘门没有 delta rule。",
-      ]}</p>,
-      <p key={1}>{[
-        "Qwen3-Next-80B-A3B 的 48 层里 36 层是 Gated DeltaNet。第 13 章 ",
-        <code key={1}>{[
-          "--preset gdn",
-        ]}</code>,
-        "(4 层,每头 32×32 记忆板): val loss 1.5646,测试长度 512 时 1.532(全注意力 3.517);键值检索 N=32 答对 99.9%。第一层 α 开训时约 0.95,训完 4 个头的平均值为 0.58–0.66。",
-      ]}</p>,
-    ],
+    title: <>Gated DeltaNet <En>GDN · 门控 delta 网络</En></>,
+    body: <><p>在 <a href={"#delta-rule"}>delta rule</a> 上加一个遗忘门 α:<code>{"S_t = S_{t−1}(α_t(I − β_t k_t k_tᵀ)) + β_t v_t k_tᵀ"}</code>,<code>o_t = S_t q_t</code> (Yang, Kautz, Hatamizadeh,arXiv 2412.06464 §3.1 式 (10),ICLR 2025)。α_t ∈ (0,1) 让整块记忆按比例衰减,β_t 负责精确改写单个 key。 论文 §2.1 对照:Mamba2 是 <code>{"S_t = α_t S_{t−1} + v_t k_tᵀ"}</code>,有遗忘门没有 delta rule。</p><p>Qwen3-Next-80B-A3B 的 48 层里 36 层是 Gated DeltaNet。第 13 章 <code>--preset gdn</code>(4 层,每头 32×32 记忆板): val loss 1.5646,测试长度 512 时 1.532(全注意力 3.517);键值检索 N=32 答对 99.9%。第一层 α 开训时约 0.95,训完 4 个头的平均值为 0.58–0.66。</p></>,
   },
   {
     id: "hybrid-attention",
     titleText: "混合注意力 3:1 hybrid linear / full attention",
     def: "大部分层用固定状态的线性注意力,每隔几层留一层保留全部 K/V 的注意力层,用后者做精确检索、前者省推理状态。 Qwen3-Next-80B-A3B:12 × (3 × Gated DeltaNet + 1 × Gated Attention),48 层;Qwen3.5-397B-A17B:15 × 同样的 4 层周期,60 层; Qwen3.8-Flash-Next:12 × (3 × Gated DeltaNet + 1 × QSA),注意力层在持续预训练阶段换成稀疏注意力; Kimi Linear(arXiv 2510.26692)3 层 KDA 配 1 层 MLA,KV cache 最多省 75%。 Zoology(arXiv 2312.04927)的分析里,高效架构与注意力的质量差距有 82% 由上下文召回能力解释。第 13 章 --preset hybrid(3 GDN + 1 注意力):val loss 1.5446,测试长度 512 时 1.536;键值检索 N=32 答对 93.3%, 这组训练 6000 步时 loss 仍在下降、未收敛,不能据此和纯 GDN 排先后。本实验最多记 32 对,纯 GDN 的 32×32 记忆板装得下;需要从很长的上下文里精确找回内容时,注意力层才是必需的。",
-    title: [
-      "混合注意力 3:1 ",
-      <En key={1}>{[
-        "hybrid linear / full attention",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "大部分层用固定状态的线性注意力,每隔几层留一层保留全部 K/V 的注意力层,用后者做精确检索、前者省推理状态。 Qwen3-Next-80B-A3B:",
-        <code key={1}>{[
-          "12 × (3 × Gated DeltaNet + 1 × Gated Attention)",
-        ]}</code>,
-        ",48 层;Qwen3.5-397B-A17B:15 × 同样的 4 层周期,60 层; Qwen3.8-Flash-Next:",
-        <code key={3}>{[
-          "12 × (3 × Gated DeltaNet + 1 × QSA)",
-        ]}</code>,
-        ",注意力层在持续预训练阶段换成稀疏注意力; Kimi Linear(arXiv 2510.26692)3 层 KDA 配 1 层 MLA,KV cache 最多省 75%。 Zoology(arXiv 2312.04927)的分析里,高效架构与注意力的质量差距有 82% 由上下文召回能力解释。",
-      ]}</p>,
-      <p key={1}>{[
-        "第 13 章 ",
-        <code key={1}>{[
-          "--preset hybrid",
-        ]}</code>,
-        "(3 GDN + 1 注意力):val loss 1.5446,测试长度 512 时 1.536;键值检索 N=32 答对 93.3%, 这组训练 6000 步时 loss 仍在下降、未收敛,不能据此和纯 GDN 排先后。本实验最多记 32 对,纯 GDN 的 32×32 记忆板装得下;需要从很长的上下文里精确找回内容时,注意力层才是必需的。",
-      ]}</p>,
-    ],
+    title: <>混合注意力 3:1 <En>hybrid linear / full attention</En></>,
+    body: <><p>大部分层用固定状态的线性注意力,每隔几层留一层保留全部 K/V 的注意力层,用后者做精确检索、前者省推理状态。 Qwen3-Next-80B-A3B:<code>12 × (3 × Gated DeltaNet + 1 × Gated Attention)</code>,48 层;Qwen3.5-397B-A17B:15 × 同样的 4 层周期,60 层; Qwen3.8-Flash-Next:<code>12 × (3 × Gated DeltaNet + 1 × QSA)</code>,注意力层在持续预训练阶段换成稀疏注意力; Kimi Linear(arXiv 2510.26692)3 层 KDA 配 1 层 MLA,KV cache 最多省 75%。 Zoology(arXiv 2312.04927)的分析里,高效架构与注意力的质量差距有 82% 由上下文召回能力解释。</p><p>第 13 章 <code>--preset hybrid</code>(3 GDN + 1 注意力):val loss 1.5446,测试长度 512 时 1.536;键值检索 N=32 答对 93.3%, 这组训练 6000 步时 loss 仍在下降、未收敛,不能据此和纯 GDN 排先后。本实验最多记 32 对,纯 GDN 的 32×32 记忆板装得下;需要从很长的上下文里精确找回内容时,注意力层才是必需的。</p></>,
   },
   {
     id: "sparse-attention",
     titleText: "稀疏注意力 sparse attention",
     def: "每个 query 只和一部分 key 算注意力分数,其余位置不参与。K/V 仍可全部保存,省的是每一步要读和要算的量; 和线性注意力对比,后者把历史压进固定大小的状态,省的是存储。常见做法是先用便宜的方式给历史打分,再只对高分部分做完整注意力。本项目在第 14 章 / phase4-efficiency/12_sparse_attn.py 手写了 NSA 式三支路(用 mask 模拟):256 上下文里平均每个 query 读 76.8 个 key(全注意力 128.5); 远处找钥匙任务上准确率 99.85%(全注意力 100%,只滑窗 3.1%)。",
-    title: [
-      "稀疏注意力 ",
-      <En key={1}>{[
-        "sparse attention",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "每个 query 只和一部分 key 算注意力分数,其余位置不参与。K/V 仍可全部保存,省的是每一步要读和要算的量; 和线性注意力对比,后者把历史压进固定大小的状态,省的是存储。常见做法是先用便宜的方式给历史打分,再只对高分部分做完整注意力。",
-      ]}</p>,
-      <p key={1}>{[
-        "本项目在",
-        <b key={1}>{[
-          "第 14 章 / ",
-          <code key={1}>{[
-            "phase4-efficiency/12_sparse_attn.py",
-          ]}</code>,
-        ]}</b>,
-        " 手写了 NSA 式三支路(用 mask 模拟):256 上下文里平均每个 query 读 76.8 个 key(全注意力 128.5); 远处找钥匙任务上准确率 99.85%(全注意力 100%,只滑窗 3.1%)。",
-      ]}</p>,
-    ],
+    title: <>稀疏注意力 <En>sparse attention</En></>,
+    body: <><p>每个 query 只和一部分 key 算注意力分数,其余位置不参与。K/V 仍可全部保存,省的是每一步要读和要算的量; 和线性注意力对比,后者把历史压进固定大小的状态,省的是存储。常见做法是先用便宜的方式给历史打分,再只对高分部分做完整注意力。</p><p>本项目在<b>第 14 章 / <code>phase4-efficiency/12_sparse_attn.py</code></b> 手写了 NSA 式三支路(用 mask 模拟):256 上下文里平均每个 query 读 76.8 个 key(全注意力 128.5); 远处找钥匙任务上准确率 99.85%(全注意力 100%,只滑窗 3.1%)。</p></>,
   },
   {
     id: "nsa",
     titleText: "NSA Native Sparse Attention",
     def: "DeepSeek 2025 提出(Yuan et al., arXiv 2502.11089)。三条支路并行:压缩把每块 token 压成一个摘要 key/value;挑选复用 query 对摘要的注意力分数,取 top-n 块逐个细看; 滑窗看最近 w 个 token。输出 o = Σ gc · Attn(q, Kc, Vc),门 g ∈ [0,1] 由 MLP + sigmoid 得到,三条支路各有独立的 K/V。论文默认:压缩块 l=32、步长 d=16,挑选块 l′=64、挑 n=16 块,滑窗 w=512;64K 上下文解码每步读 5,632 个 token(表 4)。在 27B 总参 / 3B 激活的模型上从预训练开始使用。 第 14 章教学版取 block_len 8、top_n 4、window 32。",
-    title: [
-      "NSA ",
-      <En key={1}>{[
-        "Native Sparse Attention",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "DeepSeek 2025 提出(Yuan et al., arXiv 2502.11089)。三条支路并行:",
-        <b key={1}>{[
-          "压缩",
-        ]}</b>,
-        "把每块 token 压成一个摘要 key/value;",
-        <b key={3}>{[
-          "挑选",
-        ]}</b>,
-        "复用 query 对摘要的注意力分数,取 top-n 块逐个细看; ",
-        <b key={5}>{[
-          "滑窗",
-        ]}</b>,
-        "看最近 w 个 token。输出 ",
-        <code key={7}>{[
-          "o = Σ g",
-          <sub key={1}>{[
-            "c",
-          ]}</sub>,
-          " · Attn(q, K",
-          <sub key={3}>{[
-            "c",
-          ]}</sub>,
-          ", V",
-          <sub key={5}>{[
-            "c",
-          ]}</sub>,
-          ")",
-        ]}</code>,
-        ",门 g ∈ [0,1] 由 MLP + sigmoid 得到,三条支路各有独立的 K/V。",
-      ]}</p>,
-      <p key={1}>{[
-        "论文默认:压缩块 l=32、步长 d=16,挑选块 l′=64、挑 n=16 块,滑窗 w=512;64K 上下文解码每步读 5,632 个 token(表 4)。在 27B 总参 / 3B 激活的模型上从预训练开始使用。 第 14 章教学版取 block_len 8、top_n 4、window 32。",
-      ]}</p>,
-    ],
+    title: <>NSA <En>Native Sparse Attention</En></>,
+    body: <><p>DeepSeek 2025 提出(Yuan et al., arXiv 2502.11089)。三条支路并行:<b>压缩</b>把每块 token 压成一个摘要 key/value;<b>挑选</b>复用 query 对摘要的注意力分数,取 top-n 块逐个细看; <b>滑窗</b>看最近 w 个 token。输出 <code>o = Σ g<sub>c</sub> · Attn(q, K<sub>c</sub>, V<sub>c</sub>)</code>,门 g ∈ [0,1] 由 MLP + sigmoid 得到,三条支路各有独立的 K/V。</p><p>论文默认:压缩块 l=32、步长 d=16,挑选块 l′=64、挑 n=16 块,滑窗 w=512;64K 上下文解码每步读 5,632 个 token(表 4)。在 27B 总参 / 3B 激活的模型上从预训练开始使用。 第 14 章教学版取 block_len 8、top_n 4、window 32。</p></>,
   },
   {
     id: "sliding-window",
     titleText: "滑窗注意力 sliding window attention",
     def: "每个 query 只看最近 w 个 token,读取量固定为 w,KV cache 也只需保留最近 w 个。缺点是窗口以外的内容完全看不到,只能靠多层叠加间接传递。第 14 章实测:tiny shakespeare 字符级语言建模上 w=32 的 val loss 1.5052,全注意力 1.5038;远处找钥匙任务里钥匙在窗口之外,准确率 3.1%,等于在 32 个值里乱猜。 NSA 用它做三条支路之一,DeepSeek-V4 的 CSA/HCA 也带一条 128 的滑窗支路。",
-    title: [
-      "滑窗注意力 ",
-      <En key={1}>{[
-        "sliding window attention",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "每个 query 只看最近 w 个 token,读取量固定为 w,KV cache 也只需保留最近 w 个。缺点是窗口以外的内容完全看不到,只能靠多层叠加间接传递。",
-      ]}</p>,
-      <p key={1}>{[
-        "第 14 章实测:tiny shakespeare 字符级语言建模上 w=32 的 val loss 1.5052,全注意力 1.5038;远处找钥匙任务里钥匙在窗口之外,准确率 3.1%,等于在 32 个值里乱猜。 NSA 用它做三条支路之一,DeepSeek-V4 的 CSA/HCA 也带一条 128 的滑窗支路。",
-      ]}</p>,
-    ],
+    title: <>滑窗注意力 <En>sliding window attention</En></>,
+    body: <><p>每个 query 只看最近 w 个 token,读取量固定为 w,KV cache 也只需保留最近 w 个。缺点是窗口以外的内容完全看不到,只能靠多层叠加间接传递。</p><p>第 14 章实测:tiny shakespeare 字符级语言建模上 w=32 的 val loss 1.5052,全注意力 1.5038;远处找钥匙任务里钥匙在窗口之外,准确率 3.1%,等于在 32 个值里乱猜。 NSA 用它做三条支路之一,DeepSeek-V4 的 CSA/HCA 也带一条 128 的滑窗支路。</p></>,
   },
   {
     id: "lightning-indexer",
     titleText: "lightning indexer DSA 闪电索引器",
     def: "DeepSeek-V3.2 的 DSA(arXiv 2512.02556 §2.1)里给 (query, 历史 token) 打分的小模块:It,s = Σj wt,j · ReLU(qt,j · ks)。 头数少、可用 FP8 实现;每个 query 按分数选 2048 个 token 做完整注意力。后续变体:DeepSeek-V4 的 CSA 先把每 4 个 token 的 KV 压成一条,再用 indexer 挑 top-k 条(Flash 512,Pro 1024),indexer 注意力用 FP4; Qwen3.8-Flash-Next 的 QSA 用 4 个 query 头 + 1 个 key 头的 MQA indexer,给每 4 个 token 池化成的块打分,预算 2048 token。",
-    title: [
-      "lightning indexer ",
-      <En key={1}>{[
-        "DSA 闪电索引器",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "DeepSeek-V3.2 的 DSA(arXiv 2512.02556 §2.1)里给 (query, 历史 token) 打分的小模块:",
-        <code key={1}>{[
-          "I",
-          <sub key={1}>{[
-            "t,s",
-          ]}</sub>,
-          " = Σ",
-          <sub key={3}>{[
-            "j",
-          ]}</sub>,
-          " w",
-          <sub key={5}>{[
-            "t,j",
-          ]}</sub>,
-          " · ReLU(q",
-          <sub key={7}>{[
-            "t,j",
-          ]}</sub>,
-          " · k",
-          <sub key={9}>{[
-            "s",
-          ]}</sub>,
-          ")",
-        ]}</code>,
-        "。 头数少、可用 FP8 实现;每个 query 按分数选 2048 个 token 做完整注意力。",
-      ]}</p>,
-      <p key={1}>{[
-        "后续变体:DeepSeek-V4 的 CSA 先把每 4 个 token 的 KV 压成一条,再用 indexer 挑 top-k 条(Flash 512,Pro 1024),indexer 注意力用 FP4; Qwen3.8-Flash-Next 的 QSA 用 4 个 query 头 + 1 个 key 头的 MQA indexer,给每 4 个 token 池化成的块打分,预算 2048 token。",
-      ]}</p>,
-    ],
+    title: <>lightning indexer <En>DSA 闪电索引器</En></>,
+    body: <><p>DeepSeek-V3.2 的 DSA(arXiv 2512.02556 §2.1)里给 (query, 历史 token) 打分的小模块:<code>I<sub>t,s</sub> = Σ<sub>j</sub> w<sub>t,j</sub> · ReLU(q<sub>t,j</sub> · k<sub>s</sub>)</code>。 头数少、可用 FP8 实现;每个 query 按分数选 2048 个 token 做完整注意力。</p><p>后续变体:DeepSeek-V4 的 CSA 先把每 4 个 token 的 KV 压成一条,再用 indexer 挑 top-k 条(Flash 512,Pro 1024),indexer 注意力用 FP4; Qwen3.8-Flash-Next 的 QSA 用 4 个 query 头 + 1 个 key 头的 MQA indexer,给每 4 个 token 池化成的块打分,预算 2048 token。</p></>,
   },
   {
     id: "ngram-memory",
     titleText: "N-gram 查表记忆 n-gram memory · Engram · N-gram Embedding",
     def: "挂在 Transformer 旁边的一张大参数表,按局部 n-gram 寻址。每个 token 用以它结尾的 2-gram、3-gram 经 哈希算出几个行号, 每个头取 1 行拼成记忆向量,再经 门控、投影和短卷积加回残差流。 表有多少行,每 token 都只读固定几行,所以总参数可以涨、每 token 算力几乎不变;和 MoE 一样把容量与算力拆开,区别是按字面地址取向量,不做路由。 行号只依赖输入 token,forward 之前就能算出,表可以放在主机内存。出处:DeepSeek Engram(Cheng et al., arXiv 2601.07372;Engram-27B 与 MoE-27B 同为 26.7B 总参、3.8B 激活,Engram 表 5.7B);Qwen3.8-Flash-Next 的 N-gram Embedding(125B 总参、6B 激活,另有 51B 表参数放在加速器之外)。 本项目在第 15 章 / phase4-efficiency/13_engram.py 手写:8 个头 × 262,144 行 × 16 维,表 33.6M 参数,是主干的 4.63 倍;FineWeb-Edu 上 5000 步 val loss 从 5.0561 降到 4.9945(单种子)。",
-    title: [
-      "N-gram 查表记忆 ",
-      <En key={1}>{[
-        "n-gram memory · Engram · N-gram Embedding",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "挂在 Transformer 旁边的一张大参数表,按局部 n-gram 寻址。每个 token 用以它结尾的 2-gram、3-gram 经 ",
-        <a key={1} href={"#ngram-hash"}>{[
-          "哈希",
-        ]}</a>,
-        "算出几个行号, 每个头取 1 行拼成记忆向量,再经 ",
-        <a key={3} href={"#memory-gate"}>{[
-          "门控",
-        ]}</a>,
-        "、投影和短卷积加回",
-        <a key={5} href={"#residual"}>{[
-          "残差流",
-        ]}</a>,
-        "。 表有多少行,每 token 都只读固定几行,所以总参数可以涨、每 token 算力几乎不变;和 ",
-        <a key={7} href={"#moe"}>{[
-          "MoE",
-        ]}</a>,
-        " 一样把容量与算力拆开,区别是按字面地址取向量,不做路由。 行号只依赖输入 token,forward 之前就能算出,表可以",
-        <a key={9} href={"#host-offload"}>{[
-          "放在主机内存",
-        ]}</a>,
-        "。",
-      ]}</p>,
-      <p key={1}>{[
-        "出处:DeepSeek Engram(Cheng et al., arXiv 2601.07372;Engram-27B 与 MoE-27B 同为 26.7B 总参、3.8B 激活,Engram 表 5.7B);Qwen3.8-Flash-Next 的 N-gram Embedding(125B 总参、6B 激活,另有 51B 表参数放在加速器之外)。 本项目在",
-        <b key={1}>{[
-          "第 15 章 / ",
-          <code key={1}>{[
-            "phase4-efficiency/13_engram.py",
-          ]}</code>,
-        ]}</b>,
-        " 手写:8 个头 × 262,144 行 × 16 维,表 33.6M 参数,是主干的 4.63 倍;FineWeb-Edu 上 5000 步 val loss 从 5.0561 降到 4.9945(单种子)。",
-      ]}</p>,
-    ],
+    title: <>N-gram 查表记忆 <En>n-gram memory · Engram · N-gram Embedding</En></>,
+    body: <><p>挂在 Transformer 旁边的一张大参数表,按局部 n-gram 寻址。每个 token 用以它结尾的 2-gram、3-gram 经 <a href={"#ngram-hash"}>哈希</a>算出几个行号, 每个头取 1 行拼成记忆向量,再经 <a href={"#memory-gate"}>门控</a>、投影和短卷积加回<a href={"#residual"}>残差流</a>。 表有多少行,每 token 都只读固定几行,所以总参数可以涨、每 token 算力几乎不变;和 <a href={"#moe"}>MoE</a> 一样把容量与算力拆开,区别是按字面地址取向量,不做路由。 行号只依赖输入 token,forward 之前就能算出,表可以<a href={"#host-offload"}>放在主机内存</a>。</p><p>出处:DeepSeek Engram(Cheng et al., arXiv 2601.07372;Engram-27B 与 MoE-27B 同为 26.7B 总参、3.8B 激活,Engram 表 5.7B);Qwen3.8-Flash-Next 的 N-gram Embedding(125B 总参、6B 激活,另有 51B 表参数放在加速器之外)。 本项目在<b>第 15 章 / <code>phase4-efficiency/13_engram.py</code></b> 手写:8 个头 × 262,144 行 × 16 维,表 33.6M 参数,是主干的 4.63 倍;FineWeb-Edu 上 5000 步 val loss 从 5.0561 降到 4.9945(单种子)。</p></>,
   },
   {
     id: "ngram-hash",
     titleText: "n-gram 哈希 / 撞行 multiplicative-XOR hash · hash collision",
     def: "把以当前位置结尾的 n 个 token id 各乘一个随机奇数,异或到一起,对表长取模,得到行号;开头不足 n 个 token 时用 0 号 token 补齐。 不同的 n-gram 可能落到同一行,叫撞行。每种 n-gram 用多个头、每个头一组不同的乘子,两个 n-gram 在一个头上撞了,在别的头上多半撞不上,拼起来的向量仍能区分。第 15 章在 FineWeb-Edu 训练集前 20 万 token(111,302 种 2-gram)上统计:每头 16,384 行时 2-gram 撞行 85.3%,行被全部用满;262,144 行时降到 18.4%,与均匀随机撒点的理论值一致。 Engram(arXiv 2601.07372 §2.2)用的也是 multiplicative-XOR 哈希,并先做 NFKC 规范化和小写的 tokenizer 压缩。",
-    title: [
-      "n-gram 哈希 / 撞行 ",
-      <En key={1}>{[
-        "multiplicative-XOR hash · hash collision",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "把以当前位置结尾的 n 个 token id 各乘一个随机奇数,异或到一起,对表长取模,得到行号;开头不足 n 个 token 时用 0 号 token 补齐。 不同的 n-gram 可能落到同一行,叫",
-        <b key={1}>{[
-          "撞行",
-        ]}</b>,
-        "。每种 n-gram 用多个头、每个头一组不同的乘子,两个 n-gram 在一个头上撞了,在别的头上多半撞不上,拼起来的向量仍能区分。",
-      ]}</p>,
-      <p key={1}>{[
-        "第 15 章在 FineWeb-Edu 训练集前 20 万 token(111,302 种 2-gram)上统计:每头 16,384 行时 2-gram 撞行 85.3%,行被全部用满;262,144 行时降到 18.4%,与均匀随机撒点的理论值一致。 Engram(arXiv 2601.07372 §2.2)用的也是 multiplicative-XOR 哈希,并先做 NFKC 规范化和小写的 tokenizer 压缩。",
-      ]}</p>,
-    ],
+    title: <>n-gram 哈希 / 撞行 <En>multiplicative-XOR hash · hash collision</En></>,
+    body: <><p>把以当前位置结尾的 n 个 token id 各乘一个随机奇数,异或到一起,对表长取模,得到行号;开头不足 n 个 token 时用 0 号 token 补齐。 不同的 n-gram 可能落到同一行,叫<b>撞行</b>。每种 n-gram 用多个头、每个头一组不同的乘子,两个 n-gram 在一个头上撞了,在别的头上多半撞不上,拼起来的向量仍能区分。</p><p>第 15 章在 FineWeb-Edu 训练集前 20 万 token(111,302 种 2-gram)上统计:每头 16,384 行时 2-gram 撞行 85.3%,行被全部用满;262,144 行时降到 18.4%,与均匀随机撒点的理论值一致。 Engram(arXiv 2601.07372 §2.2)用的也是 multiplicative-XOR 哈希,并先做 NFKC 规范化和小写的 tokenizer 压缩。</p></>,
   },
   {
     id: "memory-gate",
     titleText: "记忆门控 context-aware gating",
     def: "决定取回的 n-gram 记忆在当前位置加多少。当前隐状态 h 当 query,记忆 e 经投影后当 key: α = σ(RMSNorm(h) · RMSNorm(W_k e) / √d),α 是 0~1 的标量,再乘上 W_v e 加回残差流。 行号只看字面上的最近几个 token,同一个 n-gram 在不同上下文里取回同一个向量,撞行时还混着别的 n-gram,门负责在不搭的位置把它关小。公式出自 Engram(arXiv 2601.07372 §2.3,式 (3)(4)),之后接 kernel 4、dilation 3 的因果卷积;第 15 章的 NgramMemory.forward 用同样的门、kernel 4 的因果卷积。",
-    title: [
-      "记忆门控 ",
-      <En key={1}>{[
-        "context-aware gating",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "决定取回的 n-gram 记忆在当前位置加多少。当前隐状态 h 当 query,记忆 e 经投影后当 key: ",
-        <code key={1}>{[
-          "α = σ(RMSNorm(h) · RMSNorm(W_k e) / √d)",
-        ]}</code>,
-        ",α 是 0~1 的标量,再乘上 ",
-        <code key={3}>{[
-          "W_v e",
-        ]}</code>,
-        " 加回残差流。 行号只看字面上的最近几个 token,同一个 n-gram 在不同上下文里取回同一个向量,撞行时还混着别的 n-gram,门负责在不搭的位置把它关小。",
-      ]}</p>,
-      <p key={1}>{[
-        "公式出自 Engram(arXiv 2601.07372 §2.3,式 (3)(4)),之后接 kernel 4、dilation 3 的因果卷积;第 15 章的 ",
-        <code key={1}>{[
-          "NgramMemory.forward",
-        ]}</code>,
-        " 用同样的门、kernel 4 的因果卷积。",
-      ]}</p>,
-    ],
+    title: <>记忆门控 <En>context-aware gating</En></>,
+    body: <><p>决定取回的 n-gram 记忆在当前位置加多少。当前隐状态 h 当 query,记忆 e 经投影后当 key: <code>α = σ(RMSNorm(h) · RMSNorm(W_k e) / √d)</code>,α 是 0~1 的标量,再乘上 <code>W_v e</code> 加回残差流。 行号只看字面上的最近几个 token,同一个 n-gram 在不同上下文里取回同一个向量,撞行时还混着别的 n-gram,门负责在不搭的位置把它关小。</p><p>公式出自 Engram(arXiv 2601.07372 §2.3,式 (3)(4)),之后接 kernel 4、dilation 3 的因果卷积;第 15 章的 <code>NgramMemory.forward</code> 用同样的门、kernel 4 的因果卷积。</p></>,
   },
   {
     id: "overfitting",
     titleText: "过拟合 overfitting",
     def: "训练集上的 loss 继续下降,没见过的数据上的 loss 却上升:参数记住了训练集的具体内容,没有学到能推广的规律。数据少、参数多、同一批数据被反复看很多遍时容易出现。 常见应对:加数据、提前停止、dropout、减少参数。第 15 章的反例:tiny shakespeare 训练集约 100 万字符,5000 步看了约 20 遍;挂上 32,768 行(4.19M 参数)的 n-gram 表后,train loss 降到 1.0813,val 从不挂表的 1.5334 涨到 1.6536。 同样的表放到 FineWeb-Edu(多数文本只见一次)上没有出现这种情况。",
-    title: [
-      "过拟合 ",
-      <En key={1}>{[
-        "overfitting",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "训练集上的 loss 继续下降,没见过的数据上的 loss 却上升:参数记住了训练集的具体内容,没有学到能推广的规律。数据少、参数多、同一批数据被反复看很多遍时容易出现。 常见应对:加数据、提前停止、",
-        <a key={1} href={"#dropout"}>{[
-          "dropout",
-        ]}</a>,
-        "、减少参数。",
-      ]}</p>,
-      <p key={1}>{[
-        "第 15 章的反例:tiny shakespeare 训练集约 100 万字符,5000 步看了约 20 遍;挂上 32,768 行(4.19M 参数)的 n-gram 表后,train loss 降到 1.0813,val 从不挂表的 1.5334 涨到 1.6536。 同样的表放到 FineWeb-Edu(多数文本只见一次)上没有出现这种情况。",
-      ]}</p>,
-    ],
+    title: <>过拟合 <En>overfitting</En></>,
+    body: <><p>训练集上的 loss 继续下降,没见过的数据上的 loss 却上升:参数记住了训练集的具体内容,没有学到能推广的规律。数据少、参数多、同一批数据被反复看很多遍时容易出现。 常见应对:加数据、提前停止、<a href={"#dropout"}>dropout</a>、减少参数。</p><p>第 15 章的反例:tiny shakespeare 训练集约 100 万字符,5000 步看了约 20 遍;挂上 32,768 行(4.19M 参数)的 n-gram 表后,train loss 降到 1.0813,val 从不挂表的 1.5334 涨到 1.6536。 同样的表放到 FineWeb-Edu(多数文本只见一次)上没有出现这种情况。</p></>,
   },
   {
     id: "host-offload",
     titleText: "表放主机内存 / 预取 host offload · prefetch",
     def: "把大参数表留在 CPU 内存(或更慢的存储)里,只把本步要用的行取出来送进加速器。n-gram 表适合这样做:行号只依赖输入 token,数据一读进来就能算出, 取行和拷贝可以和上一步的 GPU 计算并行;MoE 的专家要等路由器算完才知道选谁。Qwen3.8-Flash-Next 技术报告:\"additional 51B parameters of n-gram embedding tables held off the accelerator\",表放主机内存、异步预取(§2.3)。 第 15 章在单卡 RTX 4090 上测了 32,768 行的表:不挂表 276,231 token/s,表在显存 262,066,表在主机内存 148,229(各 400 步测一次;脚本同步查表、同步拷贝,没有做预取)。",
-    title: [
-      "表放主机内存 / 预取 ",
-      <En key={1}>{[
-        "host offload · prefetch",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "把大参数表留在 CPU 内存(或更慢的存储)里,只把本步要用的行取出来送进加速器。n-gram 表适合这样做:行号只依赖输入 token,数据一读进来就能算出, 取行和拷贝可以和上一步的 GPU 计算并行;MoE 的专家要等路由器算完才知道选谁。",
-      ]}</p>,
-      <p key={1}>{[
-        "Qwen3.8-Flash-Next 技术报告:\"additional 51B parameters of n-gram embedding tables held off the accelerator\",表放主机内存、异步预取(§2.3)。 第 15 章在单卡 RTX 4090 上测了 32,768 行的表:不挂表 276,231 token/s,表在显存 262,066,表在主机内存 148,229(各 400 步测一次;脚本同步查表、同步拷贝,没有做预取)。",
-      ]}</p>,
-    ],
+    title: <>表放主机内存 / 预取 <En>host offload · prefetch</En></>,
+    body: <><p>把大参数表留在 CPU 内存(或更慢的存储)里,只把本步要用的行取出来送进加速器。n-gram 表适合这样做:行号只依赖输入 token,数据一读进来就能算出, 取行和拷贝可以和上一步的 GPU 计算并行;MoE 的专家要等路由器算完才知道选谁。</p><p>Qwen3.8-Flash-Next 技术报告:"additional 51B parameters of n-gram embedding tables held off the accelerator",表放主机内存、异步预取(§2.3)。 第 15 章在单卡 RTX 4090 上测了 32,768 行的表:不挂表 276,231 token/s,表在显存 262,066,表在主机内存 148,229(各 400 步测一次;脚本同步查表、同步拷贝,没有做预取)。</p></>,
   },
   {
     id: "ple",
     titleText: "PLE Per-Layer Embeddings · Gemma 3n",
     def: "Gemma 3n 的逐层嵌入:按单个 token id 给每一层查一段向量(HF transformers 实现里 vocab_size_per_layer_input 262,144,每层 256 维),经门控乘入该层。 官方说明这部分参数可以放在 CPU 上加载和计算,E2B / E4B 总参 5B / 8B,加速器上约 2B / 4B。它和 N-gram 查表记忆都是地址确定、可放主机内存的稀疏表,区别在键:PLE 用单个 token,n-gram 表用最近几个 token。 Qwen3.8 报告 §2.3 原句:\"N-gram embeddings further generalize unigram lookup by conditioning memory retrieval on local context rather than token identity alone\"。",
-    title: [
-      "PLE ",
-      <En key={1}>{[
-        "Per-Layer Embeddings · Gemma 3n",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "Gemma 3n 的逐层嵌入:按",
-        <b key={1}>{[
-          "单个 token id",
-        ]}</b>,
-        " 给每一层查一段向量(HF transformers 实现里 vocab_size_per_layer_input 262,144,每层 256 维),经门控乘入该层。 官方说明这部分参数可以放在 CPU 上加载和计算,E2B / E4B 总参 5B / 8B,加速器上约 2B / 4B。",
-      ]}</p>,
-      <p key={1}>{[
-        "它和 ",
-        <a key={1} href={"#ngram-memory"}>{[
-          "N-gram 查表记忆",
-        ]}</a>,
-        "都是地址确定、可放主机内存的稀疏表,区别在键:PLE 用单个 token,n-gram 表用最近几个 token。 Qwen3.8 报告 §2.3 原句:\"N-gram embeddings further generalize unigram lookup by conditioning memory retrieval on local context rather than token identity alone\"。",
-      ]}</p>,
-    ],
+    title: <>PLE <En>Per-Layer Embeddings · Gemma 3n</En></>,
+    body: <><p>Gemma 3n 的逐层嵌入:按<b>单个 token id</b> 给每一层查一段向量(HF transformers 实现里 vocab_size_per_layer_input 262,144,每层 256 维),经门控乘入该层。 官方说明这部分参数可以放在 CPU 上加载和计算,E2B / E4B 总参 5B / 8B,加速器上约 2B / 4B。</p><p>它和 <a href={"#ngram-memory"}>N-gram 查表记忆</a>都是地址确定、可放主机内存的稀疏表,区别在键:PLE 用单个 token,n-gram 表用最近几个 token。 Qwen3.8 报告 §2.3 原句:"N-gram embeddings further generalize unigram lookup by conditioning memory retrieval on local context rather than token identity alone"。</p></>,
   },
   {
     id: "speculative-decoding",
     titleText: "投机解码 speculative decoding",
     def: "让便宜的草稿员(小模型,或主模型自带的 MTP 头)先猜 γ 个 token,主模型把\"上下文 + γ 个草稿\"一次 forward, 因果掩码保证每个位置的输出只依赖前文,于是一次拿到 γ+1 个位置的分布 p。草稿 x 以 min(1, p(x)/q(x)) 的概率接受, 拒绝时从 max(0, p−q) 归一化后的分布重抽,后面的草稿作废。输出分布与主模型逐个采样相同,省的是主模型 forward 次数 (Leviathan et al.,arXiv 2211.17192 §2.3,ICML 2023;Chen et al.,arXiv 2302.01318 同期提出,p/q 字母含义相反)。 接受率 α 下每次主 forward 期望吐 (1 − α^(γ+1)) / (1 − α) 个 token(式 (1))。本项目 第 16 章 / phase4-efficiency/14_mtp.py(RTX 4090,600 token,temperature 1.0):1 层 64 维草稿模型接受率 0.667–0.745, γ=6 时每次主 forward 吐 3.093 个 token,但草稿单次 forward 耗时是主模型的约 27%,墙钟反而为 0.944×;γ=2 墙钟 1.238×。 同一位置 20 万次投机采样与 p 的总变差距离 0.0005(草稿 q 与 p 为 0.053);贪心下 20 段提示逐字一致。",
-    title: [
-      "投机解码 ",
-      <En key={1}>{[
-        "speculative decoding",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "让便宜的草稿员(小模型,或主模型自带的 ",
-        <a key={1} href={"#mtp"}>{[
-          "MTP",
-        ]}</a>,
-        " 头)先猜 γ 个 token,主模型把\"上下文 + γ 个草稿\"一次 forward, 因果掩码保证每个位置的输出只依赖前文,于是一次拿到 γ+1 个位置的分布 p。草稿 x 以 ",
-        <code key={3}>{[
-          "min(1, p(x)/q(x))",
-        ]}</code>,
-        " 的概率接受, 拒绝时从 ",
-        <code key={5}>{[
-          "max(0, p−q)",
-        ]}</code>,
-        " 归一化后的分布重抽,后面的草稿作废。输出分布与主模型逐个采样相同,省的是主模型 forward 次数 (Leviathan et al.,arXiv 2211.17192 §2.3,ICML 2023;Chen et al.,arXiv 2302.01318 同期提出,p/q 字母含义相反)。 接受率 α 下每次主 forward 期望吐 ",
-        <code key={7}>{[
-          "(1 − α^(γ+1)) / (1 − α)",
-        ]}</code>,
-        " 个 token(式 (1))。",
-      ]}</p>,
-      <p key={1}>{[
-        "本项目 ",
-        <b key={1}>{[
-          "第 16 章 / ",
-          <code key={1}>{[
-            "phase4-efficiency/14_mtp.py",
-          ]}</code>,
-        ]}</b>,
-        "(RTX 4090,600 token,temperature 1.0):1 层 64 维草稿模型接受率 0.667–0.745, γ=6 时每次主 forward 吐 3.093 个 token,但草稿单次 forward 耗时是主模型的约 27%,墙钟反而为 0.944×;γ=2 墙钟 1.238×。 同一位置 20 万次投机采样与 p 的总变差距离 0.0005(草稿 q 与 p 为 0.053);贪心下 20 段提示逐字一致。",
-      ]}</p>,
-    ],
+    title: <>投机解码 <En>speculative decoding</En></>,
+    body: <><p>让便宜的草稿员(小模型,或主模型自带的 <a href={"#mtp"}>MTP</a> 头)先猜 γ 个 token,主模型把"上下文 + γ 个草稿"一次 forward, 因果掩码保证每个位置的输出只依赖前文,于是一次拿到 γ+1 个位置的分布 p。草稿 x 以 <code>min(1, p(x)/q(x))</code> 的概率接受, 拒绝时从 <code>max(0, p−q)</code> 归一化后的分布重抽,后面的草稿作废。输出分布与主模型逐个采样相同,省的是主模型 forward 次数 (Leviathan et al.,arXiv 2211.17192 §2.3,ICML 2023;Chen et al.,arXiv 2302.01318 同期提出,p/q 字母含义相反)。 接受率 α 下每次主 forward 期望吐 <code>(1 − α^(γ+1)) / (1 − α)</code> 个 token(式 (1))。</p><p>本项目 <b>第 16 章 / <code>phase4-efficiency/14_mtp.py</code></b>(RTX 4090,600 token,temperature 1.0):1 层 64 维草稿模型接受率 0.667–0.745, γ=6 时每次主 forward 吐 3.093 个 token,但草稿单次 forward 耗时是主模型的约 27%,墙钟反而为 0.944×;γ=2 墙钟 1.238×。 同一位置 20 万次投机采样与 p 的总变差距离 0.0005(草稿 q 与 p 为 0.053);贪心下 20 段提示逐字一致。</p></>,
   },
   {
     id: "mtp",
     titleText: "MTP Multi-Token Prediction · 多 token 预测",
     def: "训练时让主模型顺带预测更远的 token。Gloeckle et al.(arXiv 2404.19737,ICML 2024)在共享主干上接 n 个独立输出头并行预测; DeepSeek-V3(arXiv 2412.19437 §2.2)改成顺序模块:M_k [RMSNorm(h_i); RMSNorm(Emb(t_{i+k}))] 过一个 Transformer Block, 嵌入表和输出头与主模型共用,保持完整因果链。DeepSeek-V3 取深度 D=1,MTP loss 权重 λ 前 10T token 为 0.3、之后 0.1; 推理时 MTP 头当投机解码的草稿员,第二个 token 接受率 85%–90%,TPS 为 1.8 倍(§5.4.3)。第 16 章 14_mtp.py:主模型 742,849 参数,MTP 模块 214,528(两个 RMSNorm + 256→128 投影 + 1 个 Block)。 MTP 头 val loss 1.5332,自草稿接受率 0.899,每次主 forward 吐 1.893 个 token,墙钟 1.27×。带 MTP loss(λ=0.3)的主模型 val loss 1.5276, 不带为 1.5357,单种子下差距在噪声量级。",
-    title: [
-      "MTP ",
-      <En key={1}>{[
-        "Multi-Token Prediction · 多 token 预测",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "训练时让主模型顺带预测更远的 token。Gloeckle et al.(arXiv 2404.19737,ICML 2024)在共享主干上接 n 个独立输出头并行预测; DeepSeek-V3(arXiv 2412.19437 §2.2)改成顺序模块:",
-        <code key={1}>{[
-          "M_k [RMSNorm(h_i); RMSNorm(Emb(t_{i+k}))]",
-        ]}</code>,
-        " 过一个 Transformer Block, 嵌入表和输出头与主模型共用,保持完整因果链。DeepSeek-V3 取深度 D=1,MTP loss 权重 λ 前 10T token 为 0.3、之后 0.1; 推理时 MTP 头当投机解码的草稿员,第二个 token 接受率 85%–90%,TPS 为 1.8 倍(§5.4.3)。",
-      ]}</p>,
-      <p key={1}>{[
-        "第 16 章 ",
-        <code key={1}>{[
-          "14_mtp.py",
-        ]}</code>,
-        ":主模型 742,849 参数,MTP 模块 214,528(两个 RMSNorm + 256→128 投影 + 1 个 Block)。 MTP 头 val loss 1.5332,自草稿接受率 0.899,每次主 forward 吐 1.893 个 token,墙钟 1.27×。带 MTP loss(λ=0.3)的主模型 val loss 1.5276, 不带为 1.5357,单种子下差距在噪声量级。",
-      ]}</p>,
-    ],
+    title: <>MTP <En>Multi-Token Prediction · 多 token 预测</En></>,
+    body: <><p>训练时让主模型顺带预测更远的 token。Gloeckle et al.(arXiv 2404.19737,ICML 2024)在共享主干上接 n 个独立输出头并行预测; DeepSeek-V3(arXiv 2412.19437 §2.2)改成顺序模块:<code>{"M_k [RMSNorm(h_i); RMSNorm(Emb(t_{i+k}))]"}</code> 过一个 Transformer Block, 嵌入表和输出头与主模型共用,保持完整因果链。DeepSeek-V3 取深度 D=1,MTP loss 权重 λ 前 10T token 为 0.3、之后 0.1; 推理时 MTP 头当投机解码的草稿员,第二个 token 接受率 85%–90%,TPS 为 1.8 倍(§5.4.3)。</p><p>第 16 章 <code>14_mtp.py</code>:主模型 742,849 参数,MTP 模块 214,528(两个 RMSNorm + 256→128 投影 + 1 个 Block)。 MTP 头 val loss 1.5332,自草稿接受率 0.899,每次主 forward 吐 1.893 个 token,墙钟 1.27×。带 MTP loss(λ=0.3)的主模型 val loss 1.5276, 不带为 1.5357,单种子下差距在噪声量级。</p></>,
   },
   {
     id: "quantization",
     titleText: "量化 quantization",
     def: "用更少的位数存模型权重。三步:① 给一段权重定一个 scale;② 权重除以 scale 后四舍五入到格点,只存格点编号;③ 用时乘回 scale。 4 位整数只有 16 个编码,对称用法取 −7 … 7 共 15 个格点。精度损失主要取决于一个 scale 管多少个权重,以及 scale 所管范围里有没有离群值。 本项目在第 17 章 / phase4-efficiency/15_quant.py 把第 6 章的 124M 量化成 15 种格式:4.5 位的 NVFP4 从 497.9 MB 压到 126.9 MB,val loss 从 3.0213 到 3.0638;整矩阵一个 scale 的 int4 崩到 9.9342。",
-    title: [
-      "量化 ",
-      <En key={1}>{[
-        "quantization",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "用更少的位数存模型权重。三步:① 给一段权重定一个 ",
-        <a key={1} href={"#quant-scale"}>{[
-          "scale",
-        ]}</a>,
-        ";② 权重除以 scale 后四舍五入到格点,只存格点编号;③ 用时乘回 scale。 4 位整数只有 16 个编码,对称用法取 −7 … 7 共 15 个格点。",
-      ]}</p>,
-      <p key={1}>{[
-        "精度损失主要取决于一个 scale 管多少个权重,以及 scale 所管范围里有没有",
-        <a key={1} href={"#outlier"}>{[
-          "离群值",
-        ]}</a>,
-        "。 本项目在",
-        <b key={3}>{[
-          "第 17 章 / ",
-          <code key={1}>{[
-            "phase4-efficiency/15_quant.py",
-          ]}</code>,
-        ]}</b>,
-        " 把第 6 章的 124M 量化成 15 种格式:4.5 位的 NVFP4 从 497.9 MB 压到 126.9 MB,val loss 从 3.0213 到 3.0638;整矩阵一个 scale 的 int4 崩到 9.9342。",
-      ]}</p>,
-    ],
+    title: <>量化 <En>quantization</En></>,
+    body: <><p>用更少的位数存模型权重。三步:① 给一段权重定一个 <a href={"#quant-scale"}>scale</a>;② 权重除以 scale 后四舍五入到格点,只存格点编号;③ 用时乘回 scale。 4 位整数只有 16 个编码,对称用法取 −7 … 7 共 15 个格点。</p><p>精度损失主要取决于一个 scale 管多少个权重,以及 scale 所管范围里有没有<a href={"#outlier"}>离群值</a>。 本项目在<b>第 17 章 / <code>phase4-efficiency/15_quant.py</code></b> 把第 6 章的 124M 量化成 15 种格式:4.5 位的 NVFP4 从 497.9 MB 压到 126.9 MB,val loss 从 3.0213 到 3.0638;整矩阵一个 scale 的 int4 崩到 9.9342。</p></>,
   },
   {
     id: "quant-scale",
     titleText: "scale / 分组 quantization scale · per-tensor / per-row / group",
     def: "把一段权重映射到格点上的缩放系数。对称整数量化取 scale = 这段权重的最大绝对值 / qmax,qmax = 2bits−1 − 1。 按一个 scale 管多少权重分三档:per-tensor 整个矩阵一个;per-row(per-channel)每行一个;group-g 每 g 个一个。管得越细,格子越贴合局部的数值范围,误差越小;但 scale 本身也占位数,摊到每个权重上的开销是 scale 位数 / g(见 bpw)。 第 17 章实测 int4:整矩阵 val loss 9.9342,每行 3.2456,每 128 个 3.1360,每 32 个 3.0949(fp32 为 3.0213)。",
-    title: [
-      "scale / 分组 ",
-      <En key={1}>{[
-        "quantization scale · per-tensor / per-row / group",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "把一段权重映射到格点上的缩放系数。对称整数量化取 ",
-        <code key={1}>{[
-          "scale = 这段权重的最大绝对值 / qmax",
-        ]}</code>,
-        ",qmax = 2",
-        <sup key={3}>{[
-          "bits−1",
-        ]}</sup>,
-        " − 1。 按一个 scale 管多少权重分三档:",
-        <b key={5}>{[
-          "per-tensor",
-        ]}</b>,
-        " 整个矩阵一个;",
-        <b key={7}>{[
-          "per-row",
-        ]}</b>,
-        "(per-channel)每行一个;",
-        <b key={9}>{[
-          "group-g",
-        ]}</b>,
-        " 每 g 个一个。",
-      ]}</p>,
-      <p key={1}>{[
-        "管得越细,格子越贴合局部的数值范围,误差越小;但 scale 本身也占位数,摊到每个权重上的开销是 scale 位数 / g(见 ",
-        <a key={1} href={"#bpw"}>{[
-          "bpw",
-        ]}</a>,
-        ")。 第 17 章实测 int4:整矩阵 val loss 9.9342,每行 3.2456,每 128 个 3.1360,每 32 个 3.0949(fp32 为 3.0213)。",
-      ]}</p>,
-    ],
+    title: <>scale / 分组 <En>quantization scale · per-tensor / per-row / group</En></>,
+    body: <><p>把一段权重映射到格点上的缩放系数。对称整数量化取 <code>scale = 这段权重的最大绝对值 / qmax</code>,qmax = 2<sup>bits−1</sup> − 1。 按一个 scale 管多少权重分三档:<b>per-tensor</b> 整个矩阵一个;<b>per-row</b>(per-channel)每行一个;<b>group-g</b> 每 g 个一个。</p><p>管得越细,格子越贴合局部的数值范围,误差越小;但 scale 本身也占位数,摊到每个权重上的开销是 scale 位数 / g(见 <a href={"#bpw"}>bpw</a>)。 第 17 章实测 int4:整矩阵 val loss 9.9342,每行 3.2456,每 128 个 3.1360,每 32 个 3.0949(fp32 为 3.0213)。</p></>,
   },
   {
     id: "bpw",
     titleText: "bpw bits per weight · 每权重平均位数",
     def: "量化格式里每个权重平均占的位数 = 格点位数 + scale 等元数据的位数摊到它管的权重上。 int4 每 32 个一个 16 位 scale:4 + 16/32 = 4.5;NVFP4 每 16 个一个 8 位 scale:4 + 8/16 = 4.5;MXFP4 每 32 个一个 8 位 scale:4 + 8/32 = 4.25。 模型存储大小 ≈ 被量化参数数 × bpw / 8,再加上没量化的那部分参数。",
-    title: [
-      "bpw ",
-      <En key={1}>{[
-        "bits per weight · 每权重平均位数",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "量化格式里每个权重平均占的位数 = 格点位数 + scale 等元数据的位数摊到它管的权重上。 int4 每 32 个一个 16 位 scale:4 + 16/32 = ",
-        <b key={1}>{[
-          "4.5",
-        ]}</b>,
-        ";NVFP4 每 16 个一个 8 位 scale:4 + 8/16 = ",
-        <b key={3}>{[
-          "4.5",
-        ]}</b>,
-        ";MXFP4 每 32 个一个 8 位 scale:4 + 8/32 = ",
-        <b key={5}>{[
-          "4.25",
-        ]}</b>,
-        "。 模型存储大小 ≈ 被量化参数数 × bpw / 8,再加上没量化的那部分参数。",
-      ]}</p>,
-    ],
+    title: <>bpw <En>bits per weight · 每权重平均位数</En></>,
+    body: <><p>量化格式里每个权重平均占的位数 = 格点位数 + scale 等元数据的位数摊到它管的权重上。 int4 每 32 个一个 16 位 scale:4 + 16/32 = <b>4.5</b>;NVFP4 每 16 个一个 8 位 scale:4 + 8/16 = <b>4.5</b>;MXFP4 每 32 个一个 8 位 scale:4 + 8/32 = <b>4.25</b>。 模型存储大小 ≈ 被量化参数数 × bpw / 8,再加上没量化的那部分参数。</p></>,
   },
   {
     id: "outlier",
     titleText: "离群值 outlier",
     def: "同一个矩阵(或同一组激活)里,比绝大多数数值大很多倍的少数数。整矩阵共用一个 scale 时,scale 由最大值决定, 一个离群值会把所有格子撑大,正常大小的数被大量舍成 0。第 17 章里 124M 的 48 个 Linear 矩阵,最大绝对值是标准差的 5.6 到 30.4 倍;int4 整矩阵量化 val loss 崩到 9.9342,只把每个矩阵最大的 0.1% 权重留在 16 位,回到 3.2633。 LLM.int8()(Dettmers et al., arXiv 2208.07339)针对的是激活里的离群特征维:把这些维拆出来用 FP16 算,其余走 int8。",
-    title: [
-      "离群值 ",
-      <En key={1}>{[
-        "outlier",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "同一个矩阵(或同一组激活)里,比绝大多数数值大很多倍的少数数。整矩阵共用一个 ",
-        <a key={1} href={"#quant-scale"}>{[
-          "scale",
-        ]}</a>,
-        " 时,scale 由最大值决定, 一个离群值会把所有格子撑大,正常大小的数被大量舍成 0。",
-      ]}</p>,
-      <p key={1}>{[
-        "第 17 章里 124M 的 48 个 Linear 矩阵,最大绝对值是标准差的 5.6 到 30.4 倍;int4 整矩阵量化 val loss 崩到 9.9342,只把每个矩阵最大的 0.1% 权重留在 16 位,回到 3.2633。 LLM.int8()(Dettmers et al., arXiv 2208.07339)针对的是激活里的离群特征维:把这些维拆出来用 FP16 算,其余走 int8。",
-      ]}</p>,
-    ],
+    title: <>离群值 <En>outlier</En></>,
+    body: <><p>同一个矩阵(或同一组激活)里,比绝大多数数值大很多倍的少数数。整矩阵共用一个 <a href={"#quant-scale"}>scale</a> 时,scale 由最大值决定, 一个离群值会把所有格子撑大,正常大小的数被大量舍成 0。</p><p>第 17 章里 124M 的 48 个 Linear 矩阵,最大绝对值是标准差的 5.6 到 30.4 倍;int4 整矩阵量化 val loss 崩到 9.9342,只把每个矩阵最大的 0.1% 权重留在 16 位,回到 3.2633。 LLM.int8()(Dettmers et al., arXiv 2208.07339)针对的是激活里的离群特征维:把这些维拆出来用 FP16 算,其余走 int8。</p></>,
   },
   {
     id: "fake-quant",
     titleText: "假量化 fake quantization · simulated quantization",
     def: "把权重量化成格点后立刻反量化回浮点,放回模型里算 loss 或生成。得到的数值与真 4 位存储在计算时解码出来的相同,所以能用来比较格式的精度; 但权重在内存里仍是浮点,不省显存、也不提速。真正省显存需要把格点编号按位打包,再配专门的反量化 / 矩阵乘算子。 第 17 章的 15_quant.py 用的就是假量化,页面上的 MB 是按位数算出来的存储大小。",
-    title: [
-      "假量化 ",
-      <En key={1}>{[
-        "fake quantization · simulated quantization",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "把权重量化成格点后立刻反量化回浮点,放回模型里算 loss 或生成。得到的数值与真 4 位存储在计算时解码出来的相同,所以能用来比较格式的精度; 但权重在内存里仍是浮点,不省显存、也不提速。真正省显存需要把格点编号按位打包,再配专门的反量化 / 矩阵乘算子。 第 17 章的 ",
-        <code key={1}>{[
-          "15_quant.py",
-        ]}</code>,
-        " 用的就是假量化,页面上的 MB 是按位数算出来的存储大小。",
-      ]}</p>,
-    ],
+    title: <>假量化 <En>fake quantization · simulated quantization</En></>,
+    body: <><p>把权重量化成格点后立刻反量化回浮点,放回模型里算 loss 或生成。得到的数值与真 4 位存储在计算时解码出来的相同,所以能用来比较格式的精度; 但权重在内存里仍是浮点,不省显存、也不提速。真正省显存需要把格点编号按位打包,再配专门的反量化 / 矩阵乘算子。 第 17 章的 <code>15_quant.py</code> 用的就是假量化,页面上的 MB 是按位数算出来的存储大小。</p></>,
   },
   {
     id: "fp4",
     titleText: "FP4 · E2M1 4-bit floating point",
     def: "4 位浮点:1 位符号、2 位指数、1 位尾数。非负值只有 0, 0.5, 1, 1.5, 2, 3, 4, 6 八个(指数为 0 时是次正规数 0 与 0.5),最大 6。 和均匀的 int4 格点比,它在 0 附近更密、远处更稀,贴合权重扎堆在 0 附近的分布。单独用它表示不了多少数,要配块级 scale 使用, NVFP4 和 MXFP4 的元素都是 E2M1。",
-    title: [
-      "FP4 · E2M1 ",
-      <En key={1}>{[
-        "4-bit floating point",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "4 位浮点:1 位符号、2 位指数、1 位尾数。非负值只有 ",
-        <b key={1}>{[
-          "0, 0.5, 1, 1.5, 2, 3, 4, 6",
-        ]}</b>,
-        " 八个(指数为 0 时是次正规数 0 与 0.5),最大 6。 和均匀的 int4 格点比,它在 0 附近更密、远处更稀,贴合权重扎堆在 0 附近的分布。单独用它表示不了多少数,要配块级 scale 使用, ",
-        <a key={3} href={"#nvfp4"}>{[
-          "NVFP4",
-        ]}</a>,
-        " 和 ",
-        <a key={5} href={"#mxfp4"}>{[
-          "MXFP4",
-        ]}</a>,
-        " 的元素都是 E2M1。",
-      ]}</p>,
-    ],
+    title: <>FP4 · E2M1 <En>4-bit floating point</En></>,
+    body: <><p>4 位浮点:1 位符号、2 位指数、1 位尾数。非负值只有 <b>0, 0.5, 1, 1.5, 2, 3, 4, 6</b> 八个(指数为 0 时是次正规数 0 与 0.5),最大 6。 和均匀的 int4 格点比,它在 0 附近更密、远处更稀,贴合权重扎堆在 0 附近的分布。单独用它表示不了多少数,要配块级 scale 使用, <a href={"#nvfp4"}>NVFP4</a> 和 <a href={"#mxfp4"}>MXFP4</a> 的元素都是 E2M1。</p></>,
   },
   {
     id: "q4-k",
     titleText: "Q4_K llama.cpp k-quants · 4-bit",
     def: "llama.cpp 的 4 位权重格式(PR ggml-org/llama.cpp#1684,Iwan Kawrakow,2023-06)。每 256 个权重一个超块,切成 8 个 32 的子块; 子块存 4 位非对称格点(反量化 x = a·q + b)和各 6 位的 scale、min,超块存两个 FP16(d、dmin)把 6 位值还原。 合计 4 + 12/32 + 32/256 = 4.5 位 / 权重。常见的 Q4_K_M 是混合方案:PR 原文 \"uses Q6_K for half of the attention.wv and feed_forward.w2 tensors, else Q4_K\"(之后版本的规则可能有调整)。 第 17 章的仿写版 q4_k_like 在 124M 上 val loss 3.0656(fp32 为 3.0213)。",
-    title: [
-      "Q4_K ",
-      <En key={1}>{[
-        "llama.cpp k-quants · 4-bit",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "llama.cpp 的 4 位权重格式(PR ggml-org/llama.cpp#1684,Iwan Kawrakow,2023-06)。每 256 个权重一个超块,切成 8 个 32 的子块; 子块存 4 位非对称格点(反量化 ",
-        <code key={1}>{[
-          "x = a·q + b",
-        ]}</code>,
-        ")和各 6 位的 scale、min,超块存两个 FP16(",
-        <code key={3}>{[
-          "d",
-        ]}</code>,
-        "、",
-        <code key={5}>{[
-          "dmin",
-        ]}</code>,
-        ")把 6 位值还原。 合计 4 + 12/32 + 32/256 = ",
-        <b key={7}>{[
-          "4.5 位 / 权重",
-        ]}</b>,
-        "。",
-      ]}</p>,
-      <p key={1}>{[
-        "常见的 Q4_K_M 是混合方案:PR 原文 \"uses Q6_K for half of the attention.wv and feed_forward.w2 tensors, else Q4_K\"(之后版本的规则可能有调整)。 第 17 章的仿写版 ",
-        <code key={1}>{[
-          "q4_k_like",
-        ]}</code>,
-        " 在 124M 上 val loss 3.0656(fp32 为 3.0213)。",
-      ]}</p>,
-    ],
+    title: <>Q4_K <En>llama.cpp k-quants · 4-bit</En></>,
+    body: <><p>llama.cpp 的 4 位权重格式(PR ggml-org/llama.cpp#1684,Iwan Kawrakow,2023-06)。每 256 个权重一个超块,切成 8 个 32 的子块; 子块存 4 位非对称格点(反量化 <code>x = a·q + b</code>)和各 6 位的 scale、min,超块存两个 FP16(<code>d</code>、<code>dmin</code>)把 6 位值还原。 合计 4 + 12/32 + 32/256 = <b>4.5 位 / 权重</b>。</p><p>常见的 Q4_K_M 是混合方案:PR 原文 "uses Q6_K for half of the attention.wv and feed_forward.w2 tensors, else Q4_K"(之后版本的规则可能有调整)。 第 17 章的仿写版 <code>q4_k_like</code> 在 124M 上 val loss 3.0656(fp32 为 3.0213)。</p></>,
   },
   {
     id: "nvfp4",
     titleText: "NVFP4 NVIDIA 4-bit floating point",
     def: "NVIDIA 的 4 位格式:元素是 E2M1,每 16 个值共享一个 8 位 FP8(E4M3)scale,另有整个张量一个 FP32 scale, 每权重 4 + 8/16 = 4.5 位。E4M3 scale 能取小数,块内最大值基本正好对到 E2M1 的 6 上;块也比 MXFP4 小一半,一个离群值牵连的值更少。 出处:NVIDIA 技术博客 \"Introducing NVFP4 for Efficient and Accurate Low-Precision Inference\"(2025-06-24)。 第 17 章在 124M 上实测 val loss 3.0638。",
-    title: [
-      "NVFP4 ",
-      <En key={1}>{[
-        "NVIDIA 4-bit floating point",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "NVIDIA 的 4 位格式:元素是 ",
-        <a key={1} href={"#fp4"}>{[
-          "E2M1",
-        ]}</a>,
-        ",每 16 个值共享一个 8 位 FP8(E4M3)scale,另有整个张量一个 FP32 scale, 每权重 4 + 8/16 = ",
-        <b key={3}>{[
-          "4.5 位",
-        ]}</b>,
-        "。E4M3 scale 能取小数,块内最大值基本正好对到 E2M1 的 6 上;块也比 MXFP4 小一半,一个离群值牵连的值更少。 出处:NVIDIA 技术博客 \"Introducing NVFP4 for Efficient and Accurate Low-Precision Inference\"(2025-06-24)。 第 17 章在 124M 上实测 val loss 3.0638。",
-      ]}</p>,
-    ],
+    title: <>NVFP4 <En>NVIDIA 4-bit floating point</En></>,
+    body: <><p>NVIDIA 的 4 位格式:元素是 <a href={"#fp4"}>E2M1</a>,每 16 个值共享一个 8 位 FP8(E4M3)scale,另有整个张量一个 FP32 scale, 每权重 4 + 8/16 = <b>4.5 位</b>。E4M3 scale 能取小数,块内最大值基本正好对到 E2M1 的 6 上;块也比 MXFP4 小一半,一个离群值牵连的值更少。 出处:NVIDIA 技术博客 "Introducing NVFP4 for Efficient and Accurate Low-Precision Inference"(2025-06-24)。 第 17 章在 124M 上实测 val loss 3.0638。</p></>,
   },
   {
     id: "mxfp4",
     titleText: "MXFP4 OCP Microscaling FP4",
     def: "OCP Microscaling Formats (MX) v1.0 标准里的 4 位格式(论文 Rouhani et al., arXiv 2310.10537):元素是 E2M1, 每 32 个值共享一个 8 位 E8M0 scale,E8M0 只能表示 2 的整数次幂。每权重 4 + 8/32 = 4.25 位。 因为 scale 只能是 2 的幂,块内最大值除以 scale 后落在 4 到 8 之间,超过 6 的部分被截断。 第 17 章在 124M 上实测 val loss 3.1030,比 NVFP4 多 0.039。",
-    title: [
-      "MXFP4 ",
-      <En key={1}>{[
-        "OCP Microscaling FP4",
-      ]}</En>,
-    ],
-    body: [
-      <p key={0}>{[
-        "OCP Microscaling Formats (MX) v1.0 标准里的 4 位格式(论文 Rouhani et al., arXiv 2310.10537):元素是 ",
-        <a key={1} href={"#fp4"}>{[
-          "E2M1",
-        ]}</a>,
-        ", 每 32 个值共享一个 8 位 E8M0 scale,E8M0 只能表示 2 的整数次幂。每权重 4 + 8/32 = ",
-        <b key={3}>{[
-          "4.25 位",
-        ]}</b>,
-        "。 因为 scale 只能是 2 的幂,块内最大值除以 scale 后落在 4 到 8 之间,超过 6 的部分被截断。 第 17 章在 124M 上实测 val loss 3.1030,比 ",
-        <a key={5} href={"#nvfp4"}>{[
-          "NVFP4",
-        ]}</a>,
-        " 多 0.039。",
-      ]}</p>,
-    ],
+    title: <>MXFP4 <En>OCP Microscaling FP4</En></>,
+    body: <><p>OCP Microscaling Formats (MX) v1.0 标准里的 4 位格式(论文 Rouhani et al., arXiv 2310.10537):元素是 <a href={"#fp4"}>E2M1</a>, 每 32 个值共享一个 8 位 E8M0 scale,E8M0 只能表示 2 的整数次幂。每权重 4 + 8/32 = <b>4.25 位</b>。 因为 scale 只能是 2 的幂,块内最大值除以 scale 后落在 4 到 8 之间,超过 6 的部分被截断。 第 17 章在 124M 上实测 val loss 3.1030,比 <a href={"#nvfp4"}>NVFP4</a> 多 0.039。</p></>,
   },
 ]

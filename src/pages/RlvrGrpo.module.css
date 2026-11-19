@@ -1,0 +1,52 @@
+.scope :global(.btn-row.small .btn) { font-size: 13px; padding: 7px 13px; }
+.scope :global(.codepath) {
+  font-family: var(--mono); font-size: 11.5px; color: var(--ink2); background: #F4F2EA;
+  border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; display: inline-block; margin-top: 10px;
+}
+.scope :global(.codepath b) { color: var(--accent); }
+.scope :global(.checklist) { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.scope :global(.checklist li) {
+  display: flex; gap: 10px; align-items: flex-start; font-size: 13px; background: #fff;
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 13px;
+}
+.scope :global(.checklist .ck) { color: #3f7d63; font-weight: 700; flex-shrink: 0; }
+.scope :global(.checklist b) { color: var(--accent); }
+.scope :global(.dotread) { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 12px 0 4px; }
+.scope :global(.dr) { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 13px; text-align: center; }
+.scope :global(.drv) { font-family: var(--mono); font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.scope :global(.drl) { font-size: 11.5px; color: var(--ink2); margin-top: 2px; }
+.scope :global(.lab) { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; margin: 10px 0; }
+.scope :global(.scroll-x) { overflow-x: auto; }
+.scope :global(.legend) { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink2); margin: 4px 0; }
+.scope :global(.legend span) { display: inline-flex; align-items: center; gap: 5px; }
+.scope :global(.legend i) { display: inline-block; width: 11px; height: 11px; border-radius: 3px; }
+.scope :global(.mini-h) { font-family: var(--mono); font-size: 11.5px; color: var(--ink2); font-weight: 700; margin: 4px 0; }
+.scope :global(.prob) { font-family: var(--mono); font-size: 20px; font-weight: 700; margin: 4px 0 10px; }
+.scope :global(.ans) { color: #3f7d63; font-size: 14px; font-weight: 600; margin-left: 10px; }
+.scope :global(.samples) { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+.scope :global(.smp) { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; text-align: center; }
+.scope :global(.st) { font-family: var(--mono); font-size: 15px; font-weight: 700; white-space: pre; }
+.scope :global(.sr) { font-size: 11.5px; margin-top: 2px; }
+.scope :global(.smp.ok) { border-color: #b9d9c8; background: #D7EBE0; }
+.scope :global(.smp.ok .sr) { color: #3f7d63; }
+.scope :global(.smp.no .sr) { color: #9a3a22; }
+.scope :global(.smp.click) { cursor: pointer; }
+.scope :global(.advbars) { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; height: 150px; margin-top: 10px; }
+.scope :global(.advcol) { position: relative; height: 100%; }
+.scope :global(.ax) { position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid #cfc9ba; }
+.scope :global(.ab) { position: absolute; left: 18%; right: 18%; border-radius: 4px; }
+.scope :global(.av) { position: absolute; left: 0; right: 0; font-family: var(--mono); font-size: 11px; text-align: center; }
+.scope :global(table.tb) { border-collapse: collapse; width: 100%; font-size: 12.5px; min-width: 620px; }
+.scope :global(table.tb th) { font-family: var(--mono); font-size: 11px; color: var(--ink2); text-align: right; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.scope :global(table.tb td) { padding: 6px 8px; border-bottom: 1px solid #EFECE3; font-family: var(--mono); text-align: right; white-space: nowrap; }
+.scope :global(table.tb th:first-child), .scope :global(table.tb td.l) { text-align: left; font-family: system-ui, sans-serif; }
+.scope :global(table.tb tr.hl td) { background: #FBF1EA; }
+.scope :global(.gbar) { display: flex; align-items: center; gap: 10px; margin: 7px 0; }
+.scope :global(.gn) { font-family: var(--mono); font-size: 12px; width: 170px; flex-shrink: 0; color: var(--ink2); }
+.scope :global(.gt) { flex: 1; min-width: 120px; height: 22px; background: #F4F2EA; border: 1px solid var(--border); border-radius: 7px; position: relative; }
+.scope :global(.gf) { height: 100%; display: block; }
+.scope :global(.gm) { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--ink); }
+.scope :global(.gv) { font-family: var(--mono); font-size: 12.5px; font-weight: 700; width: 120px; text-align: right; flex-shrink: 0; }
+.scope :global(.good) { color: #3f7d63; }
+.scope :global(.bad) { color: #9a3a22; }
+.scope :global(.accent) { color: var(--accent); }

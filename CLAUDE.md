@@ -16,7 +16,7 @@
 ## 结构
 
 - `src/catalog.json` 与 `src/chapters.ts`：章节清单，只放纯文本。首页卡片、左侧目录、步骤标题、分享卡都从这里读。`steps[].card` 是首页文案，`steps[].nav` 是页内 tab，两句不一样就分两个字段。带排版的首页标题和卡片说明在 `src/pages/homeText.tsx`。
-- `src/glossary.json`：名词表的页面元信息、分组和 TOC。正文在 `src/glossary/<分组>.tsx`，用 JSX 写。气泡用的纯文本在词条的 `def` 字段。
+- `src/glossary.json`：名词表的页面元信息、分组和 TOC。正文在 `src/glossary/<分组>.tsx`，用普通 JSX 写，子节点不要包成数组。气泡用的纯文本在词条的 `def` 字段，应与正文去标签后一致。
 - `src/components/ChapterShell.tsx`：分步导航、深链、上一步 / 下一步、最后一步「完成 🎉」、通关横幅和 confetti。各章只提供步骤数组。每一步都保持挂载，离开时去掉 `active`。
 - `src/components/Term.tsx`、`TermTip.tsx`、`Dig.tsx`、`HpBar.tsx`：名词、折叠、超参条。
 - `src/pages/<Name>.tsx` 加同名 `.module.css`：一章一个页面。公共变量和外壳样式在 `src/site.css`。

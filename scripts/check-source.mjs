@@ -72,7 +72,11 @@ for (const file of files) {
   if (ext === '.json') {
     if (htmlTag.test(text)) problems.push(`${file}: JSON 里存放了 HTML 字符串`)
     walkLayout(JSON.parse(text), file, '')
-  } else if (codeExt.has(ext)) {
+  }
+  if (ext === '.tsx' && (/>\{\[/.test(text) || /<>\{\[/.test(text))) {
+    problems.push(`${file}: JSX 子节点写成了数组`)
+  }
+  if (codeExt.has(ext)) {
     const assigned = text.match(/(?:const|let|var)\s+\w+\s*=\s*(`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*")/g) ?? []
     for (const s of assigned) {
       if (htmlTag.test(s)) problems.push(`${file}: 字符串常量里有 HTML：${s.slice(0, 80)}`)

@@ -6,7 +6,9 @@ import { GlossaryPage } from './pages/GlossaryPage'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 import { PendingChapter, PendingStatic } from './pages/Pending'
+import { Bigram } from './pages/Bigram'
 import { Posttraining } from './pages/Posttraining'
+import { RlvrGrpo } from './pages/RlvrGrpo'
 import { scrollToRegistered } from './scroll'
 import './site.css'
 
@@ -15,7 +17,9 @@ function ChapterRoute() {
   const chapter = findChapter(slug)
   if (!chapter) return <NotFound />
   if (!chapter.ready) return <PendingChapter chapter={chapter} />
+  if (slug === 'bigram') return <Bigram />
   if (slug === 'posttraining') return <Posttraining />
+  if (slug === 'rlvr-grpo') return <RlvrGrpo />
   return <NotFound />
 }
 

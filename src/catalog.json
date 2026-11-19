@@ -148,7 +148,7 @@
       "stepsClass": "steps",
       "prevClass": "btn ghost",
       "confetti": false,
-      "ready": false,
+      "ready": true,
       "sidebar": "Bigram 基线"
     },
     {
@@ -1394,7 +1394,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "RLVR 与 GRPO"
     }
   ]

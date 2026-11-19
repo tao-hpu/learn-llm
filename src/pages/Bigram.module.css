@@ -1,0 +1,163 @@
+.scope :global(.d) {
+  display: inline-flex; align-items: baseline; gap: 3px; font-family: var(--mono); font-weight: 700;
+  padding: 0 5px; border-radius: 6px; line-height: 1.5; white-space: nowrap;
+}
+.scope :global(.d i) { font-style: normal; font-size: 9.5px; font-weight: 600; opacity: .9; }
+.scope :global(.d-batch) { color: #b8512f; background: #F7E6DE; }
+.scope :global(.d-block) { color: #3f7d63; background: #E4EFE9; }
+.scope :global(.d-vocab) { color: #a87b1f; background: #FAEFD6; }
+.scope :global(button.btn.ghost) { background: transparent; color: var(--ink2); border: 1px solid var(--border); }
+.scope :global(.shape-tag) {
+  font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--accent);
+  background: #fff; border: 1px solid var(--accent); padding: 4px 12px; border-radius: 8px; display: inline-block;
+}
+.scope :global(.seq-block) { margin: 18px 0; }
+.scope :global(.seq-row) { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.scope :global(.seq-row .tag) { font-family: var(--mono); font-size: 13px; color: var(--ink2); width: 74px; flex-shrink: 0; }
+.scope :global(.cell) {
+  width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 20px; font-weight: 600; border: 1px solid var(--border); background: #fff;
+}
+.scope :global(.cell.x) { background: #EEF1EC; border-color: #d7ddd2; }
+.scope :global(.cell.y) { background: var(--accent-soft); border-color: #e8c4b5; color: #8a3d23; }
+.scope :global(.arrows) { display: flex; gap: 10px; margin: 2px 0 2px 84px; }
+.scope :global(.arrow-col) { width: 46px; text-align: center; color: var(--accent); font-size: 18px; }
+.scope :global(.seq-title) { font-size: 13px; color: var(--ink2); margin: 18px 0 6px; font-weight: 600; }
+.scope :global(.legend) { display: flex; gap: 18px; font-size: 13px; color: var(--ink2); margin-top: 14px; flex-wrap: wrap; }
+.scope :global(.legend span) { display: inline-flex; align-items: center; gap: 6px; }
+.scope :global(.swatch) { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid var(--border); }
+.scope :global(.flip-stage) { position: relative; margin: 10px auto; transition: height .5s ease; }
+.scope :global(.tile) {
+  position: absolute; width: 150px; height: 64px; border-radius: 12px; background: #fff; border: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: transform .7s cubic-bezier(.22, .61, .36, 1);
+}
+.scope :global(.tile .idx) { font-family: var(--mono); font-size: 12px; color: var(--accent); font-weight: 700; }
+.scope :global(.tile .ch) { font-family: var(--mono); font-size: 13px; color: var(--ink2); margin-top: 2px; }
+.scope :global(.tile .clen) { font-family: var(--mono); font-size: 11px; color: #aaa; margin-top: 1px; }
+.scope :global(.flip-controls) { display: flex; gap: 12px; align-items: center; margin: 6px 0 4px; flex-wrap: wrap; }
+.scope :global(.q-picker) { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 20px; }
+.scope :global(.q-btn) {
+  font-family: var(--mono); font-size: 13px; font-weight: 600; background: #fff; border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 12px; cursor: pointer; color: var(--ink2);
+}
+.scope :global(.q-btn.sel) { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: #fff; }
+.scope :global(.bars) { display: flex; align-items: flex-end; gap: 14px; height: 200px; margin: 18px 0 8px; padding: 0 6px; }
+.scope :global(.bar-col) { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.scope :global(.bar) { width: 100%; max-width: 54px; border-radius: 8px 8px 4px 4px; background: #cdd3c8; transition: height .6s cubic-bezier(.22, .61, .36, 1); }
+.scope :global(.bar.correct) { background: var(--accent); }
+.scope :global(.bar-val) { font-family: var(--mono); font-size: 11px; color: var(--ink2); margin-bottom: 4px; height: 14px; }
+.scope :global(.bar-label) { font-family: var(--mono); font-size: 15px; margin-top: 8px; font-weight: 600; }
+.scope :global(.bar-label.correct) { color: var(--accent); }
+.scope :global(.calc-box) { background: #F4F2EA; border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-top: 16px; font-family: var(--mono); font-size: 14.5px; }
+.scope :global(.calc-box .big) { font-size: 20px; color: var(--accent); font-weight: 700; }
+.scope :global(.slider-row) { display: flex; align-items: center; gap: 16px; margin: 20px 0 10px; flex-wrap: wrap; }
+.scope :global(input.slider) {
+  -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; outline: none;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent) var(--fill, 50%), #ddd var(--fill, 50%), #ddd 100%);
+  width: 320px; max-width: 60vw;
+}
+.scope :global(input.slider::-webkit-slider-thumb) {
+  -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--accent); cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--accent);
+}
+.scope :global(.readout) { display: flex; gap: 28px; flex-wrap: wrap; margin: 8px 0 16px; }
+.scope :global(.readout .k) { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
+.scope :global(.readout .v) { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--accent); }
+.scope :global(.refs) { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.scope :global(.ref-chip) {
+  font-family: var(--mono); font-size: 12px; color: var(--ink2); background: #fff; border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 10px; cursor: pointer;
+}
+.scope :global(.avg-box) { margin-top: 20px; background: #F4F2EA; border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+.scope :global(.avg-terms) { font-family: var(--mono); font-size: 13px; color: var(--ink2); word-break: break-all; }
+.scope :global(.avg-result) { font-family: var(--mono); font-size: 16px; margin-top: 8px; }
+.scope :global(.avg-result b) { color: var(--accent); font-size: 20px; }
+.scope :global(svg text) { font-family: var(--mono); }
+.scope :global(.sub-desc) { color: var(--ink2); font-size: 13.5px; margin: 0 0 12px; }
+.scope :global(.loop-wrap) { max-width: 600px; margin: 8px auto 0; }
+.scope :global(.loop-stage) { position: relative; width: 100%; aspect-ratio: 1 / 1; }
+.scope :global(.loop-svg) { position: absolute; inset: 0; width: 100%; height: 100%; }
+.scope :global(.lnode) {
+  position: absolute; width: 27%; min-width: 138px; transform: translate(-50%, -50%);
+  background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 11px 12px; text-align: center; z-index: 2;
+}
+.scope :global(.lnode.on) { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); transform: translate(-50%, -50%) scale(1.06); z-index: 3; }
+.scope :global(.ln-num) {
+  font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--ink2);
+  display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: #F4F2EA;
+}
+.scope :global(.lnode.on .ln-num) { background: var(--accent); color: #fff; }
+.scope :global(.ln-title) { font-size: 13.5px; font-weight: 600; margin: 5px 0; line-height: 1.35; }
+.scope :global(.ln-code) {
+  font-family: var(--mono); font-size: 11.5px; color: var(--accent); background: #F4F2EA;
+  border-radius: 6px; padding: 2px 6px; display: inline-block; word-break: break-all;
+}
+.scope :global(.loop-center) { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 32%; min-width: 148px; text-align: center; }
+.scope :global(.li-k) { font-family: var(--mono); font-size: 12px; color: var(--accent); font-weight: 700; }
+.scope :global(.li-desc) { font-size: 12.5px; color: var(--ink); margin-top: 6px; line-height: 1.5; min-height: 54px; }
+.scope :global(.li-count) { font-family: var(--mono); font-size: 11.5px; color: var(--ink2); margin-top: 6px; }
+.scope :global(.train-controls) { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 6px 0 14px; }
+.scope :global(.bgrid) { display: flex; flex-direction: column; gap: 14px; }
+.scope :global(.bcard) { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; }
+.scope :global(.bcard-h) { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+.scope :global(.bcard-foot) { font-size: 11.5px; color: var(--ink2); text-align: center; margin-top: 10px; line-height: 1.55; }
+.scope :global(.knob-loss-row) { display: flex; gap: 18px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.scope :global(.knob-row) { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; flex: 1 1 320px; }
+.scope :global(.knob) { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.scope :global(.knob-dial) {
+  width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 2px solid var(--border); position: relative;
+  transition: transform .65s cubic-bezier(.22, .61, .36, 1);
+}
+.scope :global(.knob-dial::after) {
+  content: ""; position: absolute; left: 50%; top: 4px; width: 2.5px; height: 15px; background: var(--accent); border-radius: 2px; transform: translateX(-50%);
+}
+.scope :global(.knob-dial.spun) { border-color: #e8c4b5; }
+.scope :global(.knob-grad) { font-family: var(--mono); font-size: 9.5px; color: var(--accent); height: 13px; opacity: 0; }
+.scope :global(.knob-grad.show) { opacity: 1; }
+.scope :global(.knob-name) { font-family: var(--mono); font-size: 9.5px; color: var(--ink2); }
+.scope :global(.score-card) {
+  display: flex; align-items: center; gap: 14px; justify-content: center; flex-wrap: wrap;
+  background: #F4F2EA; border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px; margin-top: 0;
+}
+.scope :global(.sc-k) { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
+.scope :global(.sc-v) { font-family: var(--mono); font-size: 32px; font-weight: 700; color: var(--accent); }
+.scope :global(.sc-arrow) { font-family: var(--mono); font-size: 13px; color: var(--ink2); }
+.scope :global(.wtable) { display: grid; grid-template-columns: 30px repeat(6, 1fr); gap: 4px; max-width: 440px; margin: 0 auto; }
+.scope :global(.wt-h), .scope :global(.wt-rh) {
+  font-family: var(--mono); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+}
+.scope :global(.wt-h) { color: var(--ink2); }
+.scope :global(.wt-corner) { font-family: var(--mono); font-size: 9px; color: var(--ink2); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.1; }
+.scope :global(.wt-rh) { cursor: pointer; border-radius: 6px; }
+.scope :global(.wt-cell) {
+  aspect-ratio: 1 / 1; border-radius: 7px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.scope :global(.wt-cell.knob) { box-shadow: 0 0 0 2px var(--accent); }
+.scope :global(.wt-rh.sel), .scope :global(.wt-cell.rowsel) { outline: 2px solid var(--ink); outline-offset: -2px; }
+.scope :global(.wt-legend) { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12px; color: var(--ink2); }
+.scope :global(.wt-scale) { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); }
+.scope :global(.wt-scale i) { width: 16px; height: 16px; border-radius: 4px; background: #FAF9F5; border: 1px solid var(--border); display: inline-block; }
+.scope :global(.wt-scale b) { width: 16px; height: 16px; border-radius: 4px; background: var(--accent); display: inline-block; }
+.scope :global(.wpredict) { margin-top: 8px; background: #F4F2EA; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.scope :global(.wp-title) { font-size: 13px; color: var(--ink2); margin-bottom: 10px; }
+.scope :global(.wp-title b) { color: var(--accent); }
+.scope :global(.wp-bars) { display: flex; align-items: flex-end; gap: 10px; height: 92px; }
+.scope :global(.wp-col) { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.scope :global(.wp-bar) { width: 100%; max-width: 40px; border-radius: 6px 6px 3px 3px; background: #cdd3c8; }
+.scope :global(.wp-bar.top) { background: var(--accent); }
+.scope :global(.wp-val) { font-family: var(--mono); font-size: 10px; color: var(--ink2); margin-bottom: 3px; height: 12px; }
+.scope :global(.wp-lab) { font-family: var(--mono); font-size: 13px; margin-top: 5px; font-weight: 600; }
+.scope :global(.wp-lab.top) { color: var(--accent); }
+.scope :global(.loss-readout) { display: flex; gap: 28px; flex-wrap: wrap; margin: 6px 0 4px; }
+.scope :global(.loss-readout .k) { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
+.scope :global(.loss-readout .v) { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--accent); }
+.scope :global(.order-flow) { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.scope :global(.oc) {
+  font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent);
+  background: #F4F2EA; border: 1px solid var(--accent-soft); border-radius: 8px; padding: 4px 10px;
+}
+.scope :global(.oa) { color: var(--ink2); }
+.scope :global(.curve) { margin-top: 18px; width: 100%; height: auto; display: block; }
+.scope :global(.loss-curve) { margin-top: 8px; width: 100%; height: auto; display: block; }
