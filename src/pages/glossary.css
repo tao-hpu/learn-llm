@@ -14,20 +14,20 @@
   .home-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;
     font-family:var(--mono);font-size:13px;color:var(--ink2);
     background:var(--card);border:1px solid var(--border);
-    border-radius:8px;padding:5px 12px;margin-bottom:16px;transition:all .2s ease;}
+    border-radius:2px;padding:5px 12px;margin-bottom:16px;transition:all .2s ease;}
   .home-link:hover{border-color:var(--accent);color:var(--accent);}
 
   header{margin-bottom:18px;}
   .eyebrow{font-family:var(--mono);font-size:13px;color:var(--ink2);
     background:var(--card);border:1px solid var(--border);
-    border-radius:8px;padding:4px 10px;display:inline-block;margin-bottom:14px;}
+    border-radius:2px;padding:4px 10px;display:inline-block;margin-bottom:14px;}
   h1{font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.3;margin:0 0 10px;}
   .subtitle{color:var(--ink2);font-size:15px;max-width:680px;margin:0;}
 
   /* 快速跳转条 */
   .toc{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 8px;}
   .toc a{font-family:var(--mono);font-size:12.5px;text-decoration:none;color:var(--ink2);
-    background:var(--card);border:1px solid var(--border);border-radius:999px;
+    background:var(--card);border:1px solid var(--border);border-radius:2px;
     padding:5px 12px;transition:all .2s ease;}
   .toc a:hover{border-color:var(--accent);color:var(--accent);}
 
@@ -35,15 +35,15 @@
     padding-bottom:8px;border-bottom:1px solid var(--border);}
   .sec-h .sh-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent);margin-right:8px;}
 
-  .gentry{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  .gentry{background:var(--card);border:1px solid var(--border);border-radius:2px;
     padding:18px 20px;margin:12px 0;scroll-margin-top:20px;transition:border-color .25s ease,box-shadow .25s ease;}
-  .gentry:target{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft);}
+  .gentry:target{border-color:var(--accent);box-shadow: none;}
   .gentry h3{font-family:var(--serif);font-size:18px;margin:0 0 2px;}
   .gentry .en{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:600;}
   .gentry p{margin:8px 0 0;font-size:14.5px;color:var(--ink);}
   .gentry p.also{font-size:13px;color:var(--ink2);margin-top:8px;}
   .gentry code{font-family:var(--mono);font-size:12.5px;background:#fff;border:1px solid var(--border);
-    padding:1px 5px;border-radius:5px;color:var(--accent);}
+    padding:1px 5px;border-radius:2px;color:var(--accent);}
   .gentry b{color:var(--accent);font-weight:600;}
 
   footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--border);font-size:13px;color:var(--ink2);}

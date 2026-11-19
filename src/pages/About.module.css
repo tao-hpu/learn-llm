@@ -4,7 +4,7 @@
 .block {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 2px;
   padding: 22px 26px 18px;
   margin-top: 22px;
 }
@@ -16,7 +16,7 @@
 .block a:hover { text-decoration: underline; }
 .block code {
   font-family: var(--mono); font-size: 12.5px; background: #fff; border: 1px solid var(--border);
-  padding: 1px 5px; border-radius: 5px; color: var(--accent);
+  padding: 1px 5px; border-radius: 2px; color: var(--accent);
 }
 
 .tbl { overflow-x: auto; }

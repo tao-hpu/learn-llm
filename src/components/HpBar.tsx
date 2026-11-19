@@ -10,6 +10,7 @@ export function HpBar({ label, children }: { label: string; children: ReactNode 
   )
 }
 
-export function HpChip({ color, bg, children }: { color: string; bg: string; children: ReactNode }) {
-  return <span className="hp-chip" style={{ color, background: bg }}>{children}</span>
+/** color / bg 保留在签名里以兼容各章调用；全站统一为单色，不再按芯片上色。 */
+export function HpChip({ children }: { color?: string; bg?: string; children: ReactNode }) {
+  return <span className="hp-chip">{children}</span>
 }

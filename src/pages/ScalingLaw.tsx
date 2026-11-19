@@ -331,7 +331,7 @@ function Step1() {
           ))}
         </div>
         <div className="scroll-x">
-          <div style={{ minWidth: 520, background: '#fff', borderRadius: 10 }}>
+          <div style={{ minWidth: 520, background: '#fff', borderRadius: 2 }}>
             <Chart series={divSeries} o={divOpt} />
           </div>
         </div>

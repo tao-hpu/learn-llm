@@ -11,18 +11,18 @@
 }
 
 .scope :global(.btn-row.small .btn) {
-  font-size: 12px; padding: 5px 9px; border-radius: 8px; font-family: var(--mono);
+  font-size: 12px; padding: 5px 9px; border-radius: 2px; font-family: var(--mono);
 }
 .scope :global(.codepath) {
   font-family: var(--mono); font-size: 11.5px; color: var(--ink2); background: #F4F2EA;
-  border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; display: inline-block; margin-top: 10px;
+  border: 1px solid var(--border); border-radius: 2px; padding: 5px 10px; display: inline-block; margin-top: 10px;
 }
 .scope :global(.codepath b) { color: var(--accent); }
 .scope :global(.codepath code) { font-family: var(--mono); font-size: 12.5px; }
 
 .scope :global(.d) {
   display: inline-flex; align-items: baseline; gap: 3px; font-family: var(--mono); font-weight: 700;
-  font-size: 12.5px; border-radius: 6px; padding: 0 5px;
+  font-size: 12.5px; border-radius: 2px; padding: 0 5px;
 }
 .scope :global(.d i) { font-style: normal; font-size: 9.5px; font-weight: 600; opacity: .9; letter-spacing: .2px; }
 .scope :global(.d-head) { color: #a3548c; background: #F6E6F0; }
@@ -32,10 +32,10 @@
 .scope :global(.rk-row label) { font-family: var(--mono); font-size: 12.5px; font-weight: 700; min-width: 172px; }
 .scope :global(.rk-val) {
   font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--accent); min-width: 52px; text-align: center;
-  background: #FBF1EA; border: 1px solid #F0DDD0; border-radius: 8px; padding: 2px 6px;
+  background: #FBF1EA; border: 1px solid #F0DDD0; border-radius: 2px; padding: 2px 6px;
 }
 .scope :global(input[type='range']) {
-  -webkit-appearance: none; appearance: none; height: 6px; border-radius: 4px; background: var(--accent-soft);
+  -webkit-appearance: none; appearance: none; height: 6px; border-radius: 2px; background: var(--accent-soft);
   flex: 1; min-width: 150px; max-width: 340px; outline: none;
 }
 .scope :global(input[type='range']::-webkit-slider-thumb) {
@@ -46,20 +46,20 @@
   width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 3px solid #fff;
 }
 
-.scope :global(.lab) { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; margin: 10px 0; }
+.scope :global(.lab) { background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 16px 18px; margin: 10px 0; }
 .scope :global(.svgbox) { overflow-x: auto; margin: 10px 0 4px; }
 .scope :global(.svgbox svg) { display: block; height: auto; }
 .scope :global(.dotread) { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 12px 0 4px; }
-.scope :global(.dr) { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 13px; text-align: center; }
+.scope :global(.dr) { background: #fff; border: 1px solid var(--border); border-radius: 2px; padding: 10px 13px; text-align: center; }
 .scope :global(.drv) { font-family: var(--mono); font-size: 21px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .scope :global(.drl) { font-size: 11.5px; color: var(--ink2); margin-top: 2px; }
 .scope :global(.legend) { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink2); margin: 6px 0 0; }
 .scope :global(.legend span) { display: inline-flex; align-items: center; gap: 5px; }
 .scope :global(.legend .sw) {
-  width: 12px; height: 12px; border-radius: 3px; display: inline-block; border: 1px solid rgba(0, 0, 0, .08);
+  width: 12px; height: 12px; border-radius: 2px; display: inline-block; border: 1px solid rgba(0, 0, 0, .08);
 }
 .scope :global(.formula) {
-  background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; margin: 10px 0;
+  background: #fff; border: 1px solid var(--border); border-radius: 2px; padding: 12px 16px; margin: 10px 0;
   font-family: var(--mono); font-size: 13px; line-height: 1.9; overflow-x: auto;
 }
 .scope :global(.formula .hl) { color: var(--accent); font-weight: 700; }
@@ -68,12 +68,12 @@
 
 .scope :global(.blkgrid) { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; margin: 10px 0 4px; }
 .scope :global(.blk) {
-  background: #fff; border: 1.5px solid var(--border); border-radius: 9px; padding: 4px 5px 5px; cursor: pointer;
+  background: #fff; border: 1.5px solid var(--border); border-radius: 2px; padding: 4px 5px 5px; cursor: pointer;
   transition: all .18s ease; position: relative;
 }
 .scope :global(.blk:hover) { border-color: #cfc9ba; }
 .scope :global(.blk .bh) { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9.5px; color: var(--ink2); }
-.scope :global(.blk .bt) { font-weight: 700; border-radius: 4px; padding: 0 4px; }
+.scope :global(.blk .bt) { font-weight: 700; border-radius: 2px; padding: 0 4px; }
 .scope :global(.blk .chars) { display: grid; grid-template-columns: repeat(8, 1fr); gap: 1px; margin-top: 3px; }
 .scope :global(.blk .c) {
   font-family: var(--mono); font-size: 11px; text-align: center; background: #F4F2EA; border-radius: 2px;
@@ -94,25 +94,25 @@
 
 .scope :global(.cmpflow) {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #fff; border: 1px solid var(--border);
-  border-radius: 12px; padding: 12px 14px; margin: 10px 0;
+  border-radius: 2px; padding: 12px 14px; margin: 10px 0;
 }
 .scope :global(.cmpflow .arrow) { font-family: var(--mono); color: var(--ink2); font-size: 12px; text-align: center; line-height: 1.3; }
 .scope :global(.vecs) { display: flex; gap: 4px; align-items: flex-end; }
 .scope :global(.vec) { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.scope :global(.vec .vb) { width: 14px; height: 54px; border-radius: 3px; background: linear-gradient(180deg, #E5EBF9, #b9c7ea); border: 1px solid #c9d3ee; }
+.scope :global(.vec .vb) { width: 14px; height: 54px; border-radius: 2px; background: linear-gradient(180deg, #E5EBF9, #b9c7ea); border: 1px solid #c9d3ee; }
 .scope :global(.vec .vl) { font-family: var(--mono); font-size: 10.5px; color: var(--ink2); }
 .scope :global(.longbar) {
-  width: 180px; height: 14px; border-radius: 3px;
+  width: 180px; height: 14px; border-radius: 2px;
   background: repeating-linear-gradient(90deg, #c9d3ee 0 21px, #fff 21px 22.5px); border: 1px solid #c9d3ee;
 }
-.scope :global(.sumvec) { width: 22px; height: 54px; border-radius: 4px; background: linear-gradient(180deg, #FAEFD6, #e2c27c); border: 1px solid #d8b76a; }
+.scope :global(.sumvec) { width: 22px; height: 54px; border-radius: 2px; background: linear-gradient(180deg, #FAEFD6, #e2c27c); border: 1px solid #d8b76a; }
 
-.scope :global(.ablab) { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin: 10px 0; overflow-x: auto; }
+.scope :global(.ablab) { background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 18px; margin: 10px 0; overflow-x: auto; }
 .scope :global(.abrow) { display: flex; align-items: center; gap: 11px; margin: 7px 0; cursor: pointer; }
 .scope :global(.abrow .an) { font-family: var(--mono); font-size: 12px; width: 132px; flex-shrink: 0; color: var(--ink2); }
 .scope :global(.abrow.sel .an) { color: var(--accent); font-weight: 700; }
-.scope :global(.abrow .at) { flex: 1; min-width: 130px; height: 24px; background: #F4F2EA; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; }
-.scope :global(.abrow .af) { height: 100%; border-radius: 6px 0 0 6px; transition: width .45s cubic-bezier(.2, .7, .2, 1); }
+.scope :global(.abrow .at) { flex: 1; min-width: 130px; height: 24px; background: #F4F2EA; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.scope :global(.abrow .af) { height: 100%; border-radius: 2px 0 0 2px; transition: width .45s cubic-bezier(.2, .7, .2, 1); }
 .scope :global(.abrow .av) {
   font-family: var(--mono); font-size: 12.5px; font-weight: 700; width: 104px; text-align: right; flex-shrink: 0;
   font-variant-numeric: tabular-nums;
@@ -120,21 +120,21 @@
 .scope :global(.abgroup) { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--ink2); margin: 12px 0 2px; }
 
 .scope :global(.indgrid) { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; margin: 10px 0; }
-.scope :global(.ind) { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 12.5px; color: var(--ink2); }
+.scope :global(.ind) { background: #fff; border: 1px solid var(--border); border-radius: 2px; padding: 12px 14px; font-size: 12.5px; color: var(--ink2); }
 .scope :global(.ind h4) { margin: 0 0 2px; font-family: var(--serif); font-size: 15px; color: var(--ink); }
 .scope :global(.ind .src) { font-family: var(--mono); font-size: 10.5px; color: var(--ink2); margin-bottom: 6px; }
 .scope :global(.ind ul) { margin: 4px 0 0; padding-left: 18px; }
 .scope :global(.ind li) { margin: 2px 0; }
 .scope :global(.ind code) {
   font-family: var(--mono); font-size: 11.5px; background: #F4F2EA; border: 1px solid var(--border);
-  padding: 0 4px; border-radius: 4px; color: var(--accent);
+  padding: 0 4px; border-radius: 2px; color: var(--accent);
 }
 .scope :global(.ind b) { color: var(--ink); }
 
 .scope :global(.checklist) { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 8px; }
 .scope :global(.checklist li) {
   display: flex; gap: 10px; align-items: flex-start; font-size: 13px; background: #fff; border: 1px solid var(--border);
-  border-radius: 10px; padding: 10px 13px;
+  border-radius: 2px; padding: 10px 13px;
 }
 .scope :global(.checklist li .ck) { color: #3f7d63; font-weight: 700; flex-shrink: 0; }
 .scope :global(.checklist li b) { color: var(--accent); }
