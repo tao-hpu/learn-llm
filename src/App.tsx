@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ComponentType } from 'react'
-import { BrowserRouter, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import { Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { Layout } from './site/Layout'
 import { findChapter } from './chapters'
 import { TermTip } from './components/TermTip'
@@ -81,9 +81,10 @@ function ScrollManager() {
   return null
 }
 
+/** 路由表。外面套哪种 Router 由入口决定：浏览器用 BrowserRouter，构建期预渲染用 StaticRouter。 */
 export default function App() {
   return (
-    <BrowserRouter>
+    <>
       <TermTip />
       <ScrollManager />
       <Routes>
@@ -96,6 +97,6 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </>
   )
 }

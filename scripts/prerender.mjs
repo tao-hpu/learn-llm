@@ -1,5 +1,5 @@
 // 构建后为每个路由写一份静态 HTML，把 title / description / canonical / og / twitter 烤进去。
-// 不跑 JS 的分享爬虫读的是这份。正文仍由前端接管。
+// 正文也在构建期用 src/entry-server.tsx 渲染进 #root，不跑脚本的搜索 / AI 爬虫能读到全文；浏览器里由前端重新渲染接管。
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -10,11 +10,21 @@ const glossary = JSON.parse(readFileSync(join(root, 'src/glossary.json'), 'utf8'
 const BASE = catalog.site.url.replace(/\/$/, '')
 const indexHtml = readFileSync(join(root, 'dist/index.html'), 'utf8')
 
+// SSR 包由 vite build --ssr 产出。useLayoutEffect 在服务端的提示不影响输出（前端不做 hydrate），静掉。
+const origError = console.error
+console.error = (...a) => { if (typeof a[0] === 'string' && a[0].includes('useLayoutEffect does nothing on the server')) return; origError(...a) }
+const { render } = await import(join(root, 'dist-ssr/entry-server.js'))
+function body(path) {
+  const html = render(path)
+  if (html.length < 200) throw new Error(`预渲染 ${path} 的正文过短（${html.length} 字符）`)
+  return html
+}
+
 const escAttr = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const escText = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-function pageHtml({ title, description, shareTitle, shareDescription, url, type }) {
-  let html = indexHtml
+function pageHtml({ title, description, shareTitle, shareDescription, url, type, path }) {
+  let html = indexHtml.replace('<div id="root"></div>', () => `<div id="root">${body(path)}</div>`)
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${escText(title)}</title>`)
   const set = (re, val) => { html = html.replace(re, (_m, a, b) => `${a}${escAttr(val)}${b}`) }
   set(/(<meta name="description" content=")[^"]*(")/, description)
@@ -31,11 +41,12 @@ function pageHtml({ title, description, shareTitle, shareDescription, url, type 
 function writePage(rel, meta) {
   const dir = join(root, 'dist', rel)
   mkdirSync(dir, { recursive: true })
-  writeFileSync(join(dir, 'index.html'), pageHtml(meta))
+  writeFileSync(join(dir, 'index.html'), pageHtml({ path: `/${rel}`, ...meta }))
 }
 
 const home = catalog.home
 writeFileSync(join(root, 'dist/index.html'), pageHtml({
+  path: '/',
   title: home.docTitle,
   description: home.description,
   shareTitle: home.shareTitle,
@@ -87,6 +98,17 @@ for (const ch of catalog.chapters) {
   })
 }
 
+// 未知路径：nginx 以 404 状态返回这份，正文是前端的 404 页，并告诉爬虫不要收录。
+writeFileSync(join(root, 'dist/404.html'), pageHtml({
+  path: '/404',
+  title: '页面不存在 · 从零手写大语言模型',
+  description: '这个地址没有对应的页面。',
+  shareTitle: '页面不存在 · 从零手写大语言模型',
+  shareDescription: '这个地址没有对应的页面。',
+  url: `${BASE}/`,
+  type: 'website',
+}).replace('</head>', '    <meta name="robots" content="noindex" />\n  </head>'))
+
 const urls = [
   `${BASE}/`,
   `${BASE}/glossary`,
@@ -101,4 +123,4 @@ ${urls.map((u, i) => `  <url><loc>${u}</loc><priority>${i === 0 ? '1.0' : '0.8'}
 `
 writeFileSync(join(root, 'dist/sitemap.xml'), sitemap)
 writeFileSync(join(root, 'dist/robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${BASE}/sitemap.xml\n`)
-console.log(`[prerender] ${urls.length} 个路由的 meta，外加 sitemap.xml / robots.txt`)
+console.log(`[prerender] ${urls.length} 个路由的正文与 meta，外加 404.html / sitemap.xml / robots.txt`)
