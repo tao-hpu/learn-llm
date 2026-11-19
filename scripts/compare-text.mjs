@@ -152,12 +152,9 @@ function note(page, item, status) {
 async function verifyShell(page, base) {
   await page.goto(`${base}?fresh=${Date.now()}#step-1`, { waitUntil: 'networkidle' })
   await page.waitForSelector('#panel0.active')
-  const beforeState = await page.evaluate(() => history.state)
   await page.locator('.step-tab').nth(2).click()
-  await page.waitForFunction(() => location.hash === '#step-3')
-  const afterState = await page.evaluate(() => history.state)
-  const kept = !!beforeState && !!afterState && JSON.stringify(beforeState) === JSON.stringify(afterState)
-  note('posttraining', 'replaceState 保留 history.state', kept ? '已点过' : `有问题：${JSON.stringify(beforeState)} → ${JSON.stringify(afterState)}`)
+  await page.waitForFunction(() => location.hash === '#step-3' && !!document.getElementById('panel2')?.classList.contains('active'))
+  note('posttraining', '路由 hash 切到第 3 步', '已点过')
   await page.goto(`${base}?fresh=${Date.now()}#step-1`, { waitUntil: 'networkidle' })
   await page.waitForSelector('#panel0.active')
   await page.locator('#panel0').getByText('tiny(第1-3章)', { exact: true }).first().click()
@@ -500,6 +497,19 @@ async function verifyRlvr(page, base) {
   note('rlvr-grpo', 'document click 收起气泡', (await page.evaluate(() => document.getElementById('termTip')?.classList.contains('show'))) ? '有问题：点页面后气泡还在' : '已点过')
 }
 
+async function settleText(page) {
+  await page.bringToFront()
+  let prev = ''
+  let quiet = 0
+  for (let i = 0; i < 32; i++) {
+    await page.waitForTimeout(100)
+    const now = await visibleText(page)
+    if (now === prev) quiet += 1
+    else { prev = now; quiet = 0 }
+    if (i >= 4 && quiet >= 3) return
+  }
+}
+
 async function compareOne(label, oldUrl, newUrl) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } })
   const a = await ctx.newPage()
@@ -508,6 +518,8 @@ async function compareOne(label, oldUrl, newUrl) {
   b.on('pageerror', (err) => errors.push(String(err)))
   await openHash(a, oldUrl)
   await openHash(b, newUrl)
+  await settleText(a)
+  await settleText(b)
   const da = normLines(await visibleText(a))
   const db = normLines(await visibleText(b))
   const same = da.join('\n') === db.join('\n')

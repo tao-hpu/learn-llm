@@ -58,13 +58,13 @@ function shufflePick(n: number, k: number) {
 }
 
 function Step1() {
-  const [sel, setSel] = useState<number | null>(null)
-  const [shown, setShown] = useState<number | null>(null)
-  const [onCount, setOnCount] = useState(0)
+  const [sel, setSel] = useState(2)
+  const [shown, setShown] = useState(2)
+  const [onCount, setOnCount] = useState(128)
   const live = useStepLive()
 
   useEffect(() => {
-    if (!live || sel === null || onCount >= 128) return
+    if (!live || onCount >= 128) return
     const id = window.setTimeout(() => {
       setOnCount((k) => Math.min(128, k + 16))
     }, onCount === 0 ? 0 : 26)
@@ -260,6 +260,13 @@ function Step4() {
       if (next >= last) setPlaying(false)
     }, 450)
     return () => window.clearInterval(id)
+  }, [live, playing, last])
+
+  useEffect(() => {
+    if (live || !playing) return
+    idxRef.current = last
+    setLdIdx(last)
+    setPlaying(false)
   }, [live, playing, last])
 
   function reset() {

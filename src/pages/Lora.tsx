@@ -1,4 +1,4 @@
-// 旧页 goto 不重置秩、B=0、epoch 进度和指令选择；训练计时器离开第 4 步后仍走完，这里改为停表并保留已画出的 loss。
+// 旧页 goto 不重置秩、B=0、epoch 进度和指令选择。离开第 4 步时若这一轮还在跑，立刻跳到结束状态；最后一个 epoch 中途离开也会标上 settled。回来不自动续播。
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { findChapter } from '../chapters'
@@ -221,10 +221,16 @@ function Step4() {
   }, [live, running])
 
   useEffect(() => {
-    if (live) return
-    setRunning(false)
+    if (live || !running) return
+    if (stageRef.current <= 1) {
+      epRef.current += 1
+      setEpIdx(epRef.current)
+    }
+    stageRef.current = 4
     setLit(-1)
-  }, [live])
+    setRunning(false)
+    if (epRef.current >= LOSS_SEQ.length - 1) setSettled(true)
+  }, [live, running])
 
   function runEpoch() {
     if (running) return

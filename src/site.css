@@ -82,11 +82,12 @@ a.side-link:hover { background: var(--accent-soft); }
 .nav-scrim { display: none; }
 
 @media (max-width: 960px) {
-  .sidebar {
-    position: fixed; top: 59px; left: 0; bottom: 0; height: auto; z-index: 30;
-    box-shadow: 4px 0 24px rgba(26, 26, 24, 0.12);
+  .nav-open .body { flex-direction: column; }
+  .nav-open .sidebar {
+    position: static; width: 100%; height: auto; max-height: 38vh; z-index: 1;
+    border-right: 0; border-bottom: 1px solid var(--border); box-shadow: none;
   }
-  .nav-scrim { display: block; position: fixed; inset: 59px 0 0 0; background: rgba(26, 26, 24, 0.28); z-index: 25; }
+  .nav-scrim { display: none; }
   .topbar { padding: 10px 12px; }
   .wordmark { font-size: 15px; overflow: hidden; text-overflow: ellipsis; }
   .topnav { gap: 10px; }

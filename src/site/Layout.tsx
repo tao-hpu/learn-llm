@@ -64,8 +64,6 @@ function Sidebar({ onNavigate }: { onNavigate: () => void }) {
       ))}
       <div className="side-extra">
         <Link to="/glossary" onClick={onNavigate}>名词表</Link>
-        <Link to="/notes" onClick={onNavigate}>学习札记</Link>
-        <Link to="/about" onClick={onNavigate}>关于</Link>
       </div>
     </nav>
   )
@@ -74,6 +72,16 @@ function Sidebar({ onNavigate }: { onNavigate: () => void }) {
 export function Layout() {
   const { pathname, hash } = useLocation()
   const [open, setOpen] = useState(() => (typeof window !== 'undefined' ? window.innerWidth > 960 : true))
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 960px)')
+    const onChange = () => {
+      if (mq.matches) setOpen(false)
+    }
+    onChange()
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
   useEffect(() => {
     const id = hash.startsWith('#') ? hash.slice(1) : ''
@@ -98,7 +106,6 @@ export function Layout() {
         </div>
         <nav className="topnav">
           <NavLink to="/glossary" className={({ isActive }) => (isActive ? 'active' : '')}>名词表</NavLink>
-          <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>关于</NavLink>
           <a className="star-link" href="https://github.com/tao-hpu/llm-from-scratch" target="_blank" rel="noopener">★ GitHub</a>
         </nav>
       </header>

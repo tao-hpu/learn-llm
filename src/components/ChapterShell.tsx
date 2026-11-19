@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { findChapter } from '../chapters'
 import { scrollContentToTop } from '../scroll'
 import { Filename } from './Filename'
@@ -35,7 +36,9 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
   const chapter = findChapter(slug)
   const count = steps.length
   const kind = chapter?.hashKind ?? 'step'
-  const [index, setIndex] = useState(() => clampIndex(window.location.hash, kind, count))
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [index, setIndex] = useState(() => clampIndex(location.hash, kind, count))
   const [done, setDone] = useState(false)
   const [burst, setBurst] = useState(0)
   const [enterId, setEnterId] = useState<number | null>(null)
@@ -45,13 +48,21 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
   const playedEnter = useRef(new Set<number>())
 
   useEffect(() => {
-    writeHash(kind, index)
+    const next = clampIndex(location.hash, kind, count)
+    const canonical = `#${kind}-${next + 1}`
+    if (location.hash !== canonical) {
+      navigate({ hash: canonical }, { replace: true })
+    }
+    setIndex(next)
+  }, [location.hash, kind, count, navigate])
+
+  useEffect(() => {
     if (skipScroll.current) {
       skipScroll.current = false
       return
     }
     scrollContentToTop('smooth')
-  }, [index, kind])
+  }, [index])
 
   useEffect(() => {
     if (playedEnter.current.has(index)) {
@@ -67,22 +78,15 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
   }, [index])
 
   useEffect(() => {
-    function onHash() {
-      const next = clampIndex(window.location.hash, kind, count)
-      writeHash(kind, next)
-      setIndex(next)
-    }
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
-  }, [kind, count])
-
-  useEffect(() => {
     if (!burst) return
-    bannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    bannerRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' })
   }, [burst])
 
   useEffect(() => {
     if (!burst) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) return
     const cv = canvasRef.current
     const ctx = cv?.getContext('2d')
     if (!cv || !ctx) return
@@ -153,7 +157,7 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
               key={chapter.steps[i]?.anchor ?? i}
               type="button"
               className={i === index ? 'step-tab active' : 'step-tab'}
-              onClick={() => setIndex(i)}
+              onClick={() => { setIndex(i); navigate({ hash: `#${kind}-${i + 1}` }) }}
             >
               <div className="num">{chapter.steps[i]?.sn ?? `STEP ${i + 1}`}</div>
               <div className="label">{step.title}</div>
@@ -176,8 +180,8 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
           </section>
         ))}
         <div className="nav">
-          <button type="button" id="prevBtn" className={chapter.prevClass} disabled={index === 0} onClick={() => setIndex((i) => Math.max(0, i - 1))}>{chapter.navPrev ?? '← 上一步'}</button>
-          <button type="button" id="nextBtn" className="btn primary" onClick={() => { if (last) finish(); else setIndex((i) => Math.min(count - 1, i + 1)) }}>
+          <button type="button" id="prevBtn" className={chapter.prevClass} disabled={index === 0} onClick={() => { const next = Math.max(0, index - 1); setIndex(next); navigate({ hash: `#${kind}-${next + 1}` }) }}>{chapter.navPrev ?? '← 上一步'}</button>
+          <button type="button" id="nextBtn" className="btn primary" onClick={() => { if (last) finish(); else { const next = Math.min(count - 1, index + 1); setIndex(next); navigate({ hash: `#${kind}-${next + 1}` }) } }}>
             {last ? '完成 🎉' : (chapter.navNext ?? '下一步 →')}
           </button>
         </div>
@@ -188,17 +192,10 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
   )
 }
 
-function writeHash(kind: string, index: number) {
-  const hash = `#${kind}-${index + 1}`
-  if (window.location.hash !== hash) {
-    window.history.replaceState(window.history.state, '', hash)
-  }
-}
-
-/** 超出范围夹到最近的有效步。对不上 #kind-N 的 hash 归到第 1 步。 */
+/** 超出范围夹到最近的有效步。对不上的 hash 归到第 1 步。第 4 章 #step-N 与 #part-N 都认。 */
 function clampIndex(hash: string, kind: string, count: number) {
   if (count <= 0) return 0
-  const m = new RegExp(`^#${kind}-(\\d+)$`).exec(hash)
+  const m = kind === 'part' ? /^#(?:part|step)-(\d+)$/.exec(hash) : /^#step-(\d+)$/.exec(hash)
   if (!m) return 0
   const n = Number(m[1]) - 1
   if (n < 0) return 0

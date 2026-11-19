@@ -138,8 +138,10 @@ function Step2() {
   const pickedCh = picked ? showChar(SHAKE[starts[picked[0]] + picked[1]]) : ''
 
   useEffect(() => {
-    if (!live) setPipeRun(false)
-  }, [live])
+    if (live || !pipeRun) return
+    setPipe(PIPE.length - 1)
+    setPipeRun(false)
+  }, [live, pipeRun])
 
   useEffect(() => {
     if (!live || !pipeRun) return

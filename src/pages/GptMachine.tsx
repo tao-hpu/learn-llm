@@ -65,16 +65,20 @@ function Step1() {
   }
 
   useEffect(() => {
-    if (!live) return
+    if (!live) {
+      epoch.current += 1
+      window.cancelAnimationFrame(raf.current)
+      if (played.current && phase !== 'done') {
+        setProg(1)
+        setPhase('done')
+      }
+      return
+    }
     if (!played.current) {
       played.current = true
       play()
     }
-    return () => {
-      epoch.current += 1
-      window.cancelAnimationFrame(raf.current)
-    }
-  }, [live])
+  }, [live, phase])
 
   return (
     <div className={styles.scope}>
@@ -375,6 +379,7 @@ function Step2() {
   }
 
   function begin(index: number) {
+    genDone.current = false
     const id = ++runId.current
     timers.current.forEach((t) => window.clearTimeout(t))
     timers.current = []
@@ -426,6 +431,7 @@ function Step2() {
       setStage(-1)
       setLit(0)
       setNote({ kind: 'done', name: p.name, last: p.prompt[p.prompt.length - 1], gen: p.gen })
+      genDone.current = true
     })
   }
 
@@ -452,18 +458,42 @@ function Step2() {
     if (zoom) zoomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [zoom])
 
+  const genDone = useRef(false)
+  const ffnPhaseRef = useRef(ffnPhase)
+  ffnPhaseRef.current = ffnPhase
+
+  function finishGen() {
+    const p = PRESETS[selRef.current]
+    setRibbon({ prompt: p.prompt, gen: p.gen, pop: false })
+    setStage(-1)
+    setLit(0)
+    setEmbed(null)
+    setBars(null)
+    setNote({ kind: 'done', name: p.name, last: p.prompt[p.prompt.length - 1] || p.prompt[0], gen: p.gen })
+    genDone.current = true
+  }
+
+  function finishFfn() {
+    clearFfn()
+    setFfnLit(FFN_IN_Y.length)
+    setFfnRelu(true)
+    setFfnOut(true)
+    setFfnPhase('out')
+  }
+
   useEffect(() => {
-    if (!live) return
-    if (!started.current) {
-      started.current = true
-      begin(selRef.current)
-    }
-    return () => {
+    if (!live) {
       runId.current += 1
       timers.current.forEach((t) => window.clearTimeout(t))
       timers.current = []
-      ffnTimers.current.forEach((t) => window.clearTimeout(t))
-      ffnTimers.current = []
+      if (started.current && !genDone.current) finishGen()
+      if (ffnPhaseRef.current === 'read' || ffnPhaseRef.current === 'relu') finishFfn()
+      return
+    }
+    if (!started.current) {
+      started.current = true
+      genDone.current = false
+      begin(selRef.current)
     }
   }, [live])
 

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc -b && tsc -p tsconfig.test.json --noEmit",
-    "compare": "node scripts/compare-text.mjs"
+    "compare": "node scripts/compare-text.mjs",
+    "compare:behavior": "node scripts/compare-behavior.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

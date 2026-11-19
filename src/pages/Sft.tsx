@@ -191,6 +191,19 @@ function Step4() {
     return () => window.clearInterval(timerRef.current)
   }, [live, running])
 
+  useEffect(() => {
+    if (live || !runningRef.current) return
+    window.clearInterval(timerRef.current)
+    if (stageRef.current <= 1) {
+      epRef.current += 1
+      setEpIdx(epRef.current)
+    }
+    stageRef.current = 4
+    setLit(-1)
+    runningRef.current = false
+    setRunning(false)
+  }, [live])
+
   function runEpoch() {
     if (runningRef.current) return
     if (epRef.current >= LOSS.length - 1) {

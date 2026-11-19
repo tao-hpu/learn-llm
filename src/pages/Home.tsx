@@ -72,7 +72,7 @@ export function Home() {
           ))}
 
           <footer>
-            © 2026 <a href="https://fim.ai" target="_blank" rel="noopener">FIM Labs</a> · 从零手写大语言模型 · MIT License · <Link to="/about">关于本项目</Link>
+            © 2026 <a href="https://fim.ai" target="_blank" rel="noopener">FIM Labs</a> · 从零手写大语言模型 · MIT License · 关于本项目
           </footer>
         </main>
     </>

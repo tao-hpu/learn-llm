@@ -368,6 +368,7 @@ function Step5() {
   const [wRow, setWRow] = useState(2)
   const [curveStep, setCurveStep] = useState(0)
   const [playing, setPlaying] = useState(false)
+  const [curveRun, setCurveRun] = useState(0)
 
   useEffect(() => {
     if (!auto) return
@@ -401,7 +402,7 @@ function Step5() {
     }
     raf = requestAnimationFrame(frame)
     return () => cancelAnimationFrame(raf)
-  }, [playing])
+  }, [playing, curveRun])
 
   function trainOne() {
     const nextRound = roundRef.current + 1
@@ -599,7 +600,7 @@ function Step5() {
         迅速掉到 ~2.6,最后<b>卡在 ~2.5 下不去</b>。
       </p>
       <div className="flip-controls">
-        <button type="button" className="btn primary" onClick={() => { setPlaying(false); setCurveStep(0); setPlaying(true) }}>训练!</button>
+        <button type="button" className="btn primary" onClick={() => { setCurveStep(0); setPlaying(true); setCurveRun((n) => n + 1) }}>训练!</button>
         <button type="button" className="btn ghost" onClick={() => { setPlaying(false); setCurveStep(0) }}>重置曲线</button>
       </div>
       <div className="loss-readout">

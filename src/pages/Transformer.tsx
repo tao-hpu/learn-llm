@@ -489,10 +489,16 @@ function Step6() {
   const [playId, setPlayId] = useState(0)
   const started = useRef(false)
   const rafRef = useRef(0)
+  const progRef = useRef(0)
+  progRef.current = prog
 
   useEffect(() => {
     if (!live) {
       cancelAnimationFrame(rafRef.current)
+      if (started.current && progRef.current < NL - 1) {
+        setProg(NL - 1)
+        setPlayId(0)
+      }
       return
     }
     if (started.current) return
