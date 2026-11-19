@@ -64,6 +64,8 @@ function Sidebar({ onNavigate }: { onNavigate: () => void }) {
       ))}
       <div className="side-extra">
         <Link to="/glossary" onClick={onNavigate}>名词表</Link>
+        <Link to="/notes" onClick={onNavigate}>🥚 学习札记</Link>
+        <Link to="/about" onClick={onNavigate}>关于本项目</Link>
       </div>
     </nav>
   )

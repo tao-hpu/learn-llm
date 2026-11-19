@@ -22,6 +22,8 @@ import { SparseAttention } from './pages/SparseAttention'
 import { SpeculativeDecoding } from './pages/SpeculativeDecoding'
 import { Transformer } from './pages/Transformer'
 import { NotFound } from './pages/NotFound'
+import { Notes } from './pages/Notes'
+import { About } from './pages/About'
 import { Posttraining } from './pages/Posttraining'
 import { Pretraining } from './pages/Pretraining'
 import { Quantization } from './pages/Quantization'
@@ -88,6 +90,8 @@ export default function App() {
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="glossary" element={<GlossaryPage />} />
+          <Route path="notes" element={<Notes />} />
+          <Route path="about" element={<About />} />
           <Route path="ch/:slug" element={<ChapterRoute />} />
           <Route path="*" element={<NotFound />} />
         </Route>

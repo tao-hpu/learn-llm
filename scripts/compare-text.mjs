@@ -532,6 +532,8 @@ async function compareOne(label, oldUrl, newUrl) {
 try {
   await compareOne('首页', `${oldOrigin}/index.html`, `${newOrigin}/`)
   await compareOne('名词表', `${oldOrigin}/glossary.html`, `${newOrigin}/glossary`)
+  await compareOne('札记', `${oldOrigin}/notes.html`, `${newOrigin}/notes`)
+  await compareOne('关于', `${oldOrigin}/about.html`, `${newOrigin}/about`)
 
   for (const ch of ready) {
     for (const step of ch.steps) {

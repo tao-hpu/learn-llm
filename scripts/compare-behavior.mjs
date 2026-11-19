@@ -50,7 +50,7 @@ async function reseed(page) {
 function panelFn() {
   const MARK = ['active', 'on', 'sel', 'primary', 'hl', 'picked', 'top', 'show', 'open', 'good', 'bad', 'rowsel']
   const panel = document.querySelector('section.panel.active')
-  if (!panel) return { text: '', svg: '', marks: '' }
+  if (!panel) return { text: '', banner: '', svg: '', marks: '' }
   const shown = (el) => {
     let n = el
     while (n && n.nodeType === 1) {
@@ -61,7 +61,16 @@ function panelFn() {
     }
     return true
   }
-  const text = panel.innerText.replace(/\u00a0/g, ' ').split('\n').map((l) => l.replace(/[ \t]+/g, ' ').trim()).filter(Boolean).join('\n')
+  const linesOf = (el) => {
+    const box = getComputedStyle(el)
+    if (box.display === 'none' || box.visibility === 'hidden') return ''
+    return el.innerText.replace(/\u00a0/g, ' ').split('\n').map((l) => l.replace(/[ \t]+/g, ' ').trim()).filter(Boolean).join('\n')
+  }
+  const shells = [...panel.querySelectorAll('.congrats, #confetti')]
+  const banner = shells.map(linesOf).filter(Boolean).join('\n')
+  const savedDisplay = shells.map((el) => el.style.display)
+  shells.forEach((el) => { el.style.display = 'none' })
+  const text = linesOf(panel)
   const svg = [...panel.querySelectorAll('line,circle,rect,path,polyline,polygon,text')].filter(shown).map((el) => {
     const bits = ['x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy', 'r', 'width', 'height', 'd', 'points'].map((name) => {
       const raw = el.getAttribute(name)
@@ -90,7 +99,8 @@ function panelFn() {
     if (!label && uniq.every((n) => n === 'good' || n === 'bad')) return ''
     return `${uniq.sort().join('.')} ${label}`
   }).filter(Boolean).join('\n')
-  return { text, svg, marks }
+  shells.forEach((el, i) => { el.style.display = savedDisplay[i] })
+  return { text, banner, svg, marks }
 }
 
 async function shot(page) {
@@ -142,8 +152,8 @@ function svgProgress(a, b) {
   return svgClose(left.join('\n'), right.join('\n'))
 }
 
-function allow(line) {
-  return /confetti|彩纸|粒子|reduced-motion|横幅|完成 🎉|#step-99|#step-0|#part-99|越界/.test(line)
+function allowLine(line) {
+  return /confetti|彩纸|粒子|reduced-motion|横幅|完成 🎉/.test(line)
 }
 
 function firstDelta(a, b) {
@@ -159,12 +169,17 @@ function firstDelta(a, b) {
 }
 
 const diffs = []
-function pushDiff(label, kind, oldText, newText) {
+const stats = new Map()
+function pushDiff(slug, label, kind, oldText, newText, scope) {
   if (oldText === newText) return
   if (kind === 'SVG' && (svgClose(oldText, newText) || svgProgress(oldText, newText))) return
-  const body = `${firstDelta(oldText, newText)}\n旧:\n${oldText.slice(0, 500)}\n新:\n${newText.slice(0, 500)}`
-  if (allow(body)) return
+  const delta = firstDelta(oldText, newText)
+  const first = delta.split('\n').slice(1).join('\n')
+  if (scope === 'banner' && allowLine(first)) return
+  const body = `${delta}\n旧:\n${oldText.slice(0, 500)}\n新:\n${newText.slice(0, 500)}`
   diffs.push({ label, kind, body })
+  const row = stats.get(slug)
+  if (row) row.diffs += 1
 }
 
 const EXTRA = ['tok', 'bcell', 'pstage', 'ref-chip', 'lnode']
@@ -228,6 +243,7 @@ try {
   for (const ch of ready) {
     for (const step of ch.steps) {
       if (!wanted(ch, step)) continue
+      if (!stats.has(ch.slug)) stats.set(ch.slug, { num: ch.num, clicks: 0, stops: 0, extras: 0, diffs: 0 })
       const label = `${ch.num} ${ch.slug} #${step.anchor}`
       const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } })
       await seed(ctx)
@@ -245,9 +261,10 @@ try {
         await settle(oldPage)
         await settle(newPage)
         const first = await Promise.all([shot(oldPage), shot(newPage)])
-        pushDiff(label + ' 初始', '文字', first[0].text, first[1].text)
-        pushDiff(label + ' 初始', 'SVG', first[0].svg, first[1].svg)
-        pushDiff(label + ' 初始', '高亮', first[0].marks, first[1].marks)
+        pushDiff(ch.slug, label + ' 初始', '文字', first[0].text, first[1].text, 'body')
+        pushDiff(ch.slug, label + ' 初始', '文字', first[0].banner, first[1].banner, 'banner')
+        pushDiff(ch.slug, label + ' 初始', 'SVG', first[0].svg, first[1].svg, 'body')
+        pushDiff(ch.slug, label + ' 初始', '高亮', first[0].marks, first[1].marks, 'body')
 
         const nBtn = await oldPage.evaluate(() => {
           const panel = document.querySelector('section.panel.active')
@@ -262,9 +279,10 @@ try {
           await settle(oldPage)
           await settle(newPage)
           const once = await Promise.all([shot(oldPage), shot(newPage)])
-          pushDiff(`${label} 按钮${i} ×1`, '文字', once[0].text, once[1].text)
-          pushDiff(`${label} 按钮${i} ×1`, 'SVG', once[0].svg, once[1].svg)
-          pushDiff(`${label} 按钮${i} ×1`, '高亮', once[0].marks, once[1].marks)
+          pushDiff(ch.slug, `${label} 按钮${i} ×1`, '文字', once[0].text, once[1].text, 'body')
+          pushDiff(ch.slug, `${label} 按钮${i} ×1`, '文字', once[0].banner, once[1].banner, 'banner')
+          pushDiff(ch.slug, `${label} 按钮${i} ×1`, 'SVG', once[0].svg, once[1].svg, 'body')
+          pushDiff(ch.slug, `${label} 按钮${i} ×1`, '高亮', once[0].marks, once[1].marks, 'body')
           for (let k = 0; k < 4; k++) {
             await clickIndex(oldPage, i)
             await clickIndex(newPage, i)
@@ -272,9 +290,11 @@ try {
           await settle(oldPage)
           await settle(newPage)
           const more = await Promise.all([shot(oldPage), shot(newPage)])
-          pushDiff(`${label} 按钮${i} ×5`, '文字', more[0].text, more[1].text)
-          pushDiff(`${label} 按钮${i} ×5`, '高亮', more[0].marks, more[1].marks)
+          pushDiff(ch.slug, `${label} 按钮${i} ×5`, '文字', more[0].text, more[1].text, 'body')
+          pushDiff(ch.slug, `${label} 按钮${i} ×5`, '文字', more[0].banner, more[1].banner, 'banner')
+          pushDiff(ch.slug, `${label} 按钮${i} ×5`, '高亮', more[0].marks, more[1].marks, 'body')
         }
+        stats.get(ch.slug).clicks += Math.min(nBtn, 12) * 5
 
         const nExtra = await oldPage.evaluate((names) => {
           const panel = document.querySelector('section.panel.active')
@@ -298,9 +318,11 @@ try {
           await settle(oldPage)
           await settle(newPage)
           const hit = await Promise.all([shot(oldPage), shot(newPage)])
-          pushDiff(`${label} 可点${i}`, '文字', hit[0].text, hit[1].text)
-          pushDiff(`${label} 可点${i}`, '高亮', hit[0].marks, hit[1].marks)
+          pushDiff(ch.slug, `${label} 可点${i}`, '文字', hit[0].text, hit[1].text, 'body')
+          pushDiff(ch.slug, `${label} 可点${i}`, '文字', hit[0].banner, hit[1].banner, 'banner')
+          pushDiff(ch.slug, `${label} 可点${i}`, '高亮', hit[0].marks, hit[1].marks, 'body')
         }
+        stats.get(ch.slug).extras += Math.min(nExtra, 8)
 
         const nRange = await oldPage.evaluate(() => document.querySelectorAll('section.panel.active input[type="range"]').length)
         for (let i = 0; i < nRange; i++) {
@@ -312,12 +334,16 @@ try {
             await settle(oldPage)
             await settle(newPage)
             const slid = await Promise.all([shot(oldPage), shot(newPage)])
-            pushDiff(`${label} 滑块${i} ${mode}`, '文字', slid[0].text, slid[1].text)
-            pushDiff(`${label} 滑块${i} ${mode}`, 'SVG', slid[0].svg, slid[1].svg)
+            pushDiff(ch.slug, `${label} 滑块${i} ${mode}`, '文字', slid[0].text, slid[1].text, 'body')
+            pushDiff(ch.slug, `${label} 滑块${i} ${mode}`, '文字', slid[0].banner, slid[1].banner, 'banner')
+            pushDiff(ch.slug, `${label} 滑块${i} ${mode}`, 'SVG', slid[0].svg, slid[1].svg, 'body')
           }
         }
+        stats.get(ch.slug).stops += nRange * 3
       } catch (err) {
         diffs.push({ label, kind: '打开失败', body: String(err).split('\n')[0] })
+        const row = stats.get(ch.slug)
+        if (row) row.diffs += 1
       }
       await ctx.close()
     }
@@ -332,16 +358,35 @@ const lines = [
   '',
   '旧页用 file://，新页用预览。同一套点击和滑块之后，比当前面板的文字、SVG 几何和高亮。',
   '动画用假时钟拨到停稳再比。每次点击前把 Math.random 拨回同一个种子。',
-  '白名单：通关横幅、confetti、减少动效、越界深链。坐标差 1 像素以内、藏起来的图不算差异。',
+  '通关横幅和 confetti 只看第一处不同的那一行。坐标差 1 像素以内、藏起来的图不算差异。',
+  '',
+  '## 各章检查点',
   '',
 ]
-if (!diffs.length) lines.push('差异：0')
-else {
-  lines.push(`差异：${diffs.length}`, '')
+let zero = false
+for (const ch of ready) {
+  if (only.length && !ch.steps.some((step) => wanted(ch, step))) continue
+  const row = stats.get(ch.slug) || { clicks: 0, stops: 0, extras: 0, diffs: 0 }
+  const n = row.clicks + row.stops + row.extras
+  if (!n) zero = true
+  lines.push(
+    `## ${ch.num} ${ch.slug}`,
+    '',
+    `- 点击：${row.clicks}`,
+    `- 滑块档位：${row.stops}`,
+    `- 可点元素：${row.extras}`,
+    `- 检查点：${n}`,
+    `- 差异：${row.diffs}`,
+    '',
+  )
+}
+lines.push(`差异：${diffs.length}`, '')
+if (zero) lines.push('有章节检查点为 0。', '')
+if (diffs.length) {
   for (const row of diffs.slice(0, 80)) {
     lines.push(`## ${row.label} · ${row.kind}`, '', '```', row.body, '```', '')
   }
 }
 writeFileSync(join(root, 'docs/behavior-diff.md'), lines.join('\n') + '\n')
-console.log(`behavior diffs ${diffs.length}`)
-if (diffs.length) process.exitCode = 1
+console.log(`behavior diffs ${diffs.length}${zero ? '，有章节检查点为 0' : ''}`)
+if (diffs.length || zero) process.exitCode = 1

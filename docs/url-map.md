@@ -6,8 +6,8 @@
 | --- | --- | --- |
 | `/` 与 `/index.html` | `/` | 已迁 |
 | `/glossary.html` | `/glossary` | 已迁 |
-| `/notes.html` | `/notes` | 未迁，路由先占位 |
-| `/about.html` | `/about` | 未迁，路由先占位 |
+| `/notes.html` | `/notes` | 已迁 |
+| `/about.html` | `/about` | 已迁 |
 | `/01_bigram_crossentropy_viz.html` | `/ch/bigram` | 已迁 |
 | `/02_attention_viz.html` | `/ch/attention` | 未迁，路由先占位 |
 | `/03_transformer_viz.html` | `/ch/transformer` | 未迁，路由先占位 |
