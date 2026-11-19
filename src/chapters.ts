@@ -38,6 +38,10 @@ export interface Chapter {
   hashKind: 'step' | 'part'
   stepsClass: string
   prevClass: string
+  /** 上一步按钮原文。缺省是「← 上一步」。 */
+  navPrev?: string
+  /** 下一步按钮原文。缺省是「下一步 →」。最后一步仍是「完成 🎉」。 */
+  navNext?: string
   confetti: boolean
   /** 交互页是否已经写成 React 组件。 */
   ready: boolean

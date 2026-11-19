@@ -1,12 +1,12 @@
 import type { CodeLink } from '../chapters'
 
-export function Filename({ file, links }: { file: string; links: CodeLink[] }) {
+export function Filename({ links }: { links: CodeLink[] }) {
+  if (!links.length) return null
   return (
-    <>
-      <span className="filename">{file}</span>
+    <div className="code-links">
       {links.map((l) => (
-        <a key={l.href} className="filename code-link" href={l.href} target="_blank" rel="noopener">{l.label}</a>
+        <a key={l.href} className="code-link" href={l.href} target="_blank" rel="noopener">{l.label}</a>
       ))}
-    </>
+    </div>
   )
 }

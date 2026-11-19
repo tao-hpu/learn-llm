@@ -1,0 +1,100 @@
+.scope :global(.d) {
+  display: inline-flex; align-items: baseline; gap: 3px; font-family: var(--mono); font-weight: 700;
+  padding: 0 5px; border-radius: 6px; line-height: 1.5; white-space: nowrap;
+}
+.scope :global(.d i) { font-style: normal; font-size: 9.5px; font-weight: 600; opacity: .9; letter-spacing: .2px; }
+.scope :global(.d-batch) { color: #b8512f; background: #F7E6DE; }
+.scope :global(.d-block) { color: #3f7d63; background: #E4EFE9; }
+.scope :global(.d-emb) { color: #3a63c0; background: #E5EBF9; }
+.scope :global(.d-head) { color: #a3548c; background: #F6E6F0; }
+.scope :global(.d-nhead) { color: #1f8a8a; background: #DCEFEF; }
+.scope :global(.d-layer) { color: #9a7b2f; background: #F4ECD6; }
+.scope :global(.d-vocab) { color: #a87b1f; background: #FAEFD6; }
+
+.scope :global(.next-hint) { display: flex; align-items: center; gap: 7px; }
+.scope :global(.next-hint)::before { content: "↳"; font-size: 15px; }
+
+.pre {
+  font-family: var(--mono); font-size: 12.5px; background: #fff; border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px; overflow-x: auto; line-height: 1.6; color: var(--ink);
+}
+.cmt { color: var(--ink2); }
+.scroll { overflow-x: auto; }
+
+.scope :global(.truth) { width: 100%; border-collapse: collapse; margin: 10px 0 4px; font-size: 13px; }
+.scope :global(.truth th),
+.scope :global(.truth td) { border: 1px solid var(--border); padding: 8px 11px; text-align: left; vertical-align: top; }
+.scope :global(.truth th) { background: #F4F2EA; font-family: system-ui, sans-serif; font-weight: 700; color: var(--ink); }
+.scope :global(.truth td) { font-family: var(--mono); }
+.scope :global(.truth td.lbl) { font-family: system-ui, sans-serif; color: var(--ink2); background: #FBFAF6; white-space: nowrap; }
+.scope :global(.truth .sum) { font-weight: 700; color: var(--accent); }
+
+.scope :global(.split-bar) { display: flex; gap: 4px; width: 100%; margin: 14px 0 6px; height: 64px; }
+.scope :global(.seg) {
+  flex: 1; border-radius: 9px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border: 1px solid #bcd9d9; background: #DCEFEF; color: #15686a; font-family: var(--mono); transition: .3s;
+}
+.scope :global(.seg .sn) { font-size: 12px; font-weight: 700; }
+.scope :global(.seg .sh) { font-size: 10.5px; opacity: .85; margin-top: 2px; }
+.scope :global(.split-sum) { font-family: var(--mono); font-size: 13.5px; text-align: center; margin: 4px 0 2px; color: var(--ink); }
+.scope :global(.split-sum b) { color: var(--accent); }
+
+.scope :global(.head-tabs) { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 4px; }
+.scope :global(button.head-tab) {
+  font: inherit; color: inherit; flex: 1; min-width: 120px; background: #fff; border: 1px solid var(--border);
+  border-radius: 11px; padding: 9px 11px; cursor: pointer; text-align: left; transition: .18s;
+}
+.scope :global(button.head-tab:hover) { border-color: #cfc9ba; }
+.scope :global(button.head-tab.on) { border-color: #1f8a8a; box-shadow: 0 0 0 1px #1f8a8a; background: #F2FAFA; }
+.scope :global(.ht-n) { font-family: var(--mono); font-size: 11px; font-weight: 700; color: #1f8a8a; }
+.scope :global(.ht-d) { font-size: 12px; font-weight: 600; margin-top: 2px; }
+.scope :global(.heat) { display: grid; width: 100%; gap: 5px; margin-top: 12px; }
+.scope :global(.hc) {
+  width: auto; height: 46px; border-radius: 7px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; font-weight: 600; border: 1px solid var(--border); transition: .35s;
+}
+.scope :global(.hc.mask) { background: #EFECE3; color: #bcb6a6; border-style: dashed; }
+.scope :global(.heat-axis) { font-size: 11.5px; color: var(--ink2); font-family: var(--mono); margin: 6px 0 0; }
+
+.scope :global(.cat-row) { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 14px 0 6px; }
+.scope :global(.hstrip) {
+  border-radius: 8px; padding: 10px 8px; text-align: center; font-family: var(--mono);
+  border: 1px solid #bcd9d9; background: #DCEFEF; color: #15686a; font-size: 11.5px; min-width: 60px; transition: .35s;
+}
+.scope :global(.hstrip b) { font-size: 12.5px; }
+.scope :global(.catbox) {
+  border-radius: 9px; padding: 12px 10px; text-align: center; font-family: var(--mono); font-size: 12px;
+  border: 1px solid var(--border); background: #fff; color: var(--ink2); transition: .35s; flex: 1; min-width: 120px;
+}
+.scope :global(.catbox.emb) { border-color: #9fb6e8; background: #E5EBF9; color: #2c4ea0; }
+.scope :global(.op) { font-size: 22px; color: var(--ink2); }
+
+.scope :global(.ffn-row) { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 14px 0 6px; min-height: 96px; }
+.scope :global(.ffn-box) {
+  border-radius: 9px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: var(--mono); border: 1px solid #9fb6e8; background: #E5EBF9; color: #2c4ea0; padding: 0 14px; min-width: 78px; transition: .35s;
+}
+.scope :global(.ffn-box.wide) { border-color: #e8c4b5; background: var(--accent-soft); color: #8a3d23; min-width: 150px; }
+.scope :global(.ffn-box .fb-d) { font-size: 15px; font-weight: 700; }
+.scope :global(.ffn-box .fb-t) { font-size: 10.5px; opacity: .85; margin-top: 2px; }
+
+.scope :global(.res-stack) { display: flex; flex-direction: column; gap: 6px; margin: 14px 0 6px; max-width: 440px; }
+.scope :global(.res-layer) {
+  position: relative; border: 1px solid var(--border); border-radius: 9px; background: #fff;
+  padding: 10px 12px 10px 18px; font-family: var(--mono); font-size: 13px; color: var(--ink); transition: .35s;
+}
+.scope :global(.res-layer .hw) { position: absolute; left: 5px; top: 6px; bottom: 6px; width: 4px; border-radius: 3px; background: transparent; transition: .35s; }
+.scope :global(.res-layer.on .hw) { background: var(--accent); }
+.scope :global(.res-cap) { font-family: var(--mono); font-size: 11px; color: var(--ink2); margin-left: 4px; }
+
+.scope :global(.flow) { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 14px 0 4px; }
+.scope :global(.flow .fc) {
+  font-family: var(--mono); font-size: 12.5px; font-weight: 600; color: var(--accent);
+  background: #fff; border: 1px solid var(--accent-soft); border-radius: 9px; padding: 8px 11px; text-align: center; line-height: 1.4;
+}
+.scope :global(.flow .fc small) { display: block; color: var(--ink2); font-weight: 400; font-size: 10.5px; margin-top: 2px; }
+.scope :global(.flow .fa) { color: var(--ink2); font-size: 18px; }
+.scope :global(.loss-wrap) { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px 4px; margin: 8px 0 4px; }
+.scope :global(.loss-wrap svg) { width: 100%; height: auto; display: block; }
+.scope :global(.loss-leg) { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; color: var(--ink2); margin: 2px 0 0; }
+.scope :global(.loss-leg i) { display: inline-block; width: 18px; height: 0; border-top-width: 3px; vertical-align: middle; margin-right: 5px; }

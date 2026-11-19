@@ -393,7 +393,7 @@ function Step5() {
     const t0 = performance.now()
     let raf = 0
     const frame = (now: number) => {
-      const t = Math.min(1, (now - t0) / 2600)
+      const t = Math.min(1, Math.max(0, (now - t0) / 2600))
       const e = 1 - (1 - t) ** 2
       setCurveStep(STEP_MAX * e)
       if (t < 1) raf = requestAnimationFrame(frame)

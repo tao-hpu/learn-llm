@@ -56,10 +56,11 @@ function normLines(text) {
 
 async function visibleText(page) {
   return page.evaluate(() => {
-    const nodes = [...document.querySelectorAll('.code-link, .colab')]
+    const root = document.querySelector('.wrap') || document.querySelector('main.main') || document.body
+    const nodes = [...root.querySelectorAll('.code-link, .colab, .filename, .home-link')]
     const saved = nodes.map((el) => [el, el.textContent])
     for (const el of nodes) el.textContent = ''
-    const text = document.body.innerText
+    const text = root.innerText
     for (const [el, t] of saved) el.textContent = t
     return text
   })
@@ -101,16 +102,27 @@ function lineDiff(a, b) {
 
 async function openHash(page, url) {
   const hash = new URL(url).hash
-  await page.goto(url, { waitUntil: 'networkidle' })
-  await page.waitForSelector('h1', { timeout: 8000 })
+  await page.goto(url, { waitUntil: 'domcontentloaded' })
+  try {
+    await page.waitForSelector('h1', { timeout: 8000 })
+  } catch (err) {
+    throw new Error(`${url} 没有出现 h1：${err.message.split('\n')[0]}`)
+  }
   if (!hash) return
   const step = hash.match(/(\d+)$/)
   if (!step) return
-  const id = 'panel' + (Number(step[1]) - 1)
-  await page.waitForFunction((pid) => {
-    const el = document.getElementById(pid)
-    return !!el && el.classList.contains('active')
-  }, id, { timeout: 8000 })
+  const index = Number(step[1]) - 1
+  try {
+    await page.waitForFunction((n) => {
+      const panels = [...document.querySelectorAll('section.panel')]
+      const active = panels.filter((p) => p.classList.contains('active'))
+      if (active.length !== 1) return false
+      if (active[0].id === 'panel' + n) return true
+      return panels.indexOf(active[0]) === n
+    }, index, { timeout: 8000 })
+  } catch (err) {
+    throw new Error(`${url} 没有激活第 ${index + 1} 步：${err.message.split('\n')[0]}`)
+  }
 }
 
 async function launch() {
@@ -512,11 +524,21 @@ try {
   for (const ch of ready) {
     for (const step of ch.steps) {
       const label = `${ch.num} ${ch.slug} #${step.anchor}`
-      await compareOne(
-        label,
-        `${oldOrigin}/${ch.file}#${step.anchor}`,
-        `${newOrigin}/ch/${ch.slug}#${step.anchor}`,
-      )
+      try {
+        await compareOne(
+          label,
+          `${oldOrigin}/${ch.file}#${step.anchor}`,
+          `${newOrigin}/ch/${ch.slug}#${step.anchor}`,
+        )
+      } catch (err) {
+        report.push({
+          label,
+          same: false,
+          diffCount: 1,
+          diff: [String(err).split('\n')[0]],
+          errors: [String(err).split('\n')[0]],
+        })
+      }
     }
   }
 

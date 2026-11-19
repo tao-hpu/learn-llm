@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { findChapter } from '../chapters'
+import { scrollContentToTop } from '../scroll'
 import { Filename } from './Filename'
-import { HomeLink } from './HomeLink'
 import { SiteFooter } from './SiteFooter'
 
 const COLORS = ['#D97757', '#E8B04B', '#6FAE8F', '#5B8DEF', '#D98AC0', '#1A1A18']
@@ -50,7 +50,7 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
       skipScroll.current = false
       return
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollContentToTop('smooth')
   }, [index, kind])
 
   useEffect(() => {
@@ -142,9 +142,8 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
   return (
     <>
       <div className="wrap">
-        <HomeLink />
         <header>
-          <Filename file={chapter.file} links={chapter.codeLinks} />
+          <Filename links={chapter.codeLinks} />
           <h1>{title}</h1>
           <p className="subtitle">{subtitle}</p>
         </header>
@@ -177,9 +176,9 @@ export function ChapterShell({ slug, title, subtitle, hp, steps, congrats }: {
           </section>
         ))}
         <div className="nav">
-          <button type="button" id="prevBtn" className={chapter.prevClass} disabled={index === 0} onClick={() => setIndex((i) => Math.max(0, i - 1))}>← 上一步</button>
+          <button type="button" id="prevBtn" className={chapter.prevClass} disabled={index === 0} onClick={() => setIndex((i) => Math.max(0, i - 1))}>{chapter.navPrev ?? '← 上一步'}</button>
           <button type="button" id="nextBtn" className="btn primary" onClick={() => { if (last) finish(); else setIndex((i) => Math.min(count - 1, i + 1)) }}>
-            {last ? '完成 🎉' : '下一步 →'}
+            {last ? '完成 🎉' : (chapter.navNext ?? '下一步 →')}
           </button>
         </div>
       </div>

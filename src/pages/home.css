@@ -45,7 +45,7 @@
   .side-links a:hover{color:var(--accent);}
 
   /* ============ 顶部标题区 ============ */
-  .main{padding:44px 0 56px;min-width:0;}
+  .main{padding:36px 28px 56px;min-width:0;}
   header{margin-bottom:8px;}
   h1{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.25;margin:0 0 12px;}
   h1 .dot{color:var(--accent);}

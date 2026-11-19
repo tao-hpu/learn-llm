@@ -30,6 +30,82 @@
 
 差异行数：0
 
+## 02 attention #step-1
+
+差异行数：0
+
+## 02 attention #step-2
+
+差异行数：0
+
+## 02 attention #step-3
+
+差异行数：0
+
+## 02 attention #step-4
+
+差异行数：0
+
+## 02 attention #step-5
+
+差异行数：0
+
+## 02 attention #step-6
+
+差异行数：0
+
+## 03 transformer #step-1
+
+差异行数：0
+
+## 03 transformer #step-2
+
+差异行数：0
+
+## 03 transformer #step-3
+
+差异行数：0
+
+## 03 transformer #step-4
+
+差异行数：0
+
+## 03 transformer #step-5
+
+差异行数：0
+
+## 03 transformer #step-6
+
+差异行数：0
+
+## 04 gpt-machine #part-1
+
+差异行数：0
+
+## 04 gpt-machine #part-2
+
+差异行数：0
+
+## 05 sampling #step-1
+
+差异行数：0
+
+## 05 sampling #step-2
+
+差异行数：0
+
+## 05 sampling #step-3
+
+差异行数：0
+
+## 05 sampling #step-4
+
+差异行数：0
+
+## 05 sampling #step-5
+
+差异行数：0
+
 ## 06 pretraining #step-1
 
 差异行数：0
@@ -186,6 +262,46 @@
 
 差异行数：0
 
+## 13 linear-attention #step-1
+
+差异行数：0
+
+## 13 linear-attention #step-2
+
+差异行数：0
+
+## 13 linear-attention #step-3
+
+差异行数：0
+
+## 13 linear-attention #step-4
+
+差异行数：0
+
+## 13 linear-attention #step-5
+
+差异行数：0
+
+## 14 sparse-attention #step-1
+
+差异行数：0
+
+## 14 sparse-attention #step-2
+
+差异行数：0
+
+## 14 sparse-attention #step-3
+
+差异行数：0
+
+## 14 sparse-attention #step-4
+
+差异行数：0
+
+## 14 sparse-attention #step-5
+
+差异行数：0
+
 ## 15 ngram-memory #step-1
 
 差异行数：0
@@ -203,6 +319,26 @@
 差异行数：0
 
 ## 15 ngram-memory #step-5
+
+差异行数：0
+
+## 16 speculative-decoding #step-1
+
+差异行数：0
+
+## 16 speculative-decoding #step-2
+
+差异行数：0
+
+## 16 speculative-decoding #step-3
+
+差异行数：0
+
+## 16 speculative-decoding #step-4
+
+差异行数：0
+
+## 16 speculative-decoding #step-5
 
 差异行数：0
 
@@ -246,6 +382,46 @@
 
 差异行数：0
 
+## 19 flash-attention #step-1
+
+差异行数：0
+
+## 19 flash-attention #step-2
+
+差异行数：0
+
+## 19 flash-attention #step-3
+
+差异行数：0
+
+## 19 flash-attention #step-4
+
+差异行数：0
+
+## 19 flash-attention #step-5
+
+差异行数：0
+
+## 20 scaling-law #step-1
+
+差异行数：0
+
+## 20 scaling-law #step-2
+
+差异行数：0
+
+## 20 scaling-law #step-3
+
+差异行数：0
+
+## 20 scaling-law #step-4
+
+差异行数：0
+
+## 20 scaling-law #step-5
+
+差异行数：0
+
 ## 21 rlvr-grpo #step-1
 
 差异行数：0
@@ -266,4 +442,4 @@
 
 差异行数：0
 
-合计 66 处，其中 0 处有差异。
+合计 110 处，其中 0 处有差异。

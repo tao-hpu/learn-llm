@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { findChapter, phases } from '../chapters'
 import { bindId } from '../scroll'
@@ -6,68 +5,10 @@ import { CardDesc, HomeSubtitle, HomeTitle } from './homeText'
 import homeCss from './home.css?raw'
 
 export function Home() {
-  const secRefs = useRef<(HTMLElement | null)[]>([])
-  const itemRefs = useRef<(HTMLElement | null)[]>([])
-
-  useEffect(() => {
-    function update() {
-      const secs = secRefs.current.filter((el): el is HTMLElement => !!el)
-      if (!secs.length) return
-      let cur = secs[0].id
-      secs.forEach((s) => {
-        if (s.getBoundingClientRect().top < window.innerHeight * 0.35) cur = s.id
-      })
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
-        cur = secs[secs.length - 1].id
-      }
-      itemRefs.current.forEach((li) => {
-        if (!li) return
-        li.classList.toggle('on', li.dataset.phase === cur)
-      })
-    }
-    window.addEventListener('scroll', update, { passive: true })
-    window.addEventListener('hashchange', update)
-    update()
-    return () => {
-      window.removeEventListener('scroll', update)
-      window.removeEventListener('hashchange', update)
-    }
-  }, [])
-
   return (
     <>
       <style>{homeCss}</style>
-      <div className="layout">
-        <aside className="side">
-          <a className="brand" href="#top"><b>LLM from Scratch</b><span>从零手写大语言模型</span></a>
-          <ul className="toc">
-            {phases.map((phase, i) => (
-              <li key={phase.id} data-phase={phase.id} ref={(el) => { itemRefs.current[i] = el }}>
-                <a className="ph" href={`#${phase.id}`}>{phase.tocLabel}</a>
-                <ol>
-                  {phase.slugs.map((slug) => {
-                    const c = findChapter(slug)
-                    if (!c) return null
-                    const anchor = c.steps[0]?.anchor ?? 'step-1'
-                    return (
-                      <li key={slug}>
-                        <Link to={`/ch/${slug}#${anchor}`}><i>{c.num}</i>{c.sidebar}</Link>
-                      </li>
-                    )
-                  })}
-                </ol>
-              </li>
-            ))}
-          </ul>
-          <nav className="side-links">
-            <Link to="/glossary">📖 名词表</Link>
-            <Link to="/notes">🥚 学习札记</Link>
-            <Link to="/about">关于本项目</Link>
-            <a href="https://github.com/tao-hpu/llm-from-scratch" target="_blank" rel="noopener">GitHub ↗</a>
-          </nav>
-        </aside>
-
-        <main className="main" id="top" ref={bindId('top')}>
+      <main className="main" id="top" ref={bindId('top')}>
           <header>
             <h1><HomeTitle /></h1>
             <p className="subtitle"><HomeSubtitle /></p>
@@ -81,12 +22,12 @@ export function Home() {
             </div>
           </header>
 
-          {phases.map((phase, i) => (
+          {phases.map((phase) => (
             <section
               className="phase-sec"
               id={phase.id}
               key={phase.id}
-              ref={(el) => { secRefs.current[i] = el; bindId(phase.id)(el) }}
+              ref={bindId(phase.id)}
             >
               <div className="phase-title">
                 <span className="pt-num">{phase.kicker}</span>
@@ -134,7 +75,6 @@ export function Home() {
             © 2026 <a href="https://fim.ai" target="_blank" rel="noopener">FIM Labs</a> · 从零手写大语言模型 · MIT License · <Link to="/about">关于本项目</Link>
           </footer>
         </main>
-      </div>
     </>
   )
 }

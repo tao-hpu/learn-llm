@@ -59,6 +59,54 @@
 - 375px 触屏点开名词气泡：已点过
 - 375px 触屏下无横向滚动：已点过
 
+## attention
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块：这一页没有 range 滑块
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#self-attention
+- 最后一步完成庆祝：已点过 🎉 第 2 章 · 自注意力 通关!
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
+## transformer
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块：这一页没有 range 滑块
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#multi-head
+- 最后一步完成庆祝：已点过 🎉 完整 Transformer · 通关!
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
+## gpt-machine
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块：这一页没有 range 滑块
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#forward
+- 最后一步完成庆祝：已点过 🎉 整机俯瞰 · 通关
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
+## sampling
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块 3 个：已点过
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#logits
+- 最后一步完成庆祝：已点过 🎉 跑起来 · Phase 1 收口!
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
 ## pretraining
 
 - 步骤 tab 切换且只有一个 active：已点过
@@ -157,6 +205,30 @@
 - 375px 无横向滚动：已点过
 - 页面异常：已点过，没有 pageerror
 
+## linear-attention
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块 5 个：已点过
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#kv-cache
+- 最后一步完成庆祝：已点过 🎉 线性注意力 · 通关
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
+## sparse-attention
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块 3 个：已点过
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#kv-cache
+- 最后一步完成庆祝：已点过 🎉 稀疏注意力 · 通关
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
 ## ngram-memory
 
 - 步骤 tab 切换且只有一个 active：已点过
@@ -166,6 +238,18 @@
 - 名词气泡：已点过
 - 气泡链到名词表：已点过 /glossary#ngram-memory
 - 最后一步完成庆祝：已点过 🎉 N-gram 查表 · 通关
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
+## speculative-decoding
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块 4 个：已点过
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#autoregressive
+- 最后一步完成庆祝：已点过 🎉 投机解码与 MTP · 通关
 - 375px 无横向滚动：已点过
 - 页面异常：已点过，没有 pageerror
 
@@ -190,6 +274,30 @@
 - 名词气泡：已点过
 - 气泡链到名词表：已点过 /glossary#byte-level-bpe
 - 最后一步完成庆祝：已点过 🎉 手写 BPE · 通关
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
+## flash-attention
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块 1 个：已点过
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#flash-attention
+- 最后一步完成庆祝：已点过 🎉 手写 FlashAttention · 通关
+- 375px 无横向滚动：已点过
+- 页面异常：已点过，没有 pageerror
+
+## scaling-law
+
+- 步骤 tab 切换且只有一个 active：已点过
+- 上一步 / 下一步：已点过
+- 滑块 3 个：已点过
+- 各步按钮：已点过
+- 名词气泡：已点过
+- 气泡链到名词表：已点过 /glossary#scaling-law
+- 最后一步完成庆祝：已点过 🎉 Scaling Law · 通关
 - 375px 无横向滚动：已点过
 - 页面异常：已点过，没有 pageerror
 

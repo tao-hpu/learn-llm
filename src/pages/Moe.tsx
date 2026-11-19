@@ -58,21 +58,21 @@ function shufflePick(n: number, k: number) {
 }
 
 function Step1() {
-  const [sel, setSel] = useState(2)
-  const [shown, setShown] = useState(2)
-  const [onCount, setOnCount] = useState(128)
+  const [sel, setSel] = useState<number | null>(null)
+  const [shown, setShown] = useState<number | null>(null)
+  const [onCount, setOnCount] = useState(0)
   const live = useStepLive()
 
   useEffect(() => {
-    if (!live || onCount >= 128) return
+    if (!live || sel === null || onCount >= 128) return
     const id = window.setTimeout(() => {
       setOnCount((k) => Math.min(128, k + 16))
     }, onCount === 0 ? 0 : 26)
     return () => window.clearTimeout(id)
-  }, [live, onCount])
+  }, [live, onCount, sel])
 
   useEffect(() => {
-    if (onCount >= 128) setShown(sel)
+    if (sel !== null && onCount >= 128) setShown(sel)
   }, [onCount, sel])
 
   function fire(i: number) {
@@ -80,7 +80,7 @@ function Step1() {
     setOnCount(0)
   }
 
-  const ch = TOKS1[shown]
+  const ch = shown === null ? '' : TOKS1[shown]
   const label = ch === '␣' ? '空格' : ch
 
   return (
@@ -103,7 +103,7 @@ function Step1() {
           ))}
         </div>
         <div className="ffn-cap">
-          token「{label}」→ 激活隐层神经元 <b>512 / 512(100%)</b> —— 换哪个 token 都一样
+          {shown === null ? '点一个 token 试试' : <>token「{label}」→ 激活隐层神经元 <b>512 / 512(100%)</b> —— 换哪个 token 都一样</>}
         </div>
       </div>
       <div className="note">

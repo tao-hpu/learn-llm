@@ -218,7 +218,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn ghost",
       "confetti": false,
-      "ready": false,
+      "ready": true,
       "sidebar": "自注意力"
     },
     {
@@ -288,7 +288,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn ghost",
       "confetti": false,
-      "ready": false,
+      "ready": true,
       "sidebar": "完整 Transformer"
     },
     {
@@ -322,8 +322,10 @@
       "hashKind": "part",
       "stepsClass": "steps-nav",
       "prevClass": "btn",
+      "navPrev": "← 上一段",
+      "navNext": "下一段 →",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "整机俯瞰"
     },
     {
@@ -387,7 +389,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn ghost",
       "confetti": false,
-      "ready": false,
+      "ready": true,
       "sidebar": "采样与 KV-cache"
     },
     {
@@ -907,7 +909,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "线性注意力"
     },
     {
@@ -971,7 +973,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "稀疏注意力"
     },
     {
@@ -1094,7 +1096,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "投机解码与 MTP"
     },
     {
@@ -1271,7 +1273,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "FlashAttention"
     },
     {
@@ -1330,7 +1332,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "Scaling Law"
     },
     {
