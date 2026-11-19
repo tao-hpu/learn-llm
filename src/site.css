@@ -2,6 +2,8 @@
 :root {
   --bg: #F0EEE6;
   --card: #FAF9F5;
+  --paper: #FFFEFB; /* 正文区底色 */
+  --chrome: #F3F1EA; /* 顶栏与侧栏 */
   --border: #E5E2D9;
   --accent: #D97757;
   --accent-soft: #F2D9CE;
@@ -24,11 +26,11 @@ a { color: inherit; }
 
 .shell { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
 .body { display: flex; flex: 1 1 auto; min-height: 0; }
-.content { flex: 1 1 auto; min-width: 0; overflow-y: auto; }
+.content { flex: 1 1 auto; min-width: 0; overflow-y: auto; background: var(--paper); }
 
 .topbar {
   flex-shrink: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; padding: 12px 22px; background: rgba(250, 249, 245, 0.92);
+  gap: 16px; padding: 12px 22px; background: var(--chrome);
   backdrop-filter: saturate(180%) blur(8px); border-bottom: 1px solid var(--border);
 }
 .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
@@ -53,7 +55,7 @@ a { color: inherit; }
 
 .sidebar {
   width: 272px; flex-shrink: 0; height: 100%; overflow-y: auto; overscroll-behavior: contain;
-  border-right: 1px solid var(--border); background: var(--card); padding: 16px 12px 40px;
+  border-right: 1px solid var(--border); background: var(--chrome); padding: 16px 12px 40px;
 }
 .side-home {
   display: block; font-size: 13px; font-weight: 600; color: var(--ink2); text-decoration: none;
