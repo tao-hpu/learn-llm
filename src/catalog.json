@@ -446,7 +446,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn ghost",
       "confetti": false,
-      "ready": false,
+      "ready": true,
       "sidebar": "预训练 124M"
     },
     {
@@ -575,7 +575,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "SFT"
     },
     {
@@ -639,7 +639,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "LoRA"
     },
     {
@@ -703,7 +703,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "DPO"
     },
     {
@@ -773,7 +773,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "MoE"
     },
     {
@@ -843,7 +843,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "LLaMA 四件套"
     },
     {
@@ -1030,7 +1030,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "N-gram 查表"
     },
     {
@@ -1153,7 +1153,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "量化"
     },
     {
@@ -1212,7 +1212,7 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": false,
+      "ready": true,
       "sidebar": "手写 BPE"
     },
     {

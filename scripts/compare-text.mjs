@@ -652,6 +652,7 @@ try {
       const buttons = page.locator('.panel.active button, .panel.active .btn')
       const n = await buttons.count()
       for (let k = 0; k < n; k++) {
+        if (!(await buttons.nth(k).isVisible())) continue
         const label = (await buttons.nth(k).innerText()).trim().slice(0, 40)
         try {
           await buttons.nth(k).click({ timeout: 1500 })
@@ -662,27 +663,52 @@ try {
     }
     note(ch.slug, '各步按钮', btnProblems.length ? `有问题：${btnProblems.join('；')}` : '已点过')
 
-    await openHash(page, `${base}#${ch.steps[0].anchor}`)
-    const term = page.locator('.panel.active .term').first()
-    if (await term.count()) {
-      await term.hover()
-      await page.waitForTimeout(80)
-      const tip = await page.evaluate(() => {
-        const el = document.getElementById('termTip')
-        return {
-          show: !!el?.classList.contains('show'),
-          text: el?.innerText ?? '',
+    let tipped = false
+    const termPlaces = ['.subtitle .term']
+    for (let i = 0; i < ch.steps.length; i++) termPlaces.push(`#panel${i} .term`)
+    for (let i = 0; i < termPlaces.length && !tipped; i++) {
+      if (i > 0) {
+        await page.locator('.step-tab').nth(i - 1).click()
+        await page.waitForSelector(`#panel${i - 1}.active`)
+      }
+      const terms = page.locator(termPlaces[i])
+      const n = await terms.count()
+      for (let k = 0; k < n && !tipped; k++) {
+        const usable = await terms.nth(k).evaluate((el) => {
+          let node = el.parentElement
+          while (node) {
+            if (node.tagName === 'DETAILS' && !node.open) return false
+            node = node.parentElement
+          }
+          const r = el.getBoundingClientRect()
+          return r.width > 1 && r.height > 1
+        })
+        if (!usable) continue
+        try {
+          await terms.nth(k).hover({ timeout: 4000 })
+        } catch {
+          continue
         }
-      })
-      note(ch.slug, '名词气泡', tip.show && tip.text.includes('更多') ? '已点过' : `有问题：气泡 show=${tip.show} text=${tip.text.slice(0, 80)}`)
-      if (tip.show) {
+        await page.waitForTimeout(80)
+        const tip = await page.evaluate(() => {
+          const el = document.getElementById('termTip')
+          return {
+            show: !!el?.classList.contains('show'),
+            text: el?.innerText ?? '',
+          }
+        })
+        if (!(tip.show && tip.text.includes('更多'))) continue
+        note(ch.slug, '名词气泡', '已点过')
         await page.locator('#termTip .tt-more').click()
         await page.waitForURL(/\/glossary#/)
         const landed = await page.evaluate(() => location.pathname + location.hash)
         note(ch.slug, '气泡链到名词表', landed.startsWith('/glossary#') ? `已点过 ${landed}` : `有问题：${landed}`)
+        tipped = true
       }
-    } else {
-      note(ch.slug, '名词气泡', '有问题：第一步没有 .term')
+    }
+    if (!tipped) {
+      const any = await page.locator('.term').count()
+      note(ch.slug, '名词气泡', any ? '有问题：没有能点开的名词' : '已点过，这一页没有名词')
     }
 
     const last = ch.steps[ch.steps.length - 1]

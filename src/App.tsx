@@ -1,25 +1,48 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type ComponentType } from 'react'
 import { BrowserRouter, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { findChapter } from './chapters'
 import { TermTip } from './components/TermTip'
+import { Bpe } from './pages/Bpe'
+import { Bigram } from './pages/Bigram'
+import { Dpo } from './pages/Dpo'
 import { GlossaryPage } from './pages/GlossaryPage'
 import { Home } from './pages/Home'
+import { Llama } from './pages/Llama'
+import { Lora } from './pages/Lora'
+import { Moe } from './pages/Moe'
+import { NgramMemory } from './pages/NgramMemory'
 import { NotFound } from './pages/NotFound'
 import { PendingChapter, PendingStatic } from './pages/Pending'
-import { Bigram } from './pages/Bigram'
 import { Posttraining } from './pages/Posttraining'
+import { Pretraining } from './pages/Pretraining'
+import { Quantization } from './pages/Quantization'
 import { RlvrGrpo } from './pages/RlvrGrpo'
+import { Sft } from './pages/Sft'
 import { scrollToRegistered } from './scroll'
 import './site.css'
+
+const pages: Record<string, ComponentType> = {
+  bigram: Bigram,
+  pretraining: Pretraining,
+  posttraining: Posttraining,
+  sft: Sft,
+  lora: Lora,
+  dpo: Dpo,
+  moe: Moe,
+  llama: Llama,
+  'ngram-memory': NgramMemory,
+  quantization: Quantization,
+  bpe: Bpe,
+  'rlvr-grpo': RlvrGrpo,
+}
 
 function ChapterRoute() {
   const { slug = '' } = useParams()
   const chapter = findChapter(slug)
   if (!chapter) return <NotFound />
   if (!chapter.ready) return <PendingChapter chapter={chapter} />
-  if (slug === 'bigram') return <Bigram />
-  if (slug === 'posttraining') return <Posttraining />
-  if (slug === 'rlvr-grpo') return <RlvrGrpo />
+  const Page = pages[slug]
+  if (Page) return <Page />
   return <NotFound />
 }
 
