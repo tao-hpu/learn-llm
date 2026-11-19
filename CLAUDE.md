@@ -1,14 +1,12 @@
 # learn-llm
 
-从零手写大语言模型的交互站。正文在本仓用 React + TypeScript 维护。`llm-from-scratch/web/` 只作为迁完之前的对照，不再改，也不再从那边生成页面。
+从零手写大语言模型的交互站，线上 https://learn-llm.fim.ai 。正文在本仓用 React + TypeScript 维护。配套的 Python 代码与 notebooks 在 `tao-hpu/llm-from-scratch`；它原来的 `web/` 单文件页面已迁到本仓，不再维护。
 
-旧站规范在 `~/Workspace/fim-ai/llm-from-scratch/可视化规范.md`。配色、分步导航、`#step-N` 深链（第 4 章是 `#part-N`）、按钮 active、名词气泡、`.dig` 折叠、超参速查条都要守住。
+页面规范在 `docs/可视化规范.md`（从旧仓复制，正文里「单文件、零依赖」等条目以本文件为准）。配色、分步导航、`#step-N` 深链（第 4 章是 `#part-N`）、按钮 active、名词气泡、`.dig` 折叠、超参速查条都要守住。
 
-## 不要动的
+## 约定
 
-- 不要改 `~/Workspace/fim-ai/llm-from-scratch/`。
-- 不要 push，不要部署，不要连服务器。
-- 不要改写教学内容。疑似错误写进 `docs/migration-notes.md`。
+- push 前 `pnpm build` 必须通过。
 - 不引入图表库或 UI 组件库。
 - 只用 pnpm。不要生成 `package-lock.json`。
 - 本仓不含 Python，不含 notebooks。源码 / Colab 链接指回旧仓的 GitHub。
@@ -33,14 +31,20 @@ pnpm dev
 pnpm build        # check-source + check-terms + tsc + vite build + prerender
 pnpm typecheck
 pnpm test
-pnpm compare      # 先 build。对照旧 HTML 的可见文字，并点交互
-pnpm compare:behavior  # 同一套点击和滑块，对照当前面板的文字、SVG 和高亮
+pnpm compare      # 先 build。对照旧 HTML 的可见文字（需要本机有 llm-from-scratch/web/）
+pnpm compare:behavior  # 同一套点击和滑块，对照当前面板的文字、SVG 和高亮（同上）
 ```
 
 `pnpm build` 会失败的条件，以及每条检查扫哪些文件，写在 `docs/source-checks.md`。`<Term k>` 在名词表里没有对应词条时同样失败。
 
 预渲染写入 title、description、canonical（`https://learn-llm.fim.ai/...`）、og、twitter，以及 `sitemap.xml` 和 `robots.txt`。图片用 `public/og.png`。
 
-## 再迁一章
+## 加一章或改一章
 
-在新仓里加 `src/pages/<Name>.tsx` 和 `.module.css`，把 `catalog.json` 里该章 `ready` 改成 `true`，在 `App.tsx` 挂上。对照旧 HTML 核对文案。一批大约 5 章，一个 commit。不要从旧仓生成页面。
+新章加 `src/pages/<Name>.tsx` 和 `.module.css`，在 `catalog.json` 里登记（`ready: true`），在 `App.tsx` 挂上。新名词先进 `src/glossary/`，再用 `<Term k>`。
+
+## 部署
+
+Docker 镜像（`Dockerfile`：pnpm 9 构建 → nginx 1.27 托管 `dist/`，配置是本仓 `nginx.conf`），容器 `learn-llm` 监听 `127.0.0.1:5193`。服务器上由 Caddy 反代 `learn-llm.fim.ai`，与 l2a.fim.ai（linalg-to-attention）同一做法；服务器本地的 `docker-compose.override.yml` 让容器加入 Caddy 的 `web` 网络，不进 git。
+
+服务器上在仓库目录运行 `./deploy.sh`：拉 `origin/main`、重建镜像、重启容器。服务器地址与路径不写进本仓。

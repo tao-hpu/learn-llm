@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 与 Dockerfile 钉的版本保持一致：CI 过了，镜像里的 --frozen-lockfile 就也过得了
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: 类型检查
+        run: pnpm typecheck
+
+      # 单测：名词表 def 与正文一致等。
+      - name: 单元测试
+        run: pnpm test
+
+      # build 先跑 check-source / check-terms，违反源码约束会在这里拦下。
+      - name: 构建
+        run: pnpm build

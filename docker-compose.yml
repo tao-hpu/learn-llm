@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    image: learn-llm:latest
+    container_name: learn-llm
+    restart: always
+    # 只监听本机端口。公网由服务器上的 Caddy 反代（learn-llm.fim.ai → learn-llm:80，走 web 网络）。
+    # 服务器本地另有 docker-compose.override.yml（不进 git），让容器加入 Caddy 所在的 web 网络。
+    ports:
+      - "127.0.0.1:5193:80"
