@@ -1,0 +1,10 @@
+# 声明本项目自己就是 pnpm 根。
+# $HOME 下存在 pnpm-workspace.yaml 时，不声明的话 pnpm 会一路向上把家目录当成 workspace 根。
+packages:
+  - .
+
+allowBuilds:
+  esbuild: true
+
+blockExoticSubdeps: true
+minimumReleaseAge: 10080
