@@ -1,9 +1,10 @@
 // 全站章节清单。首页卡片、左侧目录、步骤导航、分享卡都从这里读。
-// 数据在 catalog.json（scripts/extract_html.py 从旧站抽出）。
+// 数据在 catalog.json，在新仓里手工维护。
 // 页内 tab 文案是 steps[].nav，首页卡片上的步骤文案是 steps[].card。
 // 两边用词不一样，所以分两个字段，不合成一句。
 
 import catalog from './catalog.json'
+import type { Run } from './runs'
 
 export interface StepLink {
   sn: string
@@ -25,7 +26,7 @@ export interface Chapter {
   cardId: string
   cardTitle: string
   sidebar: string
-  cardDescHtml: string
+  cardDesc: Run[]
   stepSummary: string
   goLabel: string
   colab: string | null
@@ -35,14 +36,12 @@ export interface Chapter {
   docTitle: string
   shareTitle: string
   description: string
-  h1Html: string
-  subtitleHtml: string
   steps: StepLink[]
   hashKind: 'step' | 'part'
   stepsClass: string
   prevClass: string
   confetti: boolean
-  /** 这一批有没有把交互页迁进来。 */
+  /** 交互页是否已经写成 React 组件。 */
   ready: boolean
 }
 

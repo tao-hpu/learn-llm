@@ -1,12 +1,13 @@
 // 名词表。词条 id 与旧 glossary.html 的锚点一一对应。
-// 分组顺序、TOC 顺序都照原页面，不按字母重排。
+// 分组顺序、TOC 顺序都照原页面，不按字母重排。正文在新仓里手工维护。
 
 import data from './glossary.json'
+import { runsToText, type Run } from './runs'
 
 export interface GlossaryEntry {
   id: string
-  titleHtml: string
-  bodyHtml: string
+  title: Run[]
+  body: Run[]
 }
 
 export interface GlossaryGroup {
@@ -27,8 +28,7 @@ export const glossaryMeta = {
   shareDescription: data.shareDescription,
   eyebrow: data.eyebrow,
   h1: data.h1,
-  subtitleHtml: data.subtitleHtml,
-  footerHtml: data.footerHtml,
+  subtitle: data.subtitle as Run[],
 }
 
 export const glossaryToc = data.toc as TocItem[]
@@ -41,20 +41,5 @@ export const glossaryById: Record<string, GlossaryEntry> = Object.fromEntries(
 )
 
 export function entryPlain(entry: GlossaryEntry): { title: string; def: string } {
-  const title = strip(entry.titleHtml)
-  const def = strip(entry.bodyHtml)
-  return { title, def }
-}
-
-function strip(html: string): string {
-  return html
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/\s+/g, ' ')
-    .trim()
+  return { title: runsToText(entry.title), def: runsToText(entry.body) }
 }

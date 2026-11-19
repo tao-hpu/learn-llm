@@ -188,6 +188,17 @@ try {
   note('名词表', '375px 无横向滚动', (await overflow()) <= 1 ? '已点过' : `有问题：scrollWidth 多出 ${await overflow()}px`)
   await page.setViewportSize({ width: 1280, height: 900 })
 
+  await page.goto(`${newOrigin}/#phase-3`, { waitUntil: 'networkidle' })
+  await page.waitForSelector('#phase-3')
+  await page.waitForTimeout(50)
+  const phaseSeen = await page.evaluate(() => {
+    const el = document.getElementById('phase-3')
+    if (!el) return false
+    const r = el.getBoundingClientRect()
+    return r.top < window.innerHeight && r.bottom > 0
+  })
+  note('首页', '加载时 #phase-3 滚到对应位置', phaseSeen ? '已点过' : '有问题：阶段不在视口里')
+
   await page.goto(`${newOrigin}/glossary#softmax`, { waitUntil: 'networkidle' })
   await page.waitForSelector('#softmax')
   const glossHit = await page.evaluate(() => document.getElementById('softmax')?.className.includes('gentry') ?? false)
@@ -254,6 +265,17 @@ try {
       note(ch.slug, `滑块 ${rangeCount} 个`, rangeOk ? '已点过' : '有问题：拨动后值没有变')
     }
 
+    if (ch.slug === 'posttraining') {
+      await openHash(page, `${base}#step-2`)
+      await page.getByText('中期训练', { exact: true }).click()
+      await page.waitForTimeout(80)
+      const stayed = await page.evaluate(() => {
+        const text = document.body.innerText
+        return text.includes('STAGE 1 · 预训练') && !text.includes('STAGE 2 · 中期训练')
+      })
+      note(ch.slug, '点「中期训练」不切换阶段', stayed ? '已点过' : '有问题：阶段被气泡点击带走了')
+    }
+
     // 每个面板里的按钮点一下。跳过上一步/下一步，那两项上面单独记。
     let btnProblems = []
     for (let i = 0; i < ch.steps.length; i++) {
@@ -300,9 +322,9 @@ try {
     await page.waitForTimeout(200)
     const celebrated = await page.evaluate(() => {
       const banner = document.querySelector('.congrats.show, .congrats')
-      const canvas = document.querySelector('canvas')
       const shown = !!document.querySelector('.congrats.show')
-      return { shown, canvas: !!canvas, text: banner?.innerText?.slice(0, 40) ?? '' }
+      const title = (banner?.innerText ?? '').split('\n').map((s) => s.trim()).filter(Boolean)[0] ?? ''
+      return { shown, text: title }
     })
     note(ch.slug, '最后一步完成庆祝', celebrated.shown ? `已点过 ${celebrated.text}` : '有问题：没有 .congrats.show')
 

@@ -1,4 +1,4 @@
-/* 全站共用。各章原 <style> 仍整段挂在该页，避免把三章并不相同的规则合成一份。 */
+/* 全站变量和章节外壳。各章自己的部件放在同名 .module.css。 */
 :root {
   --bg: #F0EEE6;
   --card: #FAF9F5;
@@ -22,13 +22,101 @@ body {
 }
 a { color: inherit; }
 
+.wrap { max-width: 960px; margin: 0 auto; padding: 32px 24px 90px; }
+.home-link {
+  display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+  font-family: var(--mono); font-size: 13px; color: var(--ink2);
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 12px; margin-bottom: 16px; transition: all .2s ease;
+}
+.home-link:hover { border-color: var(--accent); color: var(--accent); }
+.wrap header { margin-bottom: 24px; }
+.filename {
+  font-family: var(--mono); font-size: 13px; color: var(--ink2);
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 4px 10px; display: inline-block; margin-bottom: 14px;
+}
+.code-link { text-decoration: none; margin-left: 6px; }
+.code-link:hover { border-color: var(--accent); color: var(--accent); }
+.wrap h1 { font-family: var(--serif); font-weight: 600; font-size: 30px; line-height: 1.3; margin: 0 0 10px; }
+.subtitle { color: var(--ink2); font-size: 15px; max-width: 780px; margin: 0; }
+.subtitle code, .panel .lead code, .panel p code, .note code, .congrats code {
+  font-family: var(--mono); font-size: 13px; background: var(--card);
+  border: 1px solid var(--border); padding: 2px 6px; border-radius: 6px; color: var(--accent);
+}
+.panel .lead code, .panel p code, .note code {
+  font-size: 12.5px; background: #F4F2EA; padding: 1px 5px; border-radius: 5px;
+}
+
+.steps-nav, .steps {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 26px 0 18px;
+}
+button.step-tab {
+  font: inherit; color: inherit; width: 100%;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 11px 14px; cursor: pointer; transition: all .25s ease; text-align: left;
+}
+button.step-tab:hover { border-color: #cfc9ba; }
+button.step-tab.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: #fff; }
+button.step-tab .num { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: .5px; }
+button.step-tab .label { font-size: 13.5px; font-weight: 600; margin-top: 2px; }
+button.step-tab.active .label { color: var(--accent); }
+
+.hp-bar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 10px 14px; margin: 0 0 20px;
+}
+.hp-bar .hp-label { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink2); margin-right: 2px; }
+.hp-chip {
+  display: inline-flex; align-items: baseline; gap: 5px; border-radius: 8px; padding: 3px 9px;
+  font-family: var(--mono); font-size: 12.5px; font-weight: 600;
+}
+.hp-chip b { font-size: 13.5px; }
+.hp-chip i { font-style: normal; font-weight: 400; font-size: 11px; opacity: .85; }
+.hp-note { font-size: 12px; color: var(--ink2); }
+
+.panel {
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 28px; animation: fade .4s ease; max-width: 100%; overflow-x: auto;
+}
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.panel h2 { font-family: var(--serif); font-size: 22px; font-weight: 600; margin: 0 0 6px; }
+.panel .lead { color: var(--ink2); font-size: 14.5px; margin: 0 0 20px; }
+.note {
+  font-size: 13px; color: var(--ink2); background: #F4F2EA; border: 1px dashed var(--border);
+  border-radius: 10px; padding: 12px 14px; margin-top: 18px;
+}
+.note b { color: var(--accent); font-weight: 600; }
+.next-hint {
+  font-size: 13px; color: var(--accent); font-weight: 600; margin-top: 16px;
+  background: #FBF1EA; border: 1px solid #F0DDD0; border-radius: 10px; padding: 10px 14px;
+}
+.sub-h { font-family: var(--serif); font-size: 16px; font-weight: 600; margin: 24px 0 6px; }
+.sub-h .badge {
+  font-family: var(--mono); font-size: 11px; font-weight: 700; color: #fff;
+  background: var(--accent); border-radius: 6px; padding: 2px 8px; margin-right: 8px; vertical-align: middle;
+}
+
+button.btn {
+  font-family: system-ui, sans-serif; font-size: 14px; font-weight: 600;
+  background: #fff; color: var(--ink2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 9px 16px; cursor: pointer; transition: all .2s ease, transform .1s ease;
+}
+button.btn:hover { border-color: #cfc9ba; color: var(--ink); }
+button.btn:active { transform: translateY(1px); }
+button.btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.btn.primary:hover { filter: brightness(1.05); color: #fff; border-color: var(--accent); }
+button.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; align-items: center; }
+.nav { display: flex; justify-content: space-between; margin-top: 22px; gap: 10px; }
+
 .term { border-bottom: 1px dashed var(--accent); cursor: help; color: inherit; }
 #termTip {
   position: fixed; z-index: 9998; max-width: 280px; background: #fff;
   border: 1px solid var(--accent); box-shadow: 0 8px 24px rgba(26, 26, 24, .14);
   border-radius: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.6; color: var(--ink);
-  opacity: 0; pointer-events: none; transition: opacity .16s ease;
-  font-family: system-ui, sans-serif;
+  opacity: 0; pointer-events: none; transition: opacity .16s ease; font-family: system-ui, sans-serif;
 }
 #termTip.show { opacity: 1; pointer-events: auto; }
 #termTip .tt-name { font-family: var(--serif); font-weight: 600; color: var(--accent); font-size: 14px; margin-bottom: 4px; }
@@ -52,13 +140,16 @@ a { color: inherit; }
 }
 .dig .dig-body b { color: var(--accent); font-weight: 600; }
 
-.shell-slot { display: contents; }
-
-/* 窄屏时宽图留在面板内滚动，页面本身不出现横向滚动条。 */
-.panel { max-width: 100%; overflow-x: auto; }
-
-.pending {
-  max-width: 960px; margin: 0 auto; padding: 32px 24px 80px;
+.congrats {
+  display: none; text-align: center; background: linear-gradient(135deg, #FBF1EA, #F6E6F0);
+  border: 1px solid var(--accent-soft); border-radius: 16px; padding: 22px; margin-top: 18px;
 }
+.congrats.show { display: block; animation: fade .5s ease; }
+.congrats .ct { font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--accent); }
+.congrats .cs { font-size: 13.5px; color: var(--ink2); margin-top: 6px; }
+#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; display: none; }
+
+.pending { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
 .pending h1 { font-family: var(--serif); font-weight: 600; font-size: 30px; line-height: 1.3; margin: 0 0 10px; }
 .pending p { color: var(--ink2); }
+.sample-term { border-bottom: 1px dashed var(--accent); color: var(--accent); }

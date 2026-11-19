@@ -8,8 +8,24 @@
     "description": "从零手写大语言模型的教学项目:每一关 = 真实现的 Python 代码 + 可亲手拨动的交互可视化。先建直觉,再落到代码:bigram 一路搭到 GPT、对齐、现代架构与推理效率。",
     "shareTitle": "从零手写大语言模型 · LLM from Scratch",
     "shareDescription": "每一关 = 真实现的 Python 代码 + 可亲手拨动的交互可视化。21 关从 bigram 一路搭到 GPT、对齐、现代架构、推理效率,再补上分词器、注意力 kernel、scaling law 与 RLVR。",
-    "h1Html": "LLM from Scratch <span class=\"dot\">·</span> 从零手写大语言模型",
-    "subtitleHtml": "从最朴素的 <code>bigram</code> 起步,手写到 GPT-2 124M 的预训练与推理,再做后训练、现代架构与推理效率,\n        最后补上分词器、注意力 kernel、scaling law 与 RLVR。每章配交互式可视化:先看懂直觉,再读代码。"
+    "h1": [
+      "LLM from Scratch ",
+      {
+        "dot": [
+          "·"
+        ]
+      },
+      " 从零手写大语言模型"
+    ],
+    "subtitle": [
+      "从最朴素的 ",
+      {
+        "code": [
+          "bigram"
+        ]
+      },
+      " 起步,手写到 GPT-2 124M 的预训练与推理,再做后训练、现代架构与推理效率, 最后补上分词器、注意力 kernel、scaling law 与 RLVR。每章配交互式可视化:先看懂直觉,再读代码。"
+    ]
   },
   "phases": [
     {
@@ -95,7 +111,6 @@
       "file": "01_bigram_crossentropy_viz.html",
       "cardId": "ch-01",
       "cardTitle": "第 1 章 · Bigram 基线",
-      "cardDescHtml": "最朴素的语言模型。一口气理解 tokenizer / batch / forward /<code>cross_entropy</code> / 训练循环这条主线。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/01_bigram.ipynb",
@@ -115,8 +130,6 @@
       "docTitle": "Bigram 的 cross_entropy 可视化",
       "shareTitle": "第 1 章 · Bigram 与交叉熵 · 从零手写大语言模型",
       "description": "最朴素的语言模型:一个 batch 的 x/y 错位、logits 摊平、cross_entropy 拆到 -ln(p),再合成训练闭环。",
-      "h1Html": "logits 摊平 &amp; 交叉熵到底在算什么",
-      "subtitleHtml": "逐步拆解 nanoGPT bigram <code>forward</code> 的最后两行:\n      <code>loss = F.cross_entropy(logits.view(B*T, C), targets.view(B*T))</code>。\n      为了画面清晰,这里用 <b>B=2, T=3</b>(共 6 道题)的小例子,词表只画 6 个示意字符。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -153,8 +166,17 @@
       "stepsClass": "steps",
       "prevClass": "btn ghost",
       "confetti": false,
-      "ready": true,
-      "sidebar": "Bigram 基线"
+      "ready": false,
+      "sidebar": "Bigram 基线",
+      "cardDesc": [
+        "最朴素的语言模型。一口气理解 tokenizer / batch / forward /",
+        {
+          "code": [
+            "cross_entropy"
+          ]
+        },
+        " / 训练循环这条主线。"
+      ]
     },
     {
       "num": "02",
@@ -162,7 +184,6 @@
       "file": "02_attention_viz.html",
       "cardId": "ch-02",
       "cardTitle": "第 2 章 · 自注意力",
-      "cardDescHtml": "给模型装上\"往回看\"的能力。从\"对过去做平均\"出发,一步步升级成由内容算权重的自注意力,打破 bigram 的 <code>2.49</code> 天花板。",
       "stepSummary": "共 6 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/02_attention.ipynb",
@@ -182,8 +203,6 @@
       "docTitle": "自注意力 图解 · 02_attention",
       "shareTitle": "第 2 章 · 自注意力 · 从零手写大语言模型",
       "description": "让每个位置学会往回看:从「对过去做平均」一步步升级成 Q/K/V 由内容算权重,打破 bigram 的 2.49 天花板。",
-      "h1Html": "自注意力:让每个位置学会\"往回看\"",
-      "subtitleHtml": "配套 <code>02_attention.py</code>。上一章 bigram 只看前 1 个字符,撞在 <code>val loss ≈ 2.49</code> 的墙上。\n      这一章一步步搭出自注意力 —— 六步看懂直觉,再回去读代码就豁然开朗。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -227,7 +246,16 @@
       "prevClass": "btn ghost",
       "confetti": false,
       "ready": false,
-      "sidebar": "自注意力"
+      "sidebar": "自注意力",
+      "cardDesc": [
+        "给模型装上\"往回看\"的能力。从\"对过去做平均\"出发,一步步升级成由内容算权重的自注意力,打破 bigram 的 ",
+        {
+          "code": [
+            "2.49"
+          ]
+        },
+        " 天花板。"
+      ]
     },
     {
       "num": "03",
@@ -235,7 +263,6 @@
       "file": "03_transformer_viz.html",
       "cardId": "ch-03",
       "cardTitle": "第 3 章 · 完整 Transformer",
-      "cardDescHtml": "四块新积木拼出 GPT:<code>多头</code>(同时看多种关系)、<code>FFN</code>(逐位置思考)、<code>残差 + LayerNorm</code>(让深网络训得动),再摞成多层。val loss 从 2.41 掉到 ~1.57。",
       "stepSummary": "共 6 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/03_transformer.ipynb",
@@ -255,8 +282,6 @@
       "docTitle": "完整 Transformer 图解 · 03_transformer",
       "shareTitle": "第 3 章 · 完整 Transformer · 从零手写大语言模型",
       "description": "四块新积木拼出 GPT:多头切蛋糕、FFN 逐位置思考、残差 + LayerNorm 让深网络训得动,val loss 掉到 ~1.57。",
-      "h1Html": "完整 Transformer:四块新积木,拼出 GPT",
-      "subtitleHtml": "配套 <code>03_transformer.py</code>。第 2 章是<b>单头</b>注意力。这一章加四样东西凑成完整 GPT:\n      <b>多头</b>(同时看多种关系)、<b>FeedForward</b>(逐位置思考)、<b>残差 + LayerNorm</b>(让深网络训得动),\n      再把它们摞成多层 —— 六步走完,val loss 从 2.41 掉到 ~1.57。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -300,7 +325,28 @@
       "prevClass": "btn ghost",
       "confetti": false,
       "ready": false,
-      "sidebar": "完整 Transformer"
+      "sidebar": "完整 Transformer",
+      "cardDesc": [
+        "四块新积木拼出 GPT:",
+        {
+          "code": [
+            "多头"
+          ]
+        },
+        "(同时看多种关系)、",
+        {
+          "code": [
+            "FFN"
+          ]
+        },
+        "(逐位置思考)、",
+        {
+          "code": [
+            "残差 + LayerNorm"
+          ]
+        },
+        "(让深网络训得动),再摞成多层。val loss 从 2.41 掉到 ~1.57。"
+      ]
     },
     {
       "num": "04",
@@ -308,7 +354,6 @@
       "file": "04_gpt_machine_viz.html",
       "cardId": "ch-04",
       "cardTitle": "第 4 章 · 把零件拼成整机:一个字符流过 GPT",
-      "cardDescHtml": "第 1–3 章的零件拼成整台 tiny GPT(≈0.8M)。两段全自动动画:<code>① 装机</code>(训练把所有权重调到位)+ <code>② 跑起来</code>(<code>forward</code> 算出 logits → <code>decode</code> 采样,预设开头自回归生成)。跑起来里点开 <code>4×Block</code> 还能掀盖看注意力热力图 + FFN 内部。",
       "stepSummary": "2 段动画",
       "goLabel": "播放 →",
       "colab": null,
@@ -317,8 +362,6 @@
       "docTitle": "整机俯瞰 · GPT 全景",
       "shareTitle": "第 4 章 · 整机俯瞰 · 从零手写大语言模型",
       "description": "把前三章的零件拼成一台 0.82M 的 tiny GPT:装机动画 + 一个字符流过前向与采样的全自动演示。",
-      "h1Html": "整机俯瞰:一个字符,如何流过整台 GPT",
-      "subtitleHtml": "第 1–3 章把零件都拆懂了。这一页把它们<b>拼成整机</b>,只画<b>我们这个 tiny 模型</b>(≈ 0.8M 参数,不是 GPT-2)。\n      分两段:<b>① 装机</b> —— 训练把所有权重矩阵调到位;<b>② 跑起来</b> —— 一个预设字符串走完<Term k=\"forward\" name=\"前向传播 · forward\" def=\"把输入从头到尾过一遍网络、算出输出(这里是下一个字符的打分 logits)的过程。训练和推理都要做前向;训练还会再反向更新权重。\">前向传播</Term>,再<Term k=\"sampling\" name=\"采样 · sampling\" def=\"按模型输出的概率分布随机抽一个 token 作为下一个字符(不是永远取最高分),所以同一个开头每次生成可能不同。\">采样</Term>出下一个字符。全程<b>自动播放</b>。",
       "steps": [
         {
           "sn": "PART 1",
@@ -338,7 +381,40 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "整机俯瞰"
+      "sidebar": "整机俯瞰",
+      "cardDesc": [
+        "第 1–3 章的零件拼成整台 tiny GPT(≈0.8M)。两段全自动动画:",
+        {
+          "code": [
+            "① 装机"
+          ]
+        },
+        "(训练把所有权重调到位)+ ",
+        {
+          "code": [
+            "② 跑起来"
+          ]
+        },
+        "(",
+        {
+          "code": [
+            "forward"
+          ]
+        },
+        " 算出 logits → ",
+        {
+          "code": [
+            "decode"
+          ]
+        },
+        " 采样,预设开头自回归生成)。跑起来里点开 ",
+        {
+          "code": [
+            "4×Block"
+          ]
+        },
+        " 还能掀盖看注意力热力图 + FFN 内部。"
+      ]
     },
     {
       "num": "05",
@@ -346,7 +422,6 @@
       "file": "05_sampling_viz.html",
       "cardId": "ch-05",
       "cardTitle": "第 5 章 · 跑起来:从 logits 到文字(采样与 KV-cache)",
-      "cardDescHtml": "对应 <code>phase1-124m/05_sample.py</code>:把推理\"从打分到吐字\"拆成五步亲手拨——<code>base</code> 只续写不答题、<code>temperature</code> 捏尖/摊平分布、<code>top_k</code> 砍掉长尾、自回归逐 token 滚动、<code>KV-cache</code> 并排省掉重复计算(实测约 2.5–3.1×)。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/05_sample.ipynb",
@@ -366,8 +441,6 @@
       "docTitle": "跑起来 · 从 logits 到文字(采样与 KV-cache)· 05_sample",
       "shareTitle": "第 5 章 · 采样与 KV-cache · 从零手写大语言模型",
       "description": "从 logits 到文字:temperature 捏分布、top_k 砍长尾、自回归滚动生成,再用 KV-cache 省掉重复计算(实测 2.5–3.1×)。",
-      "h1Html": "跑起来:从 logits 到文字(采样与 KV-cache)",
-      "subtitleHtml": "本页对应 <code>phase1-124m/05_sample.py</code>。模型每一步只做一件事:对<b>下一个 token</b> 打分(<Term k=\"logits\" name=\"logits · 原始打分\" def=\"模型最后一层对词表里每个 token 输出的一排实数打分,还没归一化成概率。越大越倾向选它。\">logits</Term>)。\n      这一页把\"打分 → 怎么挑一个字 → 一个字接一个字滚成句子 → 怎么加速\"五步拆开,每步亲手拨一个旋钮。\n      演示用一个<b>小示意词表</b>(标着「示意」),真实里词表是 <span class=\"d d-vocab\">50304<i>vocab</i></span> 个 token —— 其中 <b>50257</b> 个是真 token,另 47 个是为对齐 GPU 补的空位,采样时会被屏蔽掉,所以每步实际只在 <b>50257</b> 个里挑。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -405,7 +478,40 @@
       "prevClass": "btn ghost",
       "confetti": false,
       "ready": false,
-      "sidebar": "采样与 KV-cache"
+      "sidebar": "采样与 KV-cache",
+      "cardDesc": [
+        "对应 ",
+        {
+          "code": [
+            "phase1-124m/05_sample.py"
+          ]
+        },
+        ":把推理\"从打分到吐字\"拆成五步亲手拨——",
+        {
+          "code": [
+            "base"
+          ]
+        },
+        " 只续写不答题、",
+        {
+          "code": [
+            "temperature"
+          ]
+        },
+        " 捏尖/摊平分布、",
+        {
+          "code": [
+            "top_k"
+          ]
+        },
+        " 砍掉长尾、自回归逐 token 滚动、",
+        {
+          "code": [
+            "KV-cache"
+          ]
+        },
+        " 并排省掉重复计算(实测约 2.5–3.1×)。"
+      ]
     },
     {
       "num": "06",
@@ -413,7 +519,6 @@
       "file": "07_pretraining_viz.html",
       "cardId": "ch-06",
       "cardTitle": "第 6 章 · 真训练:把玩具 GPT 喂真实数据",
-      "cardDescHtml": "对应 <code>phase1-124m/04_gpt2_124m.py</code>:把 GPT-2 124M 预训练拆成五步亲手拨——配置从字符级玩具跃迁到 <code>12/12/768</code>、FineWeb-Edu 切 <code>shard</code> 顺序喂、梯度累积攒满 524288 token 再走一步、<code>warmup + 余弦</code>学习率实时画曲线、用两个真实端点(300M→3.65 / 10B→3.02)看数据量 33× 的收敛对照。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": null,
@@ -428,8 +533,6 @@
       "docTitle": "真训练 · 把玩具 GPT 喂真实数据(预训练 GPT-2 124M)· 04_gpt2_124m",
       "shareTitle": "第 6 章 · 预训练 GPT-2 124M · 从零手写大语言模型",
       "description": "真数据真规模:12/12/768 配置跃迁、BPE + shards、梯度累积攒满 524288 token、warmup + 余弦退火、10B token 的收敛对照。",
-      "h1Html": "真训练:把玩具 GPT 喂真实数据(预训练 GPT-2 124M)",
-      "subtitleHtml": "本页对应 <code>phase1-124m/04_gpt2_124m.py</code>。架构内核和前几关<b>一模一样</b>(注意力 + FFN + 残差 + LayerNorm),\n      变的是<b>规模</b>和一整套\"让大模型训得稳、训得动\"的<b>训练工程</b>。这一页把\"配置怎么涨 → 真数据怎么喂 →\n      显存不够怎么办 → 学习率怎么排 → 最后收敛到哪\"五步拆开,每步亲手拨一个旋钮。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -467,7 +570,34 @@
       "prevClass": "btn ghost",
       "confetti": false,
       "ready": false,
-      "sidebar": "预训练 124M"
+      "sidebar": "预训练 124M",
+      "cardDesc": [
+        "对应 ",
+        {
+          "code": [
+            "phase1-124m/04_gpt2_124m.py"
+          ]
+        },
+        ":把 GPT-2 124M 预训练拆成五步亲手拨——配置从字符级玩具跃迁到 ",
+        {
+          "code": [
+            "12/12/768"
+          ]
+        },
+        "、FineWeb-Edu 切 ",
+        {
+          "code": [
+            "shard"
+          ]
+        },
+        " 顺序喂、梯度累积攒满 524288 token 再走一步、",
+        {
+          "code": [
+            "warmup + 余弦"
+          ]
+        },
+        "学习率实时画曲线、用两个真实端点(300M→3.65 / 10B→3.02)看数据量 33× 的收敛对照。"
+      ]
     },
     {
       "num": "07",
@@ -475,7 +605,6 @@
       "file": "06_posttraining_viz.html",
       "cardId": "ch-07",
       "cardTitle": "第 7 章 · 从\"会续写\"到\"会听话\":后训练地图",
-      "cardDescHtml": "动手写代码前先对齐全景与术语:后训练全链路哪些<code>必需 / 常规 / 可选</code>、<code>任务 vs 手段</code>(SFT/DPO × 全量/LoRA)、SFT 改了哪三处(数据/模板/<code>loss mask</code>)、<code>RLHF</code> 与 <code>DPO</code> 的关系,以及 SFT、DPO、RLHF、RLVR、蒸馏的两轴分类表。",
       "stepSummary": "共 7 步",
       "goLabel": "开始 →",
       "colab": null,
@@ -484,8 +613,6 @@
       "docTitle": "Phase 2 开篇 · 后训练白皮书",
       "shareTitle": "第 7 章 · 后训练地图 · 从零手写大语言模型",
       "description": "动手前先对齐全景:后训练全链路哪些必需、哪些常规,任务 vs 手段(SFT/DPO × 全量/LoRA),SFT 只动三处,RLHF 与 DPO 的关系,以及 SFT、DPO、RLHF、RLVR、蒸馏的分类表。",
-      "h1Html": "Phase 2 开篇 · 后训练白皮书",
-      "subtitleHtml": "Phase 1 练出来的是一台只会<b>续写</b>的<Term k=\"post-training\" name=\"基座模型 · base model\" def=\"只经过预训练、还没对齐的模型。它学会的是『把话说得像』,只会顺着上文接着写,不会听指令答题。\">底座模型</Term>。\n      这一页是 Phase 2 的<b>地图与术语对齐</b>:从\"会续写\"到\"会听话\"要经过哪几步、有哪两个容易混的轴、\n      <Term k=\"sft\" name=\"SFT · 监督微调\" def=\"用『指令→理想回答』成对数据继续训练,把底座调成会听指令答题的姿态。和预训练用同一个 loss,只是数据和算 loss 的范围变了。\">SFT</Term> 到底改了什么、\n      <Term k=\"preference-alignment\" name=\"偏好对齐 · preference alignment\" def=\"让模型的回答更合人类口味的阶段。有两条路:RLHF(走强化学习)和 DPO(不走强化学习)。\">偏好对齐</Term>里 RLHF 和 DPO 是什么关系,以及 SFT、DPO、RLHF、RLVR、蒸馏在一张表上各占哪一格。先建立全景,再去写代码。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -535,7 +662,40 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": true,
-      "sidebar": "后训练地图"
+      "sidebar": "后训练地图",
+      "cardDesc": [
+        "动手写代码前先对齐全景与术语:后训练全链路哪些",
+        {
+          "code": [
+            "必需 / 常规 / 可选"
+          ]
+        },
+        "、",
+        {
+          "code": [
+            "任务 vs 手段"
+          ]
+        },
+        "(SFT/DPO × 全量/LoRA)、SFT 改了哪三处(数据/模板/",
+        {
+          "code": [
+            "loss mask"
+          ]
+        },
+        ")、",
+        {
+          "code": [
+            "RLHF"
+          ]
+        },
+        " 与 ",
+        {
+          "code": [
+            "DPO"
+          ]
+        },
+        " 的关系,以及 SFT、DPO、RLHF、RLVR、蒸馏的两轴分类表。"
+      ]
     },
     {
       "num": "08",
@@ -543,7 +703,6 @@
       "file": "08_sft_viz.html",
       "cardId": "ch-08",
       "cardTitle": "第 8 章 · SFT:把 base 调成会答题",
-      "cardDescHtml": "拿 Phase 1 的 124M base 做监督微调:<code>对话模板 + EOS</code>、<code>loss mask</code>(只对回答算 loss)、训练循环。配套代码 <code>06_sft.py</code>,内含训练前后真实采样对比。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/06_sft.ipynb",
@@ -563,8 +722,6 @@
       "docTitle": "SFT · 把 base 调成会答题",
       "shareTitle": "第 8 章 · SFT 监督微调 · 从零手写大语言模型",
       "description": "把只会续写的 124M base 调成会答题:对话模板 + EOS + loss mask,和预训练同一个 loss,只动三处。",
-      "h1Html": "SFT:把 base 调成会答题",
-      "subtitleHtml": "<a href=\"/ch/posttraining#step-4\" style=\"color:var(--accent);text-decoration:none\">白皮书</a>讲了 SFT 的轮廓,这一关动手把它跑通 ——\n      直接拿 Phase 1 的 <b>124M base</b> 做监督微调。一句话打底:<b>SFT 和预训练用<Term k=\"cross-entropy\" name=\"交叉熵 · cross-entropy\" def=\"预测下一个 token 的损失。预训练和 SFT 用的是同一个它,没有新数学。\">同一个 loss</Term>,只动三处</b> ——\n      <Term k=\"chat-template\" name=\"对话模板 · chat template\" def=\"把指令和回答按固定格式拼成一条序列的模板,并在结尾放 EOS 教模型停。\">模板</Term>、\n      <Term k=\"chat-template\" name=\"EOS · 结束标记\" def=\"<|endoftext|>(id 50256)。放在每条回答末尾,教模型答完就停。\">EOS</Term>、\n      <Term k=\"loss-mask\" name=\"loss mask · 标签掩码\" def=\"整条序列都喂进去,但只对回答段算 loss,指令段标成 -100 被忽略。\">loss mask</Term>。\n      配套代码 <code>phase2-sft-lora/06_sft.py</code>。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -602,7 +759,28 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "SFT"
+      "sidebar": "SFT",
+      "cardDesc": [
+        "拿 Phase 1 的 124M base 做监督微调:",
+        {
+          "code": [
+            "对话模板 + EOS"
+          ]
+        },
+        "、",
+        {
+          "code": [
+            "loss mask"
+          ]
+        },
+        "(只对回答算 loss)、训练循环。配套代码 ",
+        {
+          "code": [
+            "06_sft.py"
+          ]
+        },
+        ",内含训练前后真实采样对比。"
+      ]
     },
     {
       "num": "09",
@@ -610,7 +788,6 @@
       "file": "09_lora_viz.html",
       "cardId": "ch-09",
       "cardTitle": "第 9 章 · 手搓 LoRA:冻结底座,只训 1% 参数",
-      "cardDescHtml": "换手段不换任务:同一件 SFT,冻住 124M 底座,只在每层旁挂低秩旁路 <code>B·A</code>,只训 <code>~0.94%</code> 参数、存 <code>4.7MB</code> adapter。配套代码 <code>07_lora.py</code>,内含真实采样与 loss 曲线。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/07_lora.ipynb",
@@ -630,8 +807,6 @@
       "docTitle": "手搓 LoRA · 冻结底座,只训 1% 参数",
       "shareTitle": "第 9 章 · 手搓 LoRA · 从零手写大语言模型",
       "description": "冻结 124M 底座,只训旁挂的低秩 B·A:0.94% 可训练参数、4.7MB adapter,拿到和全量 SFT 同款的行为变化。",
-      "h1Html": "手搓 LoRA:冻结底座,只训 1% 参数",
-      "subtitleHtml": "上一关 <a href=\"/ch/sft\" style=\"color:var(--accent);text-decoration:none\">第 8 章 · SFT</a> 是<b><Term k=\"full-finetune\" name=\"全量微调 · full fine-tuning\" def=\"更新模型的全部参数。它是一种「手段」(怎么改权重),不是一种任务 —— 既能做 SFT 也能做 DPO。\">全量微调</Term></b> —— 124M 参数全更新。\n      这一关换<b>手段</b>不换<b>任务</b>:还是同一件 SFT,但用\n      <Term k=\"lora\" name=\"LoRA · 低秩适配\" def=\"冻结原权重,在每层旁边并联一条低秩小矩阵 B·A,只训练它。约 1% 参数拿到接近全量微调的效果。\">LoRA</Term>\n      —— <b>冻住底座</b>,只在每层旁边挂一条<b>低秩旁路</b> <code>B·A</code>,只训那 <b>~1%</b> 的新参数,存盘只是个几 MB 的\n      <Term k=\"lora\" name=\"adapter · 适配器\" def=\"LoRA 训练得到的小权重包(只含 A、B)。用时把它叠回原始 base 即可,一份底座可挂多个 adapter。\">adapter</Term>。\n      配套代码 <code>phase2-sft-lora/07_lora.py</code>。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -669,7 +844,34 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "LoRA"
+      "sidebar": "LoRA",
+      "cardDesc": [
+        "换手段不换任务:同一件 SFT,冻住 124M 底座,只在每层旁挂低秩旁路 ",
+        {
+          "code": [
+            "B·A"
+          ]
+        },
+        ",只训 ",
+        {
+          "code": [
+            "~0.94%"
+          ]
+        },
+        " 参数、存 ",
+        {
+          "code": [
+            "4.7MB"
+          ]
+        },
+        " adapter。配套代码 ",
+        {
+          "code": [
+            "07_lora.py"
+          ]
+        },
+        ",内含真实采样与 loss 曲线。"
+      ]
     },
     {
       "num": "10",
@@ -677,7 +879,6 @@
       "file": "10_dpo_viz.html",
       "cardId": "ch-10",
       "cardTitle": "第 10 章 · 手搓 DPO:从会答到答得合人意",
-      "cardDescHtml": "换任务:从\"会答\"到\"答得合人意\"。接在 SFT 之后,用偏好对(chosen/rejected)+ 冻结参考模型做 DPO——<code>不训奖励模型、不走 RL</code>。配套代码 <code>08_dpo.py</code>,真实曲线 loss↓ / margin↑ / 准确率 0→100%;加 <code>--lora</code> 可切 LoRA 手段。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/08_dpo.ipynb",
@@ -697,8 +898,6 @@
       "docTitle": "手搓 DPO · 从会答到答得合人意",
       "shareTitle": "第 10 章 · 手搓 DPO · 从零手写大语言模型",
       "description": "从会答到答得合人意:policy + 冻结 ref、隐式奖励、一个 sigmoid loss 做偏好对齐,不训奖励模型也不走 RL。",
-      "h1Html": "手搓 DPO:从\"会答\"到\"答得合人意\"",
-      "subtitleHtml": "手搓三关的收尾。第 8、9 关用 SFT 把 base 教成<b>会答题</b>;这一关换<b>任务</b> ——\n      <Term k=\"preference-alignment\" name=\"偏好对齐 · preference alignment\" def=\"让模型在'都能答'的多个回答里,更偏向人类更喜欢的那个(更礼貌/简洁/得体)。\">偏好对齐</Term>。\n      用 <Term k=\"dpo\" name=\"DPO · 直接偏好优化\" def=\"Direct Preference Optimization。不训奖励模型、不走 RL,直接用偏好对(chosen/rejected)做分类式优化。\">DPO</Term>:\n      <b>不训奖励模型、不走 RL</b>,拿一份冻结的<b>参考模型</b>当锚,直接把\"chosen 比 rejected 好\"这件事用一个 sigmoid loss 学进去。\n      配套代码 <code>phase2-sft-lora/08_dpo.py</code>。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -736,7 +935,28 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "DPO"
+      "sidebar": "DPO",
+      "cardDesc": [
+        "换任务:从\"会答\"到\"答得合人意\"。接在 SFT 之后,用偏好对(chosen/rejected)+ 冻结参考模型做 DPO——",
+        {
+          "code": [
+            "不训奖励模型、不走 RL"
+          ]
+        },
+        "。配套代码 ",
+        {
+          "code": [
+            "08_dpo.py"
+          ]
+        },
+        ",真实曲线 loss↓ / margin↑ / 准确率 0→100%;加 ",
+        {
+          "code": [
+            "--lora"
+          ]
+        },
+        " 可切 LoRA 手段。"
+      ]
     },
     {
       "num": "11",
@@ -744,7 +964,6 @@
       "file": "11_moe_viz.html",
       "cardId": "ch-11",
       "cardTitle": "第 11 章 · 手搓 MoE:参数翻倍,算力不变",
-      "cardDescHtml": "把第 3 章 GPT 的 FFN 拆成 <code>4 个专家 + 路由器</code>:top-2 派单、分工自己涌现、专家塌缩与负载均衡 aux loss,再算清\"总参数 ↑ 激活算力不变\"这笔账。最后一步换上 DeepSeek 系的细粒度专家、共享专家与偏置均衡,在同一台模型上跑五组对照。全部在 <code>1.35M</code> 参数上跑通,大概算全球最小的 MoE 之一,机制却和 671B 的 DeepSeek 同款。配套代码 <code>09_moe.py</code>。",
       "stepSummary": "共 6 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/09_moe.ipynb",
@@ -764,8 +983,6 @@
       "docTitle": "手搓 MoE · 参数翻倍,算力不变",
       "shareTitle": "第 11 章 · 手搓 MoE · 从零手写大语言模型",
       "description": "把 FFN 拆成 4 专家 + 路由器 top-2 派单:分工自己涌现、专家塌缩与负载均衡,算清「参数翻倍算力不变」这笔账。",
-      "h1Html": "手搓 MoE:参数翻倍,算力不变",
-      "subtitleHtml": "第 3 章的 GPT 里,FFN 是<b>每个 token 都要过的同一个小 MLP</b>。\n      <Term k=\"moe\" name=\"MoE · 专家混合\" def=\"Mixture of Experts。把 FFN 拆成多个'专家',每个 token 只走其中 top-k 个 —— 总参数变多,每 token 计算量不变。\">MoE</Term>\n      把它拆开:多个<Term k=\"moe\" name=\"专家 · expert\" def=\"MoE 里的一个小 FFN。结构和普通 FFN 一样,只是隐层更窄;分工是训练中自己涌现的。\">专家</Term>\n      + 一个<Term k=\"router\" name=\"路由器 · router\" def=\"一个线性层,给每个 token 对每个专家打分,决定这个 token 派给哪 top-k 个专家。\">路由器</Term>,\n      每个 token 只走最对口的 2 个专家。这是 Mixtral / DeepSeek 这代模型\"参数千亿、激活百亿\"的核心机关。\n      本关用 <b>1.35M</b> 参数把它完整跑通 —— 大概算<b>全球最小的 MoE 之一</b>,但路由、分工、塌缩,和 671B 的 DeepSeek 是同一套机制。\n      最后一步再看 DeepSeek 系的三处改法:细粒度专家、共享专家、偏置均衡。\n      配套代码 <code>phase3-moe/09_moe.py</code>。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -809,7 +1026,28 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "MoE"
+      "sidebar": "MoE",
+      "cardDesc": [
+        "把第 3 章 GPT 的 FFN 拆成 ",
+        {
+          "code": [
+            "4 个专家 + 路由器"
+          ]
+        },
+        ":top-2 派单、分工自己涌现、专家塌缩与负载均衡 aux loss,再算清\"总参数 ↑ 激活算力不变\"这笔账。最后一步换上 DeepSeek 系的细粒度专家、共享专家与偏置均衡,在同一台模型上跑五组对照。全部在 ",
+        {
+          "code": [
+            "1.35M"
+          ]
+        },
+        " 参数上跑通,大概算全球最小的 MoE 之一,机制却和 671B 的 DeepSeek 同款。配套代码 ",
+        {
+          "code": [
+            "09_moe.py"
+          ]
+        },
+        "。"
+      ]
     },
     {
       "num": "12",
@@ -817,7 +1055,6 @@
       "file": "12_llama_viz.html",
       "cardId": "ch-12",
       "cardTitle": "第 12 章 · 把 GPT-2 升级成 LLaMA:四个零件",
-      "cardDescHtml": "第 3 章那台 GPT 是 2019 年的样子。今天的开源模型换掉的不是 Transformer 本身,而是它身上四个零件:<code>RoPE</code> 把位置变成旋转角(注意力只看相对距离)、<code>RMSNorm</code> 少做一半、<code>SwiGLU</code> 给 FFN 装闸门、<code>GQA</code> 让 K/V 拼车(cache 减半)。每件都能单独开关,配套代码 <code>10_llama.py</code>,含六组真实对照训练。",
       "stepSummary": "共 6 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/10_llama.ipynb",
@@ -837,8 +1074,6 @@
       "docTitle": "把 GPT-2 升级成 LLaMA · 四个零件",
       "shareTitle": "第 12 章 · GPT-2 升级成 LLaMA · 从零手写大语言模型",
       "description": "把 GPT-2 的四个零件逐个换成 LLaMA 同款:RoPE 转角度、RMSNorm 少做一半、SwiGLU 装闸门、GQA 让 K/V 拼车,并跑六组真实对照。",
-      "h1Html": "把 GPT-2 升级成 LLaMA:四个零件",
-      "subtitleHtml": "第 3 章那台 GPT 是 <b>2019 年</b>的样子。今天的开源模型(LLaMA / Qwen / Mistral / DeepSeek)长得不太一样了 ——\n      但换掉的<b>不是 Transformer 本身</b>,而是它身上四个零件:\n      <Term k=\"rope\" name=\"RoPE · 旋转位置编码\" def=\"不再用一张可学习的位置表,而是把位置编成旋转角度,直接转进 q/k 里。注意力分数因此只依赖两个 token 的相对距离。\">RoPE</Term>、\n      <Term k=\"rmsnorm\" name=\"RMSNorm · 均方根归一化\" def=\"LayerNorm 的简化版:只除以均方根,不减均值、不带 bias。少一半算子,效果基本持平。\">RMSNorm</Term>、\n      <Term k=\"swiglu\" name=\"SwiGLU · 门控前馈网络\" def=\"FFN 的门控版:一路过 SiLU 当闸门,一路当内容,逐元素相乘。比 ReLU 一刀切负数更精细。\">SwiGLU</Term>、\n      <Term k=\"gqa\" name=\"GQA · 分组查询注意力\" def=\"多个 query 头共享一份 K/V。推理时 KV cache 按 kv 头数算,所以显存直接按比例省。\">GQA</Term>。\n      注意力、残差、训练循环一行没动。本关一次换一个,每个都能单独开关,最后跑一组\n      <b>六选一的真实对照</b>。配套代码 <code>phase3-moe/10_llama.py</code>。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -882,7 +1117,40 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "LLaMA 四件套"
+      "sidebar": "LLaMA 四件套",
+      "cardDesc": [
+        "第 3 章那台 GPT 是 2019 年的样子。今天的开源模型换掉的不是 Transformer 本身,而是它身上四个零件:",
+        {
+          "code": [
+            "RoPE"
+          ]
+        },
+        " 把位置变成旋转角(注意力只看相对距离)、",
+        {
+          "code": [
+            "RMSNorm"
+          ]
+        },
+        " 少做一半、",
+        {
+          "code": [
+            "SwiGLU"
+          ]
+        },
+        " 给 FFN 装闸门、",
+        {
+          "code": [
+            "GQA"
+          ]
+        },
+        " 让 K/V 拼车(cache 减半)。每件都能单独开关,配套代码 ",
+        {
+          "code": [
+            "10_llama.py"
+          ]
+        },
+        ",含六组真实对照训练。"
+      ]
     },
     {
       "num": "13",
@@ -890,7 +1158,6 @@
       "file": "13_linear_attention_viz.html",
       "cardId": "ch-13",
       "cardTitle": "第 13 章 · 线性注意力:把 KV cache 换成固定大小的记忆板",
-      "cardDescHtml": "全注意力推理时每个 token 都要存 K/V,上下文越长 cache 越大。线性注意力每个头只留一块 32×32 的记忆板:写入是加一个外积,<code>delta rule</code> 先擦再写,遗忘门 α 按比例衰减,合起来就是 Qwen3-Next 用的 <code>Gated DeltaNet</code>。配套代码 <code>11_linear_attn.py</code>,9 组真实训练:测试长度拉到 512,全注意力 val loss 涨到 3.52,GDN 停在 1.53;键值检索 N=32 时 GDN 答对 99.9%,只加不减的 linear 16.6%。最后看工业界为什么用 3:1 混合。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/11_linear_attn.ipynb",
@@ -910,8 +1177,6 @@
       "docTitle": "线性注意力 · 把 KV cache 换成固定大小的记忆板",
       "shareTitle": "第 13 章 · 线性注意力 · 从零手写大语言模型",
       "description": "把越存越长的 KV cache 换成一块 32×32 的记忆板:写入是加一个外积,delta rule 先擦再写,遗忘门按比例衰减。五种层配方与键值检索的真实对照,以及工业界的 3:1 混合。",
-      "h1Html": "线性注意力:把 KV cache 换成一块固定大小的记忆板",
-      "subtitleHtml": "第 12 章的注意力推理时要把每个 token 的 K/V 都存下来,上下文越长,\n      <Term k=\"kv-cache\" name=\"KV-cache · 键值缓存\" def=\"把过去每个 token 的 K/V 缓存下来,生成新 token 时只算新的一列,避免重算整段。\">KV cache</Term>\n      越大。<Term k=\"linear-attention\" name=\"线性注意力 · linear attention\" def=\"不存历史 K/V,每个头只维护一块 head_size×head_size 的矩阵 S:来一个 token 就把 v·kᵀ 写进去,读的时候算 S·q。状态大小与上下文长度无关,模型变回 RNN。\">线性注意力</Term>\n      只留一块 head_size × head_size 的矩阵,每来一个 token 往里写一次,大小和上下文长度无关。\n      本关从最朴素的写法出发,加上 delta rule 和遗忘门,得到 Qwen3-Next 用的\n      <Term k=\"gated-deltanet\" name=\"Gated DeltaNet · 门控 delta 网络\" def=\"S ← α·S + β·(v − α·S·k)·kᵀ。α 是整块记忆的保留率,β 是这一步写多重;先读出 k 当前存的值,只补差额。Yang, Kautz, Hatamizadeh,arXiv 2412.06464。\">Gated DeltaNet</Term>,\n      再用 9 次真实训练看它在语言模型和精确检索上各输赢在哪。配套代码 <code>phase4-efficiency/11_linear_attn.py</code>。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -949,7 +1214,28 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "线性注意力"
+      "sidebar": "线性注意力",
+      "cardDesc": [
+        "全注意力推理时每个 token 都要存 K/V,上下文越长 cache 越大。线性注意力每个头只留一块 32×32 的记忆板:写入是加一个外积,",
+        {
+          "code": [
+            "delta rule"
+          ]
+        },
+        " 先擦再写,遗忘门 α 按比例衰减,合起来就是 Qwen3-Next 用的 ",
+        {
+          "code": [
+            "Gated DeltaNet"
+          ]
+        },
+        "。配套代码 ",
+        {
+          "code": [
+            "11_linear_attn.py"
+          ]
+        },
+        ",9 组真实训练:测试长度拉到 512,全注意力 val loss 涨到 3.52,GDN 停在 1.53;键值检索 N=32 时 GDN 答对 99.9%,只加不减的 linear 16.6%。最后看工业界为什么用 3:1 混合。"
+      ]
     },
     {
       "num": "14",
@@ -957,7 +1243,6 @@
       "file": "14_sparse_attention_viz.html",
       "cardId": "ch-14",
       "cardTitle": "第 14 章 · 稀疏注意力:每个 query 只挑一部分历史去读",
-      "cardDescHtml": "K/V 照样全存,每个 query 只挑一小部分去算。照 DeepSeek 的 <code>NSA</code> 手写三条支路:压缩给每块留摘要、挑选只细看 top-n 块、滑窗兜住最近的字,再用 sigmoid 门加权。配套代码 <code>12_sparse_attn.py</code>:256 上下文平均每个 query 读 76.8 个 key(全注意力 128.5);远处找钥匙任务上只滑窗 3.1%(乱猜),NSA 99.85%。再对照 DSA、DeepSeek-V4 的 CSA/HCA 与 Qwen3.8 的 QSA。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/12_sparse_attn.ipynb",
@@ -977,8 +1262,6 @@
       "docTitle": "稀疏注意力 · 每个 query 只挑一部分读",
       "shareTitle": "第 14 章 · 稀疏注意力 · 从零手写大语言模型",
       "description": "K/V 照样全存,每个 query 只挑一部分去算:NSA 的压缩、挑选、滑窗三条支路加门控,四组语言建模训练 + 三组远处找钥匙训练的真实对照。",
-      "h1Html": "稀疏注意力:每个 query 只挑一部分历史去读",
-      "subtitleHtml": "第 13 章把 <Term k=\"kv-cache\" name=\"KV-cache · 键值缓存\" def=\"把过去每个 token 的 K/V 缓存下来,生成新 token 时只算新的一列,避免重算整段。\">KV cache</Term>\n      压成固定大小的记忆板,换来的是精确检索变弱。这一关走另一条路:K/V 照样全存,\n      但每个 query 只挑一小部分去算,这叫\n      <Term k=\"sparse-attention\" name=\"稀疏注意力 · sparse attention\" def=\"每个 query 只和一部分 key 算注意力分数,其余位置不参与。K/V 仍可全部保存,省的是每一步要读和要算的量。\">稀疏注意力</Term>。\n      挑法取自 DeepSeek 的\n      <Term k=\"nsa\" name=\"NSA · Native Sparse Attention\" def=\"DeepSeek 2025(arXiv 2502.11089):压缩、挑选、滑窗三条支路并行,各自的输出乘一个 sigmoid 门再相加;从预训练开始就按稀疏方式训练。\">NSA</Term>:\n      压缩、挑选、滑窗三条支路,再用门控加权。配套代码 <code>phase4-efficiency/12_sparse_attn.py</code>,\n      含四组语言建模训练(Mac MPS)与三组\"远处找钥匙\"训练(RTX 4090)。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -1016,7 +1299,22 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "稀疏注意力"
+      "sidebar": "稀疏注意力",
+      "cardDesc": [
+        "K/V 照样全存,每个 query 只挑一小部分去算。照 DeepSeek 的 ",
+        {
+          "code": [
+            "NSA"
+          ]
+        },
+        " 手写三条支路:压缩给每块留摘要、挑选只细看 top-n 块、滑窗兜住最近的字,再用 sigmoid 门加权。配套代码 ",
+        {
+          "code": [
+            "12_sparse_attn.py"
+          ]
+        },
+        ":256 上下文平均每个 query 读 76.8 个 key(全注意力 128.5);远处找钥匙任务上只滑窗 3.1%(乱猜),NSA 99.85%。再对照 DSA、DeepSeek-V4 的 CSA/HCA 与 Qwen3.8 的 QSA。"
+      ]
     },
     {
       "num": "15",
@@ -1024,7 +1322,6 @@
       "file": "15_ngram_memory_viz.html",
       "cardId": "ch-15",
       "cardTitle": "第 15 章 · N-gram 查表:给模型挂一本短语词典",
-      "cardDescHtml": "给第 12 章的小模型挂一张哈希 n-gram 表:每个 token 按最近两三个 token 算出 8 个行号,只读 8 行 × 16 维,再由一个门决定加多少进残差流。表涨到主干的 4.6 倍,每 token 算力不变;行号在 forward 之前就能算出,表可以留在主机内存。配套代码 <code>13_engram.py</code>,FineWeb-Edu 上 5000 步 val loss 降约 0.06(单种子),tiny shakespeare 字符级反例里表把训练集背了下来,另测了表在 GPU / CPU 的吞吐。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": null,
@@ -1039,8 +1336,6 @@
       "docTitle": "N-gram 查表 · 给模型挂一本短语词典",
       "shareTitle": "第 15 章 · N-gram 查表 · 从零手写大语言模型",
       "description": "给第 12 章的小模型挂一张哈希 n-gram 表:每个 token 按最近两三个 token 算出 8 个行号,只读 8 行 × 16 维;表涨到主干的 4.6 倍,每 token 算力不变。附 FineWeb-Edu 与 tiny shakespeare 两组真实对照和表在 GPU / CPU 的吞吐。",
-      "h1Html": "N-gram 查表:给模型挂一本短语词典",
-      "subtitleHtml": "第 11 章的 MoE 让总参数变多、每个 token 的算力不变。这一关换一种做法:在第 12 章那台小模型旁边挂一张大表,\n      每个 token 只按<b>最近两三个 token</b> 算出 8 个行号,从表里取 8 行拼成一根向量,再由一个门决定加多少进残差流。\n      这种结构叫\n      <Term k=\"ngram-memory\" name=\"N-gram 查表记忆 · n-gram memory\" def=\"一张按局部 n-gram 哈希寻址的参数表。每个 token 用以它结尾的 2-gram / 3-gram 算出几个行号,取出这几行拼成记忆向量,经门控后加回残差流。表多大,每 token 都只读固定几行。\">N-gram 查表记忆</Term>\n      (DeepSeek 的 Engram、Qwen3.8 的 N-gram Embedding)。配套代码 <code>phase4-efficiency/13_engram.py</code>,\n      在 Mac(MPS)上跑了 <Term k=\"fineweb\" name=\"FineWeb-Edu\" def=\"HuggingFace 发布的教育类网页语料,第 6 章训练 124M 用的就是它。\">FineWeb-Edu</Term>\n      四组、tiny shakespeare 五组对照,外加三组吞吐测量。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -1078,7 +1373,16 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "N-gram 查表"
+      "sidebar": "N-gram 查表",
+      "cardDesc": [
+        "给第 12 章的小模型挂一张哈希 n-gram 表:每个 token 按最近两三个 token 算出 8 个行号,只读 8 行 × 16 维,再由一个门决定加多少进残差流。表涨到主干的 4.6 倍,每 token 算力不变;行号在 forward 之前就能算出,表可以留在主机内存。配套代码 ",
+        {
+          "code": [
+            "13_engram.py"
+          ]
+        },
+        ",FineWeb-Edu 上 5000 步 val loss 降约 0.06(单种子),tiny shakespeare 字符级反例里表把训练集背了下来,另测了表在 GPU / CPU 的吞吐。"
+      ]
     },
     {
       "num": "16",
@@ -1086,7 +1390,6 @@
       "file": "16_speculative_decoding_viz.html",
       "cardId": "ch-16",
       "cardTitle": "第 16 章 · 投机解码与 MTP:先便宜地猜,再一次验收",
-      "cardDescHtml": "自回归生成每吐一个字都要跑一次主模型。投机解码让草稿员先猜 γ 个字,主模型一次 forward 算出这些位置的 p,以 <code>min(1, p/q)</code> 接受、拒绝就从 <code>max(0, p−q)</code> 重抽,输出分布不变。配套代码 <code>14_mtp.py</code>,在 RTX 4090 上实测:1 层小草稿模型接受率 0.667–0.745,γ=6 时每次主 forward 吐 3.09 个字;DeepSeek-V3 式 MTP 头接受率 0.899,墙钟 1.27×;20 万次模拟后与 p 的总变差距离 0.0005。最后算清玩具规模下省了 forward 为什么没怎么省时间。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/14_mtp.ipynb",
@@ -1106,8 +1409,6 @@
       "docTitle": "投机解码与 MTP · 先猜后验",
       "shareTitle": "第 16 章 · 投机解码与 MTP · 从零手写大语言模型",
       "description": "便宜的草稿员先猜 γ 个字,主模型一次 forward 验收:min(1, p/q) 接受规则、γ 的取舍、DeepSeek-V3 的 MTP 草稿头,以及 RTX 4090 上的真实账本。",
-      "h1Html": "投机解码与 MTP:先便宜地猜,再一次验收",
-      "subtitleHtml": "第 5 章的<Term k=\"autoregressive\" name=\"自回归 · autoregressive\" def=\"每次只生成一个 token,把它接回输入再生成下一个。\">自回归</Term>生成,每吐一个字都要把主模型完整跑一遍。\n      <Term k=\"speculative-decoding\" name=\"投机解码 · speculative decoding\" def=\"让便宜的草稿员先猜 γ 个 token,主模型一次 forward 算出这些位置的分布,按 min(1, p/q) 逐个接受,拒绝时从 max(0, p−q) 重抽。输出分布与主模型逐个采样相同,省的是主模型 forward 次数。\">投机解码</Term>换一种分工:\n      便宜的草稿员先猜 γ 个字,主模型<b>一次 forward</b> 把这 γ 个位置全算出来,再按一条接受规则逐个验收。\n      草稿员可以是一个小模型,也可以是主模型自带的\n      <Term k=\"mtp\" name=\"MTP · 多 token 预测\" def=\"Multi-Token Prediction:训练时让主模型顺带预测更远的 token。DeepSeek-V3 用顺序的 MTP 模块(深度 1),推理时它就是现成的草稿员。\">MTP 头</Term>。\n      本关两种都真训一遍,再在 RTX 4090 上量账。配套代码 <code>phase4-efficiency/14_mtp.py</code>。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -1145,7 +1446,28 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "投机解码与 MTP"
+      "sidebar": "投机解码与 MTP",
+      "cardDesc": [
+        "自回归生成每吐一个字都要跑一次主模型。投机解码让草稿员先猜 γ 个字,主模型一次 forward 算出这些位置的 p,以 ",
+        {
+          "code": [
+            "min(1, p/q)"
+          ]
+        },
+        " 接受、拒绝就从 ",
+        {
+          "code": [
+            "max(0, p−q)"
+          ]
+        },
+        " 重抽,输出分布不变。配套代码 ",
+        {
+          "code": [
+            "14_mtp.py"
+          ]
+        },
+        ",在 RTX 4090 上实测:1 层小草稿模型接受率 0.667–0.745,γ=6 时每次主 forward 吐 3.09 个字;DeepSeek-V3 式 MTP 头接受率 0.899,墙钟 1.27×;20 万次模拟后与 p 的总变差距离 0.0005。最后算清玩具规模下省了 forward 为什么没怎么省时间。"
+      ]
     },
     {
       "num": "17",
@@ -1153,7 +1475,6 @@
       "file": "17_quantization_viz.html",
       "cardId": "ch-17",
       "cardTitle": "第 17 章 · 量化:把 124M 从 32 位压到 4 位",
-      "cardDescHtml": "把第 6 章训出来的 GPT-2 124M 量化到 8 / 4 / 3 / 2 位:一个 <code>scale</code> 管多少权重决定误差,一个 10σ 的离群值就能让整矩阵 int4 崩到 val loss 9.93,留出 0.1% 离群值又回到 3.26。再拆开 <code>Q4_K</code>、<code>NVFP4</code>、<code>MXFP4</code> 三种 4 位格式怎么存 scale。配套代码 <code>15_quant.py</code>,15 组真实评测:4.5 位的 NVFP4 从 497.9 MB 压到 126.9 MB,val loss 多 0.04。Phase 4 收尾。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": null,
@@ -1168,8 +1489,6 @@
       "docTitle": "量化 · 把 124M 从 32 位压到 4 位",
       "shareTitle": "第 17 章 · 量化 · 从零手写大语言模型",
       "description": "把第 6 章训出来的 GPT-2 124M 量化到 8 / 4 / 3 / 2 位:scale 管多少权重、离群值为什么让整矩阵 int4 崩掉、Q4_K / NVFP4 / MXFP4 三种 4 位格式怎么存 scale,附 15 组真实评测。",
-      "h1Html": "量化:把 124M 从 32 位压到 4 位",
-      "subtitleHtml": "第 6 章用 10B token 训出来的那个 GPT-2 124M,每个权重是 32 位浮点,整个模型 <b>497.9 MB</b>。\n      <Term k=\"quantization\" name=\"量化 · quantization\" def=\"用更少的位数存权重:定一个 scale,权重除以 scale 后四舍五入成整数(或小浮点)格点,只存格点编号;用时乘回 scale。\">量化</Term>\n      把每个权重换成几位的格点编号:先定一个\n      <Term k=\"quant-scale\" name=\"scale · 缩放系数\" def=\"把一段权重映射到格点上的系数。一个 scale 管多少个权重(整矩阵 / 每行 / 每 32 个)决定了格子有多细,scale 本身也要占位数。\">scale</Term>,\n      权重除以它、四舍五入,用的时候再乘回来。本关用配套代码 <code>phase4-efficiency/15_quant.py</code> 把 15 种做法挨个跑一遍,\n      在同一份 <Term k=\"fineweb\" name=\"FineWeb-Edu\" def=\"HuggingFace 发布的教育类网页语料,第 6 章训练 124M 用的就是它。\">FineWeb-Edu</Term> val 上看 loss 涨多少。\n      Phase 4 讲效率,这是最后一章。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -1207,7 +1526,40 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "量化"
+      "sidebar": "量化",
+      "cardDesc": [
+        "把第 6 章训出来的 GPT-2 124M 量化到 8 / 4 / 3 / 2 位:一个 ",
+        {
+          "code": [
+            "scale"
+          ]
+        },
+        " 管多少权重决定误差,一个 10σ 的离群值就能让整矩阵 int4 崩到 val loss 9.93,留出 0.1% 离群值又回到 3.26。再拆开 ",
+        {
+          "code": [
+            "Q4_K"
+          ]
+        },
+        "、",
+        {
+          "code": [
+            "NVFP4"
+          ]
+        },
+        "、",
+        {
+          "code": [
+            "MXFP4"
+          ]
+        },
+        " 三种 4 位格式怎么存 scale。配套代码 ",
+        {
+          "code": [
+            "15_quant.py"
+          ]
+        },
+        ",15 组真实评测:4.5 位的 NVFP4 从 497.9 MB 压到 126.9 MB,val loss 多 0.04。Phase 4 收尾。"
+      ]
     },
     {
       "num": "18",
@@ -1215,7 +1567,6 @@
       "file": "18_bpe_viz.html",
       "cardId": "ch-18",
       "cardTitle": "第 18 章 · 手写 BPE:自己训一个分词器",
-      "cardDescHtml": "第 6 章起一直调 tiktoken,这一关自己写:从 256 个字节出发,数相邻对、合并出现最多的一对,在 8 MB FineWeb-Edu 上训出 16,384 词表,编码再解码逐字还原。配套代码 <code>16_bpe.py</code>,纯 CPU 约 2 分钟:每 token 4.25 字节(GPT-2 的 50,257 词表 4.62);只按空格预切分时,词表里 2,279 个 token 是「词 + 标点」的变体,GPT-2 正则下只有 7 个;英文语料训出的词表一个汉字都没合并。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": null,
@@ -1230,8 +1581,6 @@
       "docTitle": "手写 BPE · 自己训一个分词器",
       "shareTitle": "第 18 章 · 手写 BPE · 从零手写大语言模型",
       "description": "不再调 tiktoken:从 256 个字节出发,数相邻对、合并出现最多的一对,在 8 MB FineWeb-Edu 上训出 16,384 词表的字节级 BPE。预切分为什么要按字母和标点分开、词表多大换多少压缩率、中文为什么贵,附真实训练结果。",
-      "h1Html": "手写 BPE:自己训一个分词器",
-      "subtitleHtml": "第 1 章用字符级分词,65 个字符;第 6 章起一直直接调 <code>tiktoken.get_encoding(\"gpt2\")</code>。\n      这一关从零写一个同类的\n      <Term k=\"byte-level-bpe\" name=\"字节级 BPE · byte-level BPE\" def=\"初始词表是 256 个字节,反复把出现最多的相邻一对合并成新 token。任何 UTF-8 文本都能编码,没有未知字符。GPT-2 / GPT-4 / LLaMA 3 的分词器都属于这一类。\">字节级 BPE</Term>:\n      从 256 个字节出发,数相邻对、合并出现最多的一对,重复 16,128 次。配套代码 <code>phase5-fullstack/16_bpe.py</code>,\n      在第 6 章那份 <Term k=\"fineweb\" name=\"FineWeb-Edu\" def=\"HuggingFace 发布的教育类网页语料,第 6 章训练 124M 用的就是它。\">FineWeb-Edu</Term> 的 8 MB 原文上训练,\n      再在另外 1 MB 上和 GPT-2 的分词器对照。Phase 5 补齐全链路,这是第一关。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -1269,7 +1618,16 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "手写 BPE"
+      "sidebar": "手写 BPE",
+      "cardDesc": [
+        "第 6 章起一直调 tiktoken,这一关自己写:从 256 个字节出发,数相邻对、合并出现最多的一对,在 8 MB FineWeb-Edu 上训出 16,384 词表,编码再解码逐字还原。配套代码 ",
+        {
+          "code": [
+            "16_bpe.py"
+          ]
+        },
+        ",纯 CPU 约 2 分钟:每 token 4.25 字节(GPT-2 的 50,257 词表 4.62);只按空格预切分时,词表里 2,279 个 token 是「词 + 标点」的变体,GPT-2 正则下只有 7 个;英文语料训出的词表一个汉字都没合并。"
+      ]
     },
     {
       "num": "19",
@@ -1277,7 +1635,6 @@
       "file": "19_flash_attention_viz.html",
       "cardId": "ch-19",
       "cardTitle": "第 19 章 · 手写 FlashAttention:拆开 SDPA 这个黑盒",
-      "cardDescHtml": "朴素注意力要把 T×T 的分数矩阵整个写进显存,T = 4096 时约 7.5 GB。online softmax 边读边更新最大值与分母,分块之后这个矩阵不再落到显存。配套代码 <code>17_flash_attn.py</code>,手写一个 Triton 前向 kernel:RTX 4090 上 T = 4096 用时 0.77 ms、占 24 MB,PyTorch 的 SDPA 0.76 ms;朴素写法 31.8 ms,T = 8192 起显存不够。换进第 6 章的 124M,val loss 与 SDPA 相差 0.0002。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": null,
@@ -1292,8 +1649,6 @@
       "docTitle": "手写 FlashAttention · 拆开 SDPA",
       "shareTitle": "第 19 章 · 手写 FlashAttention · 从零手写大语言模型",
       "description": "把第 6 章起一直在调的 F.scaled_dot_product_attention 拆开:T×T 分数矩阵有多大、online softmax 怎样分段算出精确结果、分块后哪些数留在片上,再用 Triton 写一个前向 kernel,在 RTX 4090 上和朴素写法、PyTorch SDPA 比时间与显存,并换进 124M 核对 loss。",
-      "h1Html": "手写 FlashAttention:拆开 SDPA 这个黑盒",
-      "subtitleHtml": "从第 6 章起,注意力一直是一行 <code>F.scaled_dot_product_attention</code>。它和第 2 章手写的注意力算的是同一个数,\n      差别在 T×T 的分数矩阵放在哪。\n      <Term k=\"flash-attention\" name=\"FlashAttention\" def=\"把 Q、K、V 切成小块,在片上 SRAM 里算完一块就累加进输出,T×T 的分数矩阵不写回显存。靠 online softmax 保证结果精确,不是近似。\">FlashAttention</Term>\n      把 Q、K、V 切块,每块在片上算完就累加进输出,用\n      <Term k=\"online-softmax\" name=\"online softmax\" def=\"分段读一行数时,只记到目前为止的最大值 m 和指数和 l;遇到更大的最大值,把之前累加的结果乘 exp(m_旧 − m_新) 缩回去。读完一整行,结果与一次算完的 softmax 相同。\">online softmax</Term>\n      保证结果精确。配套代码 <code>phase5-fullstack/17_flash_attn.py</code> 写了三层:朴素写法、纯 PyTorch 分块、Triton kernel,\n      在 <span id=\"gpuName\">RTX 4090</span> 上比时间和显存,再换进第 6 章的 124M 核对 loss。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -1331,7 +1686,16 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "FlashAttention"
+      "sidebar": "FlashAttention",
+      "cardDesc": [
+        "朴素注意力要把 T×T 的分数矩阵整个写进显存,T = 4096 时约 7.5 GB。online softmax 边读边更新最大值与分母,分块之后这个矩阵不再落到显存。配套代码 ",
+        {
+          "code": [
+            "17_flash_attn.py"
+          ]
+        },
+        ",手写一个 Triton 前向 kernel:RTX 4090 上 T = 4096 用时 0.77 ms、占 24 MB,PyTorch 的 SDPA 0.76 ms;朴素写法 31.8 ms,T = 8192 起显存不够。换进第 6 章的 124M,val loss 与 SDPA 相差 0.0002。"
+      ]
     },
     {
       "num": "20",
@@ -1339,7 +1703,6 @@
       "file": "20_scaling_law_viz.html",
       "cardId": "ch-20",
       "cardTitle": "第 20 章 · Scaling Law:用小模型预测 124M 的 loss",
-      "cardDescHtml": "第 6 章把 124M 训了一整天。能不能先训一批小模型,算出它会训到多少?训 23 次 0.6M–25M 参数的小模型(5000 万到 16 亿 token),拟合 <code>L(N, D) = E + A/N^α + B/D^β</code>,外推到 124M 训 10B token:预测 3.36,实测 3.03。换三组拟合点对照,外推越远误差越大,主拟合的 bootstrap 区间也没盖住实测。配套代码 <code>18_scaling.py</code>,顺带排查两次训练发散:第 2 层注意力分数涨到约 1000 万,加 qk-norm 后同配置 val loss 从 4.95 降到 4.19。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": null,
@@ -1354,8 +1717,6 @@
       "docTitle": "Scaling Law · 用小模型预测 124M",
       "shareTitle": "第 20 章 · Scaling Law · 从零手写大语言模型",
       "description": "训一批 0.6M 到 25M 参数的小模型,拟合 L(N, D) = E + A/N^α + B/D^β,外推到第 6 章 124M 训 10B token 的 loss:预测 3.36,实测 3.03。换三组拟合点看外推越远误差越大、主拟合的 bootstrap 区间为什么没盖住真实值,并排查两次训练发散的原因(注意力 logit 增长)。",
-      "h1Html": "Scaling Law:用小模型预测 124M 的 loss",
-      "subtitleHtml": "第 6 章花了 4090 一整天,把 124M 训了 10B token。能不能先训一批小模型(每个几分钟到两小时),算出大模型会训到多少?\n      <Term k=\"scaling-law\" name=\"scaling law · 规模定律\" def=\"模型最终 loss 随参数量 N、训练 token 数 D 按幂律下降的经验规律。常用形式 L(N, D) = E + A/N^α + B/D^β,用小模型拟合出系数,再外推到大模型。\">Scaling law</Term>\n      的做法:参数量 N 从 0.6M 到 25M,每个配几档训练 token 数 D,拟合 <code>L(N, D) = E + A/N^α + B/D^β</code>,再把第 6 章的 N 和 D 代进去。\n      这次的预测是 3.36,实测 3.03,偏高 0.33;这一关把误差从哪来也一起查清楚。配套代码 <code>phase5-fullstack/18_scaling.py</code>,全部在 RTX 4090 上训练,和第 6 章同一套 GPT-2 结构、分词器与 FineWeb-Edu 数据。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -1393,7 +1754,22 @@
       "prevClass": "btn",
       "confetti": true,
       "ready": false,
-      "sidebar": "Scaling Law"
+      "sidebar": "Scaling Law",
+      "cardDesc": [
+        "第 6 章把 124M 训了一整天。能不能先训一批小模型,算出它会训到多少?训 23 次 0.6M–25M 参数的小模型(5000 万到 16 亿 token),拟合 ",
+        {
+          "code": [
+            "L(N, D) = E + A/N^α + B/D^β"
+          ]
+        },
+        ",外推到 124M 训 10B token:预测 3.36,实测 3.03。换三组拟合点对照,外推越远误差越大,主拟合的 bootstrap 区间也没盖住实测。配套代码 ",
+        {
+          "code": [
+            "18_scaling.py"
+          ]
+        },
+        ",顺带排查两次训练发散:第 2 层注意力分数涨到约 1000 万,加 qk-norm 后同配置 val loss 从 4.95 降到 4.19。"
+      ]
     },
     {
       "num": "21",
@@ -1401,7 +1777,6 @@
       "file": "21_rlvr_grpo_viz.html",
       "cardId": "ch-21",
       "cardTitle": "第 21 章 · RLVR 与 GRPO:只给判分器,不给答案",
-      "cardDescHtml": "只给一个会对答案的判分器,不给标准答案:同一道题采样 8 次,组内比较得出优势,按优势更新。配套代码 <code>19_grpo.py</code>,把 124M 教会两位数加法,并在同一热身起点、同一评测、同样 4096 道题下和 SFT、DPO 同台比,学习率各自按 dev 挑。热身 1000 道的起点上 GRPO 从 41.0% 到 84.8%,有标准答案的 SFT 到 93.0%,离线 DPO 47.8%(学习率 3e-8,再大就掉到 warm 以下);热身 200 道的起点上 GRPO 的组大多 8 次全错,几乎学不到。Phase 5 收尾。",
       "stepSummary": "共 5 步",
       "goLabel": "开始 →",
       "colab": "https://colab.research.google.com/github/tao-hpu/llm-from-scratch/blob/main/notebooks/19_grpo.ipynb",
@@ -1421,8 +1796,6 @@
       "docTitle": "RLVR 与 GRPO · 只给判分器",
       "shareTitle": "第 21 章 · RLVR 与 GRPO · 从零手写大语言模型",
       "description": "不给标准答案,只给一个能判对错的程序:同一道题采样 8 次、组内比较、按优势更新,把 124M 教会两位数加法。同一基座、同一评测、同样 4096 道题,和 SFT、DPO 同台对照,并看起点弱时 RL 为什么拿不到信号。",
-      "h1Html": "RLVR 与 GRPO:只给判分器,不给答案",
-      "subtitleHtml": "第 8 章的 SFT 要标准答案,第 10 章的 DPO 要一对好坏回答。\n      <Term k=\"rlvr\" name=\"RLVR · 可验证奖励的强化学习\" def=\"Reinforcement Learning with Verifiable Rewards:奖励来自能自动判对错的程序(对答案、跑测试),不来自人工打分或奖励模型。模型自己采样回答,判分器给分,按分数更新。\">RLVR</Term>\n      只要一个能自动判对错的程序:模型自己答,程序判分,按分数更新。本关用\n      <Term k=\"grpo\" name=\"GRPO · 组相对策略优化\" def=\"同一道题采样 G 个回答,用组内平均奖励当基线、组内标准差做归一化,算出每个回答的优势,不需要价值网络。出自 DeepSeekMath(arXiv 2402.03300)。\">GRPO</Term>\n      把第 6 章的 124M 教会两位数加法,再在同一基座、同一评测、同样 4096 道题下和 SFT、DPO 同台比。配套代码 <code>phase5-fullstack/19_grpo.py</code>,在 RTX 4090 上跑完。",
       "steps": [
         {
           "sn": "STEP 1",
@@ -1459,8 +1832,17 @@
       "stepsClass": "steps-nav",
       "prevClass": "btn",
       "confetti": true,
-      "ready": true,
-      "sidebar": "RLVR 与 GRPO"
+      "ready": false,
+      "sidebar": "RLVR 与 GRPO",
+      "cardDesc": [
+        "只给一个会对答案的判分器,不给标准答案:同一道题采样 8 次,组内比较得出优势,按优势更新。配套代码 ",
+        {
+          "code": [
+            "19_grpo.py"
+          ]
+        },
+        ",把 124M 教会两位数加法,并在同一热身起点、同一评测、同样 4096 道题下和 SFT、DPO 同台比,学习率各自按 dev 挑。热身 1000 道的起点上 GRPO 从 41.0% 到 84.8%,有标准答案的 SFT 到 93.0%,离线 DPO 47.8%(学习率 3e-8,再大就掉到 warm 以下);热身 200 道的起点上 GRPO 的组大多 8 次全错,几乎学不到。Phase 5 收尾。"
+      ]
     }
   ]
 }

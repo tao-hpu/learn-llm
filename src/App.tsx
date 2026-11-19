@@ -1,27 +1,45 @@
-import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { BrowserRouter, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { findChapter } from './chapters'
-import { ChapterFrame } from './components/ChapterFrame'
 import { TermTip } from './components/TermTip'
-import { specFor } from './content/specs'
 import { GlossaryPage } from './pages/GlossaryPage'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 import { PendingChapter, PendingStatic } from './pages/Pending'
+import { Posttraining } from './pages/Posttraining'
+import { scrollToRegistered } from './scroll'
 import './site.css'
 
 function ChapterRoute() {
   const { slug = '' } = useParams()
   const chapter = findChapter(slug)
   if (!chapter) return <NotFound />
-  const spec = specFor(slug)
-  if (!spec || !chapter.ready) return <PendingChapter chapter={chapter} />
-  return <ChapterFrame key={slug} spec={spec} />
+  if (!chapter.ready) return <PendingChapter chapter={chapter} />
+  if (slug === 'posttraining') return <Posttraining />
+  return <NotFound />
+}
+
+function ScrollManager() {
+  const { pathname, hash } = useLocation()
+  const prevPath = useRef(pathname)
+  useEffect(() => {
+    const pathChanged = prevPath.current !== pathname
+    prevPath.current = pathname
+    if (hash) {
+      const id = decodeURIComponent(hash.slice(1))
+      if (!/^(step|part)-\d+$/.test(id)) scrollToRegistered(id)
+      return
+    }
+    if (pathChanged) window.scrollTo(0, 0)
+  }, [pathname, hash])
+  return null
 }
 
 export default function App() {
   return (
     <BrowserRouter>
       <TermTip />
+      <ScrollManager />
       <Routes>
         <Route index element={<Home />} />
         <Route path="glossary" element={<GlossaryPage />} />

@@ -6,12 +6,11 @@
   "description": "从零手写大语言模型的交互可视化。由 llm-from-scratch/web 的单文件页面迁来。",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/check-terms.mjs && tsc -b && vite build && node scripts/prerender.mjs",
+    "build": "node scripts/check-source.mjs && node scripts/check-terms.mjs && tsc -b && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc -b && tsc -p tsconfig.test.json --noEmit",
-    "compare": "node scripts/compare-text.mjs",
-    "extract": "python3 scripts/extract_html.py"
+    "compare": "node scripts/compare-text.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

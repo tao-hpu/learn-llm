@@ -10,26 +10,6 @@
 
 差异行数：0
 
-## 01 bigram #step-1
-
-差异行数：0
-
-## 01 bigram #step-2
-
-差异行数：0
-
-## 01 bigram #step-3
-
-差异行数：0
-
-## 01 bigram #step-4
-
-差异行数：0
-
-## 01 bigram #step-5
-
-差异行数：0
-
 ## 07 posttraining #step-1
 
 差异行数：0
@@ -58,24 +38,4 @@
 
 差异行数：0
 
-## 21 rlvr-grpo #step-1
-
-差异行数：0
-
-## 21 rlvr-grpo #step-2
-
-差异行数：0
-
-## 21 rlvr-grpo #step-3
-
-差异行数：0
-
-## 21 rlvr-grpo #step-4
-
-差异行数：0
-
-## 21 rlvr-grpo #step-5
-
-差异行数：0
-
-合计 19 处，其中 0 处有差异。
+合计 9 处，其中 0 处有差异。

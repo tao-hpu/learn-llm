@@ -1,19 +1,18 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { chapters, findChapter, home, phases } from '../chapters'
-import homeCss from '../content/home.css?raw'
-
-const bySlug = new Map(chapters.map((c) => [c.slug, c]))
+import { findChapter, home, phases } from '../chapters'
+import { Rich } from '../components/Rich'
+import type { Run } from '../runs'
+import { bindId } from '../scroll'
+import homeCss from './home.css?raw'
 
 export function Home() {
+  const secRefs = useRef<(HTMLElement | null)[]>([])
+  const itemRefs = useRef<(HTMLElement | null)[]>([])
+
   useEffect(() => {
-    const secs = Array.from(document.querySelectorAll<HTMLElement>('.phase-sec'))
-    const items: Record<string, HTMLElement> = {}
-    document.querySelectorAll('.toc > li').forEach((li) => {
-      const href = li.querySelector('.ph')?.getAttribute('href')
-      if (href) items[href.slice(1)] = li as HTMLElement
-    })
     function update() {
+      const secs = secRefs.current.filter((el): el is HTMLElement => !!el)
       if (!secs.length) return
       let cur = secs[0].id
       secs.forEach((s) => {
@@ -22,7 +21,10 @@ export function Home() {
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
         cur = secs[secs.length - 1].id
       }
-      Object.keys(items).forEach((k) => items[k].classList.toggle('on', k === cur))
+      itemRefs.current.forEach((li) => {
+        if (!li) return
+        li.classList.toggle('on', li.dataset.phase === cur)
+      })
     }
     window.addEventListener('scroll', update, { passive: true })
     window.addEventListener('hashchange', update)
@@ -40,12 +42,12 @@ export function Home() {
         <aside className="side">
           <a className="brand" href="#top"><b>LLM from Scratch</b><span>从零手写大语言模型</span></a>
           <ul className="toc">
-            {phases.map((phase) => (
-              <li key={phase.id}>
+            {phases.map((phase, i) => (
+              <li key={phase.id} data-phase={phase.id} ref={(el) => { itemRefs.current[i] = el }}>
                 <a className="ph" href={`#${phase.id}`}>{phase.tocLabel}</a>
                 <ol>
                   {phase.slugs.map((slug) => {
-                    const c = bySlug.get(slug)
+                    const c = findChapter(slug)
                     if (!c) return null
                     const anchor = c.steps[0]?.anchor ?? 'step-1'
                     return (
@@ -66,10 +68,10 @@ export function Home() {
           </nav>
         </aside>
 
-        <main className="main" id="top">
+        <main className="main" id="top" ref={bindId('top')}>
           <header>
-            <h1 dangerouslySetInnerHTML={{ __html: home.h1Html }} />
-            <p className="subtitle" dangerouslySetInnerHTML={{ __html: home.subtitleHtml }} />
+            <h1><Rich runs={home.h1 as Run[]} /></h1>
+            <p className="subtitle"><Rich runs={home.subtitle as Run[]} /></p>
             <div className="cta">
               <Link to="/ch/bigram#step-1">从第 1 章开始 →</Link>
               <Link to="/glossary">📖 名词表</Link>
@@ -80,8 +82,13 @@ export function Home() {
             </div>
           </header>
 
-          {phases.map((phase) => (
-            <section className="phase-sec" id={phase.id} key={phase.id}>
+          {phases.map((phase, i) => (
+            <section
+              className="phase-sec"
+              id={phase.id}
+              key={phase.id}
+              ref={(el) => { secRefs.current[i] = el; bindId(phase.id)(el) }}
+            >
               <div className="phase-title">
                 <span className="pt-num">{phase.kicker}</span>
                 <h2>{phase.title}</h2>
@@ -93,10 +100,10 @@ export function Home() {
                   if (!c) return null
                   const first = c.steps[0]?.anchor ?? 'step-1'
                   return (
-                    <article className="card" id={c.cardId} key={slug}>
+                    <article className="card" id={c.cardId} key={slug} ref={bindId(c.cardId)}>
                       <span className="ch-num">CHAPTER {c.num}</span>
                       <h3><Link to={`/ch/${slug}#${first}`}>{c.cardTitle}</Link></h3>
-                      <p className="desc" dangerouslySetInnerHTML={{ __html: c.cardDescHtml }} />
+                      <p className="desc"><Rich runs={c.cardDesc} /></p>
                       <div className="card-foot">
                         <details>
                           <summary>{c.stepSummary}</summary>

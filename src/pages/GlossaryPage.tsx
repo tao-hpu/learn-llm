@@ -1,18 +1,11 @@
-import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { HomeLink } from '../components/HomeLink'
-import glossaryCss from '../content/glossary.css?raw'
+import { Rich } from '../components/Rich'
 import { glossaryGroups, glossaryMeta, glossaryToc } from '../glossary'
+import { bindId } from '../scroll'
+import glossaryCss from './glossary.css?raw'
 
 export function GlossaryPage() {
-  const { hash } = useLocation()
-
-  useEffect(() => {
-    if (!hash) return
-    const id = decodeURIComponent(hash.slice(1))
-    document.getElementById(id)?.scrollIntoView()
-  }, [hash])
-
   return (
     <>
       <style>{glossaryCss}</style>
@@ -21,7 +14,7 @@ export function GlossaryPage() {
         <header>
           <span className="eyebrow">{glossaryMeta.eyebrow}</span>
           <h1>{glossaryMeta.h1}</h1>
-          <p className="subtitle" dangerouslySetInnerHTML={{ __html: glossaryMeta.subtitleHtml }} />
+          <p className="subtitle"><Rich runs={glossaryMeta.subtitle} /></p>
         </header>
         <div className="toc">
           {glossaryToc.map((item) => (
@@ -32,14 +25,22 @@ export function GlossaryPage() {
           <section key={group.num + group.title}>
             <div className="sec-h"><span className="sh-num">{group.num}</span>{group.title}</div>
             {group.entries.map((entry) => (
-              <div className="gentry" id={entry.id} key={entry.id}>
-                <h3 dangerouslySetInnerHTML={{ __html: entry.titleHtml }} />
-                <div dangerouslySetInnerHTML={{ __html: entry.bodyHtml }} />
+              <div className="gentry" id={entry.id} key={entry.id} ref={bindId(entry.id)}>
+                <h3><Rich runs={entry.title} /></h3>
+                <Rich runs={entry.body} />
               </div>
             ))}
           </section>
         ))}
-        <footer dangerouslySetInnerHTML={{ __html: glossaryMeta.footerHtml }} />
+        <footer>
+          名词表会随章节增加而扩充。回到 <Link to="/">首页</Link> · 或继续
+          {' '}<Link to="/ch/bigram#step-1">第 1 章</Link> /
+          {' '}<Link to="/ch/attention#step-1">第 2 章</Link> /
+          {' '}<Link to="/ch/transformer#step-1">第 3 章</Link>。
+          <div className="glossary-copy">
+            © 2026 <a href="https://fim.ai" target="_blank" rel="noopener">FIM Labs</a> · 从零手写大语言模型 · MIT License
+          </div>
+        </footer>
       </div>
     </>
   )
