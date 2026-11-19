@@ -1,9 +1,9 @@
 /* 全站变量和章节外壳。各章自己的部件放在同名 .module.css。 */
 :root {
-  --bg: #F0EEE6;
-  --card: #FAF9F5;
-  --paper: #FFFEFB; /* 正文区底色 */
-  --chrome: #F3F1EA; /* 顶栏与侧栏 */
+  --bg: #F7F6F2; /* 正文里需要轻微衬底的元素用 */
+  --card: #FFFFFF;
+  --paper: #FFFFFF; /* 正文区底色 */
+  --chrome: #FFFFFF; /* 顶栏与侧栏：与正文同色，只靠细线分隔 */
   --border: #E5E2D9;
   --accent: #D97757;
   --accent-soft: #F2D9CE;
@@ -24,7 +24,7 @@ body {
 }
 a { color: inherit; }
 
-.shell { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+.shell { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: var(--paper); }
 .body { display: flex; flex: 1 1 auto; min-height: 0; }
 .content { flex: 1 1 auto; min-width: 0; overflow-y: auto; background: var(--paper); }
 
@@ -236,3 +236,11 @@ button.btn:disabled { opacity: .4; cursor: not-allowed; }
   .hp-chip { border-left: 0; padding: 0; }
   .hp-bar .hp-label { margin-bottom: 2px; }
 }
+
+/* 滚动条：细、无轨道，只在悬停时加深。Firefox 用 scrollbar-*，其余用 ::-webkit-scrollbar。 */
+* { scrollbar-width: thin; scrollbar-color: #D9D5CA transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: #DEDACF; border-radius: 4px; border: 2px solid transparent; background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:hover { background: #C5C0B3; background-clip: padding-box; }
+*::-webkit-scrollbar-corner { background: transparent; }
